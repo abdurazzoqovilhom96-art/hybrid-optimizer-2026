@@ -1,0 +1,73 @@
+name: Smoke test
+
+# Butun quvurni (bo'lak -> artefakt -> birlashtirish -> tahlil) tez tekshiradi.
+# Ishga tushirish:  git tag smoke-1 && git push origin smoke-1
+on:
+  push:
+    tags:
+      - "smoke*"
+  workflow_dispatch:
+
+jobs:
+  chunk:
+    name: ${{ matrix.dim }}D (smoke)
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        dim: [10, 12]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install --quiet numpy pandas scipy joblib matplotlib
+      - name: Run ${{ matrix.dim }}D chunk
+        env:
+          DIMS: ${{ matrix.dim }}
+          RUNS: "3"
+          OUT_DIR: chunk
+        run: python cba_shade.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: smoke-chunk-${{ matrix.dim }}
+          path: chunk/
+          retention-days: 3
+
+  analyse:
+    name: Merge and analyse (smoke)
+    needs: chunk
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install --quiet numpy pandas scipy joblib matplotlib
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: smoke-chunk-*
+          path: chunks
+      - name: Merge
+        env:
+          ANALYZE_ONLY: "1"
+          MERGE: chunks/smoke-chunk-10,chunks/smoke-chunk-12
+          OUT_DIR: smoke_full
+        run: python cba_shade.py
+      - name: Check the expected outputs exist
+        run: |
+          set -e
+          for f in tables/summary_results.csv tables/friedman_posthoc.csv \
+                   tables/win_tie_loss.csv raw_data/full_raw_results.csv; do
+            test -s "smoke_full/$f" || { echo "YO'Q: $f"; exit 1; }
+          done
+          n=$(ls smoke_full/figures/*.png | wc -l)
+          test "$n" -eq 24 || { echo "grafiklar soni noto'g'ri: $n (24 kutilgan)"; exit 1; }
+          echo "Hammasi joyida: $n ta grafik, barcha jadvallar mavjud"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: smoke-full
+          path: smoke_full/
+          retention-days: 3

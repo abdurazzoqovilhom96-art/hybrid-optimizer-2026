@@ -1,6 +1,12 @@
 name: CBA-SHADE full experiment
 
+# workflow_dispatch faqat fayl default branchda (main) bo'lsagina ishlaydi.
+# Shu sababli teg orqali ishga tushirish ham qo'shilgan - u ish branchidan
+# to'g'ridan-to'g'ri ishlaydi:  git tag run-experiment-1 && git push origin run-experiment-1
 on:
+  push:
+    tags:
+      - "run-experiment*"
   workflow_dispatch:
     inputs:
       runs:
@@ -31,8 +37,8 @@ jobs:
       - name: Run ${{ matrix.dim }}D chunk
         env:
           DIMS: ${{ matrix.dim }}
-          RUNS: ${{ inputs.runs }}
-          INCLUDE_CLASSIC: ${{ inputs.include_classic }}
+          RUNS: ${{ inputs.runs || '30' }}
+          INCLUDE_CLASSIC: ${{ inputs.include_classic || '0' }}
           OUT_DIR: chunk
         run: python cba_shade.py
       - uses: actions/upload-artifact@v4
@@ -75,6 +81,8 @@ jobs:
           path: results/
           retention-days: 90
       - name: Commit the results back to the branch
+        env:
+          TARGET: claude/youthful-pascal-sjxqnn
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
@@ -83,6 +91,6 @@ jobs:
             echo "Natijalarda o'zgarish yo'q"
           else
             git commit -m "Add full experiment results from workflow run ${{ github.run_number }}"
-            git pull --rebase origin "${{ github.ref_name }}"
-            git push origin HEAD:"${{ github.ref_name }}"
+            git pull --rebase origin "$TARGET"
+            git push origin HEAD:"$TARGET"
           fi
