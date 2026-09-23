@@ -1,0 +1,551 @@
+Config,Function,Dim,Run,Best
+BASE (hozirgi),Schwefel,30,0,3336.276106818139
+BASE (hozirgi),Schwefel,30,1,2684.6488777420363
+BASE (hozirgi),Schwefel,30,2,3948.2434093786887
+BASE (hozirgi),Schwefel,30,3,1756.8384012052538
+BASE (hozirgi),Schwefel,30,4,2210.8764942695507
+BASE (hozirgi),Schwefel,30,5,3395.3558354165125
+BASE (hozirgi),Schwefel,30,6,1717.3671109587613
+BASE (hozirgi),Schwefel,30,7,2210.909395747116
+BASE (hozirgi),Schwefel,30,8,2428.0273106928435
+BASE (hozirgi),Schwefel,30,9,2842.561212033079
+BASE (hozirgi),Schwefel,30,10,2131.9094499016046
+BASE (hozirgi),Schwefel,50,0,6712.173403317996
+BASE (hozirgi),Schwefel,50,1,4066.6216144495484
+BASE (hozirgi),Schwefel,50,2,5606.790542639723
+BASE (hozirgi),Schwefel,50,3,5704.9006357089675
+BASE (hozirgi),Schwefel,50,4,5271.297051610847
+BASE (hozirgi),Schwefel,50,5,5448.433501078911
+BASE (hozirgi),Schwefel,50,6,7146.4527420991435
+BASE (hozirgi),Schwefel,50,7,5546.991010848036
+BASE (hozirgi),Schwefel,50,8,6395.907276516849
+BASE (hozirgi),Schwefel,50,9,6474.868902024569
+BASE (hozirgi),Schwefel,50,10,7106.577011599031
+BASE (hozirgi),Schwefel,100,0,13660.455059823482
+BASE (hozirgi),Schwefel,100,1,16503.410886705755
+BASE (hozirgi),Schwefel,100,2,16187.738171421024
+BASE (hozirgi),Schwefel,100,3,8310.547343035047
+BASE (hozirgi),Schwefel,100,4,8963.507874593888
+BASE (hozirgi),Schwefel,100,5,13542.553310993524
+BASE (hozirgi),Schwefel,100,6,16661.302333989126
+BASE (hozirgi),Schwefel,100,7,18736.234211316056
+BASE (hozirgi),Schwefel,100,8,8665.95151596296
+BASE (hozirgi),Schwefel,100,9,17511.889503858045
+BASE (hozirgi),Schwefel,100,10,14865.795111812244
+BASE (hozirgi),NoisyRastrigin,50,0,53.75952257101028
+BASE (hozirgi),NoisyRastrigin,50,1,55.75637964579591
+BASE (hozirgi),NoisyRastrigin,50,2,72.6783295612858
+BASE (hozirgi),NoisyRastrigin,50,3,64.70959368996455
+BASE (hozirgi),NoisyRastrigin,50,4,51.77128073324666
+BASE (hozirgi),NoisyRastrigin,50,5,58.7305391870422
+BASE (hozirgi),NoisyRastrigin,50,6,106.48185945075886
+BASE (hozirgi),NoisyRastrigin,50,7,40.843820581389686
+BASE (hozirgi),NoisyRastrigin,50,8,55.747274362017905
+BASE (hozirgi),NoisyRastrigin,50,9,61.72606244303495
+BASE (hozirgi),NoisyRastrigin,50,10,86.59206824089989
+BASE (hozirgi),NoisyRastrigin,100,0,132.38515676136342
+BASE (hozirgi),NoisyRastrigin,100,1,161.24328941304913
+BASE (hozirgi),NoisyRastrigin,100,2,144.38077621153406
+BASE (hozirgi),NoisyRastrigin,100,3,122.46156148500587
+BASE (hozirgi),NoisyRastrigin,100,4,112.52244465309937
+BASE (hozirgi),NoisyRastrigin,100,5,155.2926286059742
+BASE (hozirgi),NoisyRastrigin,100,6,162.25802772528027
+BASE (hozirgi),NoisyRastrigin,100,7,146.32015230173084
+BASE (hozirgi),NoisyRastrigin,100,8,158.29630660956693
+BASE (hozirgi),NoisyRastrigin,100,9,97.59778180383077
+BASE (hozirgi),NoisyRastrigin,100,10,140.35396390374262
+-CR_FLOOR,Schwefel,30,0,2704.3858775803365
+-CR_FLOOR,Schwefel,30,1,2191.1533508940793
+-CR_FLOOR,Schwefel,30,2,2349.0958772325757
+-CR_FLOOR,Schwefel,30,3,1973.9780705958274
+-CR_FLOOR,Schwefel,30,4,2585.9257885210536
+-CR_FLOOR,Schwefel,30,5,3099.20507314771
+-CR_FLOOR,Schwefel,30,6,1539.698731814684
+-CR_FLOOR,Schwefel,30,7,2013.4711152871696
+-CR_FLOOR,Schwefel,30,8,1598.9287763443263
+-CR_FLOOR,Schwefel,30,9,2112.1751594934176
+-CR_FLOOR,Schwefel,30,10,2783.3613595508887
+-CR_FLOOR,Schwefel,50,0,6435.433222685755
+-CR_FLOOR,Schwefel,50,1,7837.056014717433
+-CR_FLOOR,Schwefel,50,2,4480.9611513482305
+-CR_FLOOR,Schwefel,50,3,6336.743034942341
+-CR_FLOOR,Schwefel,50,4,6060.278733077299
+-CR_FLOOR,Schwefel,50,5,3967.714768199141
+-CR_FLOOR,Schwefel,50,6,5548.553190934523
+-CR_FLOOR,Schwefel,50,7,6534.079361918886
+-CR_FLOOR,Schwefel,50,8,6573.697726223094
+-CR_FLOOR,Schwefel,50,9,6257.6427729795105
+-CR_FLOOR,Schwefel,50,10,6909.260801701246
+-CR_FLOOR,Schwefel,100,0,15121.370989909825
+-CR_FLOOR,Schwefel,100,1,12634.37138988739
+-CR_FLOOR,Schwefel,100,2,15635.588058701036
+-CR_FLOOR,Schwefel,100,3,12714.383613192662
+-CR_FLOOR,Schwefel,100,4,19129.097968771926
+-CR_FLOOR,Schwefel,100,5,16957.76675574233
+-CR_FLOOR,Schwefel,100,6,10462.49491742481
+-CR_FLOOR,Schwefel,100,7,9494.960341606267
+-CR_FLOOR,Schwefel,100,8,9989.965029984389
+-CR_FLOOR,Schwefel,100,9,11451.572208582664
+-CR_FLOOR,Schwefel,100,10,16859.352986386704
+-CR_FLOOR,NoisyRastrigin,50,0,82.61076162717296
+-CR_FLOOR,NoisyRastrigin,50,1,84.6248919806551
+-CR_FLOOR,NoisyRastrigin,50,2,64.6964475610953
+-CR_FLOOR,NoisyRastrigin,50,3,70.66892995800995
+-CR_FLOOR,NoisyRastrigin,50,4,80.62481043303639
+-CR_FLOOR,NoisyRastrigin,50,5,54.74887457553709
+-CR_FLOOR,NoisyRastrigin,50,6,52.75241276631441
+-CR_FLOOR,NoisyRastrigin,50,7,46.7881658740991
+-CR_FLOOR,NoisyRastrigin,50,8,55.74978393682791
+-CR_FLOOR,NoisyRastrigin,50,9,50.76485426889258
+-CR_FLOOR,NoisyRastrigin,50,10,58.73843208779662
+-CR_FLOOR,NoisyRastrigin,100,0,197.53266046001065
+-CR_FLOOR,NoisyRastrigin,100,1,171.21745630953708
+-CR_FLOOR,NoisyRastrigin,100,2,147.31765358683327
+-CR_FLOOR,NoisyRastrigin,100,3,154.29533817719124
+-CR_FLOOR,NoisyRastrigin,100,4,123.47138755542848
+-CR_FLOOR,NoisyRastrigin,100,5,142.35967937768243
+-CR_FLOOR,NoisyRastrigin,100,6,185.15521285560447
+-CR_FLOOR,NoisyRastrigin,100,7,110.50311041054017
+-CR_FLOOR,NoisyRastrigin,100,8,160.26278345051094
+-CR_FLOOR,NoisyRastrigin,100,9,139.35562568745422
+-CR_FLOOR,NoisyRastrigin,100,10,127.41201011639521
+-(1+1)ES tail,Schwefel,30,0,3336.276106818139
+-(1+1)ES tail,Schwefel,30,1,2684.6488777420363
+-(1+1)ES tail,Schwefel,30,2,3948.2434093786887
+-(1+1)ES tail,Schwefel,30,3,1756.8384012052538
+-(1+1)ES tail,Schwefel,30,4,2210.8764942695507
+-(1+1)ES tail,Schwefel,30,5,3395.3558354165125
+-(1+1)ES tail,Schwefel,30,6,1717.3671109587613
+-(1+1)ES tail,Schwefel,30,7,2210.909395747116
+-(1+1)ES tail,Schwefel,30,8,2428.0273106928435
+-(1+1)ES tail,Schwefel,30,9,2842.561212033079
+-(1+1)ES tail,Schwefel,30,10,2131.9094499016046
+-(1+1)ES tail,Schwefel,50,0,6712.173403317996
+-(1+1)ES tail,Schwefel,50,1,4066.6216144495484
+-(1+1)ES tail,Schwefel,50,2,5606.790542639723
+-(1+1)ES tail,Schwefel,50,3,5704.9006357089675
+-(1+1)ES tail,Schwefel,50,4,5271.297051610847
+-(1+1)ES tail,Schwefel,50,5,5448.433501078911
+-(1+1)ES tail,Schwefel,50,6,7146.4527420991435
+-(1+1)ES tail,Schwefel,50,7,5546.991010848036
+-(1+1)ES tail,Schwefel,50,8,6395.907276516849
+-(1+1)ES tail,Schwefel,50,9,6474.868902024569
+-(1+1)ES tail,Schwefel,50,10,7106.577011599031
+-(1+1)ES tail,Schwefel,100,0,13660.455059823482
+-(1+1)ES tail,Schwefel,100,1,16503.410886705755
+-(1+1)ES tail,Schwefel,100,2,16187.738171421024
+-(1+1)ES tail,Schwefel,100,3,8310.547343035047
+-(1+1)ES tail,Schwefel,100,4,8963.507874593888
+-(1+1)ES tail,Schwefel,100,5,13542.553310993524
+-(1+1)ES tail,Schwefel,100,6,16661.302333989126
+-(1+1)ES tail,Schwefel,100,7,18736.234211316056
+-(1+1)ES tail,Schwefel,100,8,8665.95151596296
+-(1+1)ES tail,Schwefel,100,9,17511.889503858045
+-(1+1)ES tail,Schwefel,100,10,14865.795111812244
+-(1+1)ES tail,NoisyRastrigin,50,0,53.754324639561275
+-(1+1)ES tail,NoisyRastrigin,50,1,55.75659668174269
+-(1+1)ES tail,NoisyRastrigin,50,2,72.67772603958566
+-(1+1)ES tail,NoisyRastrigin,50,3,64.69850860410179
+-(1+1)ES tail,NoisyRastrigin,50,4,51.76820379355944
+-(1+1)ES tail,NoisyRastrigin,50,5,58.7305391870422
+-(1+1)ES tail,NoisyRastrigin,50,6,106.48105188423253
+-(1+1)ES tail,NoisyRastrigin,50,7,40.839878742427075
+-(1+1)ES tail,NoisyRastrigin,50,8,55.742831940555064
+-(1+1)ES tail,NoisyRastrigin,50,9,61.724226923068144
+-(1+1)ES tail,NoisyRastrigin,50,10,86.58683391269678
+-(1+1)ES tail,NoisyRastrigin,100,0,132.3821364597983
+-(1+1)ES tail,NoisyRastrigin,100,1,161.23903997267584
+-(1+1)ES tail,NoisyRastrigin,100,2,144.3765167334339
+-(1+1)ES tail,NoisyRastrigin,100,3,122.45890107889653
+-(1+1)ES tail,NoisyRastrigin,100,4,112.51162844715554
+-(1+1)ES tail,NoisyRastrigin,100,5,155.28428012404112
+-(1+1)ES tail,NoisyRastrigin,100,6,162.25331373307873
+-(1+1)ES tail,NoisyRastrigin,100,7,146.317238022795
+-(1+1)ES tail,NoisyRastrigin,100,8,158.28427494905935
+-(1+1)ES tail,NoisyRastrigin,100,9,97.59220613014878
+-(1+1)ES tail,NoisyRastrigin,100,10,140.34979390126594
+-eigen crossover,Schwefel,30,0,1934.5040709192235
+-eigen crossover,Schwefel,30,1,1539.698731814684
+-eigen crossover,Schwefel,30,2,2368.8190206080453
+-eigen crossover,Schwefel,30,3,2052.9424055336603
+-eigen crossover,Schwefel,30,4,1677.8931112821556
+-eigen crossover,Schwefel,30,5,1776.5917366281792
+-eigen crossover,Schwefel,30,6,2724.120167988527
+-eigen crossover,Schwefel,30,7,1756.8574462199886
+-eigen crossover,Schwefel,30,8,2270.2313187914697
+-eigen crossover,Schwefel,30,9,1539.698731814684
+-eigen crossover,Schwefel,30,10,1895.0683915804093
+-eigen crossover,Schwefel,50,0,3079.3973363536934
+-eigen crossover,Schwefel,50,1,3651.8955184772785
+-eigen crossover,Schwefel,50,2,4619.2803108079825
+-eigen crossover,Schwefel,50,3,4165.128584784128
+-eigen crossover,Schwefel,50,4,4520.578976031848
+-eigen crossover,Schwefel,50,5,4323.563108776227
+-eigen crossover,Schwefel,50,6,6040.603419706258
+-eigen crossover,Schwefel,50,7,4895.61983268075
+-eigen crossover,Schwefel,50,8,4184.887339067278
+-eigen crossover,Schwefel,50,9,5132.465007489816
+-eigen crossover,Schwefel,50,10,3671.6844648078877
+-eigen crossover,Schwefel,100,0,10522.211540747943
+-eigen crossover,Schwefel,100,1,11903.49550950377
+-eigen crossover,Schwefel,100,2,16266.381750240405
+-eigen crossover,Schwefel,100,3,15004.007753450805
+-eigen crossover,Schwefel,100,4,7461.67890737066
+-eigen crossover,Schwefel,100,5,11569.061333581038
+-eigen crossover,Schwefel,100,6,15931.628969504414
+-eigen crossover,Schwefel,100,7,8626.504689591435
+-eigen crossover,Schwefel,100,8,8132.924084465281
+-eigen crossover,Schwefel,100,9,7759.311118243961
+-eigen crossover,Schwefel,100,10,12713.279457218337
+-eigen crossover,NoisyRastrigin,50,0,46.79311466697178
+-eigen crossover,NoisyRastrigin,50,1,53.75578723273579
+-eigen crossover,NoisyRastrigin,50,2,46.79132563273941
+-eigen crossover,NoisyRastrigin,50,3,49.79784713033139
+-eigen crossover,NoisyRastrigin,50,4,72.6518321494865
+-eigen crossover,NoisyRastrigin,50,5,60.723687551654635
+-eigen crossover,NoisyRastrigin,50,6,60.73072378125241
+-eigen crossover,NoisyRastrigin,50,7,44.79295970193205
+-eigen crossover,NoisyRastrigin,50,8,33.86157715596705
+-eigen crossover,NoisyRastrigin,50,9,61.72910391179163
+-eigen crossover,NoisyRastrigin,50,10,57.738384470789505
+-eigen crossover,NoisyRastrigin,100,0,120.48230992685286
+-eigen crossover,NoisyRastrigin,100,1,126.47230965285806
+-eigen crossover,NoisyRastrigin,100,2,101.64927708528555
+-eigen crossover,NoisyRastrigin,100,3,111.49909001364497
+-eigen crossover,NoisyRastrigin,100,4,107.58510912000355
+-eigen crossover,NoisyRastrigin,100,5,102.54282459371605
+-eigen crossover,NoisyRastrigin,100,6,122.46426656991511
+-eigen crossover,NoisyRastrigin,100,7,140.3601991827803
+-eigen crossover,NoisyRastrigin,100,8,128.43533372779052
+-eigen crossover,NoisyRastrigin,100,9,112.6352368257784
+-eigen crossover,NoisyRastrigin,100,10,136.3837699467984
+ops=uniform (AOS yo'q),Schwefel,30,0,1914.8834134705921
+ops=uniform (AOS yo'q),Schwefel,30,1,2270.1176858319104
+ops=uniform (AOS yo'q),Schwefel,30,2,1598.9287763443244
+ops=uniform (AOS yo'q),Schwefel,30,3,1579.1917765060207
+ops=uniform (AOS yo'q),Schwefel,30,4,1756.8384012052575
+ops=uniform (AOS yo'q),Schwefel,30,5,1934.528534794179
+ops=uniform (AOS yo'q),Schwefel,30,6,2270.0820749242357
+ops=uniform (AOS yo'q),Schwefel,30,7,3632.1884561351035
+ops=uniform (AOS yo'q),Schwefel,30,8,1283.085062747503
+ops=uniform (AOS yo'q),Schwefel,30,9,1756.8384012052575
+ops=uniform (AOS yo'q),Schwefel,30,10,2112.175159493416
+ops=uniform (AOS yo'q),Schwefel,50,0,7640.07575836949
+ops=uniform (AOS yo'q),Schwefel,50,1,4994.322574514637
+ops=uniform (AOS yo'q),Schwefel,50,2,6770.975615783089
+ops=uniform (AOS yo'q),Schwefel,50,3,4520.498244549857
+ops=uniform (AOS yo'q),Schwefel,50,4,5764.312825583411
+ops=uniform (AOS yo'q),Schwefel,50,5,4046.770981651687
+ops=uniform (AOS yo'q),Schwefel,50,6,3513.6984295796938
+ops=uniform (AOS yo'q),Schwefel,50,7,5883.138502115089
+ops=uniform (AOS yo'q),Schwefel,50,8,5606.404812407101
+ops=uniform (AOS yo'q),Schwefel,50,9,6159.041754320697
+ops=uniform (AOS yo'q),Schwefel,50,10,5053.459333471808
+ops=uniform (AOS yo'q),Schwefel,100,0,6612.832765771716
+ops=uniform (AOS yo'q),Schwefel,100,1,15970.314968504303
+ops=uniform (AOS yo'q),Schwefel,100,2,11370.572175617432
+ops=uniform (AOS yo'q),Schwefel,100,3,16602.01765921853
+ops=uniform (AOS yo'q),Schwefel,100,4,9376.55652015403
+ops=uniform (AOS yo'q),Schwefel,100,5,7797.256911375669
+ops=uniform (AOS yo'q),Schwefel,100,6,18142.15558683614
+ops=uniform (AOS yo'q),Schwefel,100,7,13288.12455813953
+ops=uniform (AOS yo'q),Schwefel,100,8,12811.719841753984
+ops=uniform (AOS yo'q),Schwefel,100,9,12320.973263038133
+ops=uniform (AOS yo'q),Schwefel,100,10,12002.39011097584
+ops=uniform (AOS yo'q),NoisyRastrigin,50,0,59.735923444987336
+ops=uniform (AOS yo'q),NoisyRastrigin,50,1,65.6979261113282
+ops=uniform (AOS yo'q),NoisyRastrigin,50,2,44.803299547854756
+ops=uniform (AOS yo'q),NoisyRastrigin,50,3,57.74422953951249
+ops=uniform (AOS yo'q),NoisyRastrigin,50,4,61.716450165993145
+ops=uniform (AOS yo'q),NoisyRastrigin,50,5,40.835548081845
+ops=uniform (AOS yo'q),NoisyRastrigin,50,6,47.78937952580411
+ops=uniform (AOS yo'q),NoisyRastrigin,50,7,52.77213444542624
+ops=uniform (AOS yo'q),NoisyRastrigin,50,8,55.75423854237011
+ops=uniform (AOS yo'q),NoisyRastrigin,50,9,46.81232586997352
+ops=uniform (AOS yo'q),NoisyRastrigin,50,10,37.83304130875283
+ops=uniform (AOS yo'q),NoisyRastrigin,100,0,168.21496884804188
+ops=uniform (AOS yo'q),NoisyRastrigin,100,1,171.20435407871068
+ops=uniform (AOS yo'q),NoisyRastrigin,100,2,180.15573261775484
+ops=uniform (AOS yo'q),NoisyRastrigin,100,3,160.26431221817245
+ops=uniform (AOS yo'q),NoisyRastrigin,100,4,139.36814077379472
+ops=uniform (AOS yo'q),NoisyRastrigin,100,5,129.4159124443411
+ops=uniform (AOS yo'q),NoisyRastrigin,100,6,142.3257973293486
+ops=uniform (AOS yo'q),NoisyRastrigin,100,7,111.5113115366896
+ops=uniform (AOS yo'q),NoisyRastrigin,100,8,121.4628645993912
+ops=uniform (AOS yo'q),NoisyRastrigin,100,9,137.35751523272856
+ops=uniform (AOS yo'q),NoisyRastrigin,100,10,125.44781498110814
+ops=faqat pbest-DE,Schwefel,30,0,118.44104845486618
+ops=faqat pbest-DE,Schwefel,30,1,118.43871644145656
+ops=faqat pbest-DE,Schwefel,30,2,0.0003818281929852674
+ops=faqat pbest-DE,Schwefel,30,3,118.43871644144201
+ops=faqat pbest-DE,Schwefel,30,4,0.00038203748044907115
+ops=faqat pbest-DE,Schwefel,30,5,0.0003818270215560915
+ops=faqat pbest-DE,Schwefel,30,6,118.43871644152387
+ops=faqat pbest-DE,Schwefel,30,7,0.00038182700336619746
+ops=faqat pbest-DE,Schwefel,30,8,0.00038188677353900857
+ops=faqat pbest-DE,Schwefel,30,9,0.0003824614850600483
+ops=faqat pbest-DE,Schwefel,30,10,0.0003818270306510385
+ops=faqat pbest-DE,Schwefel,50,0,963.5981164288169
+ops=faqat pbest-DE,Schwefel,50,1,221.06314052566086
+ops=faqat pbest-DE,Schwefel,50,2,623.0295409161408
+ops=faqat pbest-DE,Schwefel,50,3,1077.2537791672949
+ops=faqat pbest-DE,Schwefel,50,4,639.9769289433752
+ops=faqat pbest-DE,Schwefel,50,5,745.5415397610777
+ops=faqat pbest-DE,Schwefel,50,6,1012.9977516950603
+ops=faqat pbest-DE,Schwefel,50,7,249.7630047964194
+ops=faqat pbest-DE,Schwefel,50,8,698.795887337692
+ops=faqat pbest-DE,Schwefel,50,9,871.6184817919311
+ops=faqat pbest-DE,Schwefel,50,10,860.7710017471181
+ops=faqat pbest-DE,Schwefel,100,0,6122.199424199527
+ops=faqat pbest-DE,Schwefel,100,1,7528.536925397209
+ops=faqat pbest-DE,Schwefel,100,2,7760.299187424724
+ops=faqat pbest-DE,Schwefel,100,3,7969.576145047118
+ops=faqat pbest-DE,Schwefel,100,4,7252.462356780154
+ops=faqat pbest-DE,Schwefel,100,5,5468.512023582378
+ops=faqat pbest-DE,Schwefel,100,6,6939.566999513794
+ops=faqat pbest-DE,Schwefel,100,7,7931.577533283984
+ops=faqat pbest-DE,Schwefel,100,8,7422.523194975518
+ops=faqat pbest-DE,Schwefel,100,9,7005.771290449666
+ops=faqat pbest-DE,Schwefel,100,10,7616.03039566736
+ops=faqat pbest-DE,NoisyRastrigin,50,0,29.73339906249069
+ops=faqat pbest-DE,NoisyRastrigin,50,1,32.29119637965194
+ops=faqat pbest-DE,NoisyRastrigin,50,2,28.002388653281606
+ops=faqat pbest-DE,NoisyRastrigin,50,3,32.218670686930665
+ops=faqat pbest-DE,NoisyRastrigin,50,4,39.11059746888292
+ops=faqat pbest-DE,NoisyRastrigin,50,5,40.08997355242837
+ops=faqat pbest-DE,NoisyRastrigin,50,6,44.93490444505972
+ops=faqat pbest-DE,NoisyRastrigin,50,7,39.46654222999128
+ops=faqat pbest-DE,NoisyRastrigin,50,8,40.978692765492326
+ops=faqat pbest-DE,NoisyRastrigin,50,9,42.50586159240801
+ops=faqat pbest-DE,NoisyRastrigin,50,10,32.950265872378566
+ops=faqat pbest-DE,NoisyRastrigin,100,0,143.52802990837725
+ops=faqat pbest-DE,NoisyRastrigin,100,1,156.26173244126818
+ops=faqat pbest-DE,NoisyRastrigin,100,2,174.06850664987908
+ops=faqat pbest-DE,NoisyRastrigin,100,3,144.5181455259301
+ops=faqat pbest-DE,NoisyRastrigin,100,4,122.51366668284706
+ops=faqat pbest-DE,NoisyRastrigin,100,5,164.50959799025878
+ops=faqat pbest-DE,NoisyRastrigin,100,6,120.00283408495183
+ops=faqat pbest-DE,NoisyRastrigin,100,7,178.3407864229474
+ops=faqat pbest-DE,NoisyRastrigin,100,8,165.61336407258148
+ops=faqat pbest-DE,NoisyRastrigin,100,9,146.50644888196194
+ops=faqat pbest-DE,NoisyRastrigin,100,10,145.0139801053491
+pop 18*D (L-SHADE),Schwefel,30,0,1539.6987318146876
+pop 18*D (L-SHADE),Schwefel,30,1,1717.367110958763
+pop 18*D (L-SHADE),Schwefel,30,2,1756.8384012052575
+pop 18*D (L-SHADE),Schwefel,30,3,1717.367110958765
+pop 18*D (L-SHADE),Schwefel,30,4,2250.3477845160432
+pop 18*D (L-SHADE),Schwefel,30,5,1717.367110958765
+pop 18*D (L-SHADE),Schwefel,30,6,1717.3671109587667
+pop 18*D (L-SHADE),Schwefel,30,7,1539.698731814684
+pop 18*D (L-SHADE),Schwefel,30,8,1539.698731814684
+pop 18*D (L-SHADE),Schwefel,30,9,1539.698731814684
+pop 18*D (L-SHADE),Schwefel,30,10,1756.8384012052575
+pop 18*D (L-SHADE),Schwefel,50,0,5981.386692018888
+pop 18*D (L-SHADE),Schwefel,50,1,8034.4932231133735
+pop 18*D (L-SHADE),Schwefel,50,2,3612.454420278289
+pop 18*D (L-SHADE),Schwefel,50,3,4816.76263977825
+pop 18*D (L-SHADE),Schwefel,50,4,4856.281760029193
+pop 18*D (L-SHADE),Schwefel,50,5,5922.178401934085
+pop 18*D (L-SHADE),Schwefel,50,6,5014.032091735629
+pop 18*D (L-SHADE),Schwefel,50,7,7639.7452236799145
+pop 18*D (L-SHADE),Schwefel,50,8,5823.544481797693
+pop 18*D (L-SHADE),Schwefel,50,9,5369.502067618665
+pop 18*D (L-SHADE),Schwefel,50,10,4619.16667784882
+pop 18*D (L-SHADE),Schwefel,100,0,12695.213127093983
+pop 18*D (L-SHADE),Schwefel,100,1,6652.304056018729
+pop 18*D (L-SHADE),Schwefel,100,2,13149.242912859401
+pop 18*D (L-SHADE),Schwefel,100,3,10028.25637810403
+pop 18*D (L-SHADE),Schwefel,100,4,13561.836403208748
+pop 18*D (L-SHADE),Schwefel,100,5,6691.775346265145
+pop 18*D (L-SHADE),Schwefel,100,6,11331.099813313318
+pop 18*D (L-SHADE),Schwefel,100,7,7698.531112725534
+pop 18*D (L-SHADE),Schwefel,100,8,8685.789390047656
+pop 18*D (L-SHADE),Schwefel,100,9,10839.664192501416
+pop 18*D (L-SHADE),Schwefel,100,10,7224.780483697083
+pop 18*D (L-SHADE),NoisyRastrigin,50,0,40.95541947545736
+pop 18*D (L-SHADE),NoisyRastrigin,50,1,56.78614163128614
+pop 18*D (L-SHADE),NoisyRastrigin,50,2,69.69048435497044
+pop 18*D (L-SHADE),NoisyRastrigin,50,3,60.753993296812375
+pop 18*D (L-SHADE),NoisyRastrigin,50,4,42.84947068977992
+pop 18*D (L-SHADE),NoisyRastrigin,50,5,57.81462213745397
+pop 18*D (L-SHADE),NoisyRastrigin,50,6,52.854588985233065
+pop 18*D (L-SHADE),NoisyRastrigin,50,7,48.83134137683578
+pop 18*D (L-SHADE),NoisyRastrigin,50,8,61.78756777873287
+pop 18*D (L-SHADE),NoisyRastrigin,50,9,66.7479494472908
+pop 18*D (L-SHADE),NoisyRastrigin,50,10,50.818790525645355
+pop 18*D (L-SHADE),NoisyRastrigin,100,0,133.619903026224
+pop 18*D (L-SHADE),NoisyRastrigin,100,1,138.49568973668573
+pop 18*D (L-SHADE),NoisyRastrigin,100,2,112.3066677085381
+pop 18*D (L-SHADE),NoisyRastrigin,100,3,121.66113921900617
+pop 18*D (L-SHADE),NoisyRastrigin,100,4,135.62188188848765
+pop 18*D (L-SHADE),NoisyRastrigin,100,5,145.5640585717627
+pop 18*D (L-SHADE),NoisyRastrigin,100,6,120.73286939949462
+pop 18*D (L-SHADE),NoisyRastrigin,100,7,119.9010313320188
+pop 18*D (L-SHADE),NoisyRastrigin,100,8,112.70903199498223
+pop 18*D (L-SHADE),NoisyRastrigin,100,9,120.84620576751075
+pop 18*D (L-SHADE),NoisyRastrigin,100,10,135.66013611807344
+N_min=20,Schwefel,30,0,3730.9199829586923
+N_min=20,Schwefel,30,1,2645.188734528261
+N_min=20,Schwefel,30,2,1717.367110958765
+N_min=20,Schwefel,30,3,2052.9780164413387
+N_min=20,Schwefel,30,4,2033.2081151254697
+N_min=20,Schwefel,30,5,2625.418833212394
+N_min=20,Schwefel,30,6,2625.46559115279
+N_min=20,Schwefel,30,7,3454.5529784685896
+N_min=20,Schwefel,30,8,2210.8764942695507
+N_min=20,Schwefel,30,9,1895.0354901028404
+N_min=20,Schwefel,30,10,1717.367110958763
+N_min=20,Schwefel,50,0,3791.5990594749055
+N_min=20,Schwefel,50,1,5665.954784214235
+N_min=20,Schwefel,50,2,8212.28909167982
+N_min=20,Schwefel,50,3,6790.986639480907
+N_min=20,Schwefel,50,4,3355.767050273913
+N_min=20,Schwefel,50,5,6139.54587686434
+N_min=20,Schwefel,50,6,8014.723321797483
+N_min=20,Schwefel,50,7,6692.208354716919
+N_min=20,Schwefel,50,8,6652.644113891683
+N_min=20,Schwefel,50,9,5330.446364658499
+N_min=20,Schwefel,50,10,6495.195736512005
+N_min=20,Schwefel,100,0,6831.489494674461
+N_min=20,Schwefel,100,1,10366.520236715332
+N_min=20,Schwefel,100,2,7816.991201783858
+N_min=20,Schwefel,100,3,12279.18765696061
+N_min=20,Schwefel,100,4,17945.657503573322
+N_min=20,Schwefel,100,5,13661.217813781586
+N_min=20,Schwefel,100,6,9279.383391922769
+N_min=20,Schwefel,100,7,10442.630428164113
+N_min=20,Schwefel,100,8,14232.979317506637
+N_min=20,Schwefel,100,9,13424.825244224303
+N_min=20,Schwefel,100,10,9003.228724824934
+N_min=20,NoisyRastrigin,50,0,72.64806258878882
+N_min=20,NoisyRastrigin,50,1,40.81251430151198
+N_min=20,NoisyRastrigin,50,2,65.69782978536976
+N_min=20,NoisyRastrigin,50,3,75.6579011415456
+N_min=20,NoisyRastrigin,50,4,49.777594356927295
+N_min=20,NoisyRastrigin,50,5,73.673355356116
+N_min=20,NoisyRastrigin,50,6,65.69128783993773
+N_min=20,NoisyRastrigin,50,7,48.78406889292635
+N_min=20,NoisyRastrigin,50,8,74.65246239634041
+N_min=20,NoisyRastrigin,50,9,52.76093172112269
+N_min=20,NoisyRastrigin,50,10,54.7678332457295
+N_min=20,NoisyRastrigin,100,0,165.2421572821858
+N_min=20,NoisyRastrigin,100,1,157.2795524404077
+N_min=20,NoisyRastrigin,100,2,148.3121793305589
+N_min=20,NoisyRastrigin,100,3,109.52878141575047
+N_min=20,NoisyRastrigin,100,4,181.14848889298173
+N_min=20,NoisyRastrigin,100,5,126.41141560370438
+N_min=20,NoisyRastrigin,100,6,183.1296284670626
+N_min=20,NoisyRastrigin,100,7,163.23997021617805
+N_min=20,NoisyRastrigin,100,8,136.37968452090684
+N_min=20,NoisyRastrigin,100,9,104.55663450676252
+N_min=20,NoisyRastrigin,100,10,149.33234796972587
+18*D + N_min=20 - CRfloor,Schwefel,30,0,1973.9780705958347
+18*D + N_min=20 - CRfloor,Schwefel,30,1,1638.4000665908225
+18*D + N_min=20 - CRfloor,Schwefel,30,2,1539.698731814684
+18*D + N_min=20 - CRfloor,Schwefel,30,3,1756.8384012052575
+18*D + N_min=20 - CRfloor,Schwefel,30,4,1638.4000665908225
+18*D + N_min=20 - CRfloor,Schwefel,30,5,1539.698731814684
+18*D + N_min=20 - CRfloor,Schwefel,30,6,1816.0684457349034
+18*D + N_min=20 - CRfloor,Schwefel,30,7,1875.2984902645676
+18*D + N_min=20 - CRfloor,Schwefel,30,8,2467.4874539066204
+18*D + N_min=20 - CRfloor,Schwefel,30,9,1598.928776344328
+18*D + N_min=20 - CRfloor,Schwefel,30,10,1717.367110958774
+18*D + N_min=20 - CRfloor,Schwefel,50,0,4323.263863879583
+18*D + N_min=20 - CRfloor,Schwefel,50,1,4638.98440916877
+18*D + N_min=20 - CRfloor,Schwefel,50,2,4066.5599279823073
+18*D + N_min=20 - CRfloor,Schwefel,50,3,4204.610482442775
+18*D + N_min=20 - CRfloor,Schwefel,50,4,5882.601916330641
+18*D + N_min=20 - CRfloor,Schwefel,50,5,3691.3450542789724
+18*D + N_min=20 - CRfloor,Schwefel,50,6,4678.465234763342
+18*D + N_min=20 - CRfloor,Schwefel,50,7,4934.974780537625
+18*D + N_min=20 - CRfloor,Schwefel,50,8,5586.462301094669
+18*D + N_min=20 - CRfloor,Schwefel,50,9,6810.690737841696
+18*D + N_min=20 - CRfloor,Schwefel,50,10,4520.637953069043
+18*D + N_min=20 - CRfloor,Schwefel,100,0,9988.664628979772
+18*D + N_min=20 - CRfloor,Schwefel,100,1,11236.010101771662
+18*D + N_min=20 - CRfloor,Schwefel,100,2,7126.054685046474
+18*D + N_min=20 - CRfloor,Schwefel,100,3,14292.502970531288
+18*D + N_min=20 - CRfloor,Schwefel,100,4,10719.230117433824
+18*D + N_min=20 - CRfloor,Schwefel,100,5,6711.5341005487935
+18*D + N_min=20 - CRfloor,Schwefel,100,6,12219.450686250628
+18*D + N_min=20 - CRfloor,Schwefel,100,7,10462.207037109925
+18*D + N_min=20 - CRfloor,Schwefel,100,8,14114.766079010238
+18*D + N_min=20 - CRfloor,Schwefel,100,9,7284.102406741433
+18*D + N_min=20 - CRfloor,Schwefel,100,10,9534.499046493082
+18*D + N_min=20 - CRfloor,NoisyRastrigin,50,0,43.88503038910259
+18*D + N_min=20 - CRfloor,NoisyRastrigin,50,1,45.832278011967844
+18*D + N_min=20 - CRfloor,NoisyRastrigin,50,2,64.85671173864704
+18*D + N_min=20 - CRfloor,NoisyRastrigin,50,3,53.803765956526455
+18*D + N_min=20 - CRfloor,NoisyRastrigin,50,4,51.83320930884088
+18*D + N_min=20 - CRfloor,NoisyRastrigin,50,5,30.022604133712484
+18*D + N_min=20 - CRfloor,NoisyRastrigin,50,6,65.7717783215472
+18*D + N_min=20 - CRfloor,NoisyRastrigin,50,7,46.919861050144455
+18*D + N_min=20 - CRfloor,NoisyRastrigin,50,8,62.92234834840055
+18*D + N_min=20 - CRfloor,NoisyRastrigin,50,9,34.97598519869821
+18*D + N_min=20 - CRfloor,NoisyRastrigin,50,10,56.76237473983916
+18*D + N_min=20 - CRfloor,NoisyRastrigin,100,0,101.05235313720243
+18*D + N_min=20 - CRfloor,NoisyRastrigin,100,1,146.686570135618
+18*D + N_min=20 - CRfloor,NoisyRastrigin,100,2,90.41696437788694
+18*D + N_min=20 - CRfloor,NoisyRastrigin,100,3,138.55744680944636
+18*D + N_min=20 - CRfloor,NoisyRastrigin,100,4,122.85257773841714
+18*D + N_min=20 - CRfloor,NoisyRastrigin,100,5,139.74050981921724
+18*D + N_min=20 - CRfloor,NoisyRastrigin,100,6,133.92321483482357
+18*D + N_min=20 - CRfloor,NoisyRastrigin,100,7,154.64736531188146
+18*D + N_min=20 - CRfloor,NoisyRastrigin,100,8,133.77587468522586
+18*D + N_min=20 - CRfloor,NoisyRastrigin,100,9,110.08752155649981
+18*D + N_min=20 - CRfloor,NoisyRastrigin,100,10,160.54944795891885
+DE (raqib),Schwefel,30,0,2257.914037062139
+DE (raqib),Schwefel,30,1,2031.1136662842327
+DE (raqib),Schwefel,30,2,2223.454270952421
+DE (raqib),Schwefel,30,3,1661.1711854534515
+DE (raqib),Schwefel,30,4,2740.8329065030266
+DE (raqib),Schwefel,30,5,1138.9934119102854
+DE (raqib),Schwefel,30,6,2142.5098214720347
+DE (raqib),Schwefel,30,7,1664.229468042924
+DE (raqib),Schwefel,30,8,1245.812740684125
+DE (raqib),Schwefel,30,9,2653.138097575971
+DE (raqib),Schwefel,30,10,1545.249830170491
+DE (raqib),Schwefel,50,0,3789.0938163048595
+DE (raqib),Schwefel,50,1,3299.348282885294
+DE (raqib),Schwefel,50,2,4542.299451785289
+DE (raqib),Schwefel,50,3,5916.609582912779
+DE (raqib),Schwefel,50,4,4281.985396644071
+DE (raqib),Schwefel,50,5,3603.486825111133
+DE (raqib),Schwefel,50,6,4869.478353499022
+DE (raqib),Schwefel,50,7,4035.5598346163024
+DE (raqib),Schwefel,50,8,3325.3763626555738
+DE (raqib),Schwefel,50,9,4804.122393529871
+DE (raqib),Schwefel,50,10,5613.240788106466
+DE (raqib),Schwefel,100,0,10703.797991601681
+DE (raqib),Schwefel,100,1,10534.332618754215
+DE (raqib),Schwefel,100,2,9669.143012888824
+DE (raqib),Schwefel,100,3,10677.600632113128
+DE (raqib),Schwefel,100,4,10270.04889295623
+DE (raqib),Schwefel,100,5,11496.07457555766
+DE (raqib),Schwefel,100,6,10971.0732936811
+DE (raqib),Schwefel,100,7,11405.044756029518
+DE (raqib),Schwefel,100,8,13200.049901987051
+DE (raqib),Schwefel,100,9,12551.409408197273
+DE (raqib),Schwefel,100,10,10436.669309231816
+DE (raqib),NoisyRastrigin,50,0,35.75742692347427
+DE (raqib),NoisyRastrigin,50,1,93.77839961257442
+DE (raqib),NoisyRastrigin,50,2,100.49365129119965
+DE (raqib),NoisyRastrigin,50,3,28.3314496254109
+DE (raqib),NoisyRastrigin,50,4,46.2622277013468
+DE (raqib),NoisyRastrigin,50,5,37.481366153329475
+DE (raqib),NoisyRastrigin,50,6,21.40904725250666
+DE (raqib),NoisyRastrigin,50,7,23.128464174756942
+DE (raqib),NoisyRastrigin,50,8,29.91978907162121
+DE (raqib),NoisyRastrigin,50,9,33.24499071881584
+DE (raqib),NoisyRastrigin,50,10,35.04285332348122
+DE (raqib),NoisyRastrigin,100,0,103.65531439818525
+DE (raqib),NoisyRastrigin,100,1,114.96266079889389
+DE (raqib),NoisyRastrigin,100,2,83.64523012012086
+DE (raqib),NoisyRastrigin,100,3,75.87118326226705
+DE (raqib),NoisyRastrigin,100,4,93.8116339358511
+DE (raqib),NoisyRastrigin,100,5,158.83128327385222
+DE (raqib),NoisyRastrigin,100,6,123.47100244555558
+DE (raqib),NoisyRastrigin,100,7,148.41044522011046
+DE (raqib),NoisyRastrigin,100,8,132.5141452088196
+DE (raqib),NoisyRastrigin,100,9,109.37200525577165
+DE (raqib),NoisyRastrigin,100,10,90.6938014311576

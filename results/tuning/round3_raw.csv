@@ -1,0 +1,2521 @@
+Alg,Function,Dim,Run,Best
+A: pop6 (2-bosqich g'olibi),Ackley,30,0,1.1102230246251565e-14
+A: pop6 (2-bosqich g'olibi),Ackley,30,1,7.549516567451064e-15
+A: pop6 (2-bosqich g'olibi),Ackley,30,2,1.4654943925052066e-14
+A: pop6 (2-bosqich g'olibi),Ackley,30,3,1.1102230246251565e-14
+A: pop6 (2-bosqich g'olibi),Ackley,30,4,1.1102230246251565e-14
+A: pop6 (2-bosqich g'olibi),Ackley,30,5,7.549516567451064e-15
+A: pop6 (2-bosqich g'olibi),Ackley,30,6,7.549516567451064e-15
+A: pop6 (2-bosqich g'olibi),Ackley,30,7,7.549516567451064e-15
+A: pop6 (2-bosqich g'olibi),Ackley,30,8,7.549516567451064e-15
+A: pop6 (2-bosqich g'olibi),Ackley,30,9,1.1102230246251565e-14
+A: pop6 (2-bosqich g'olibi),Ackley,30,10,7.549516567451064e-15
+A: pop6 (2-bosqich g'olibi),Ackley,30,11,7.549516567451064e-15
+A: pop6 (2-bosqich g'olibi),Ackley,30,12,7.549516567451064e-15
+A: pop6 (2-bosqich g'olibi),Ackley,30,13,1.1102230246251565e-14
+A: pop6 (2-bosqich g'olibi),Ackley,30,14,1.1102230246251565e-14
+A: pop6 (2-bosqich g'olibi),BentCigar,30,0,4.67005655890839e-22
+A: pop6 (2-bosqich g'olibi),BentCigar,30,1,3.660314600225495e-22
+A: pop6 (2-bosqich g'olibi),BentCigar,30,2,7.573064690121713e-23
+A: pop6 (2-bosqich g'olibi),BentCigar,30,3,2.5559093329160782e-22
+A: pop6 (2-bosqich g'olibi),BentCigar,30,4,1.135959703518257e-22
+A: pop6 (2-bosqich g'olibi),BentCigar,30,5,5.174927538249837e-22
+A: pop6 (2-bosqich g'olibi),BentCigar,30,6,5.174927538249837e-22
+A: pop6 (2-bosqich g'olibi),BentCigar,30,7,5.36425415550288e-23
+A: pop6 (2-bosqich g'olibi),BentCigar,30,8,1.931131495981037e-21
+A: pop6 (2-bosqich g'olibi),BentCigar,30,9,4.0389678347315804e-22
+A: pop6 (2-bosqich g'olibi),BentCigar,30,10,1.2937318845624594e-22
+A: pop6 (2-bosqich g'olibi),BentCigar,30,11,3.534096855390133e-22
+A: pop6 (2-bosqich g'olibi),BentCigar,30,12,2.6505726415425997e-22
+A: pop6 (2-bosqich g'olibi),BentCigar,30,13,1.842779087218058e-21
+A: pop6 (2-bosqich g'olibi),BentCigar,30,14,4.449175505446507e-22
+A: pop6 (2-bosqich g'olibi),Composition,30,0,7.327471962526216e-15
+A: pop6 (2-bosqich g'olibi),Composition,30,1,3.77475828372557e-15
+A: pop6 (2-bosqich g'olibi),Composition,30,2,2.220446049250313e-16
+A: pop6 (2-bosqich g'olibi),Composition,30,3,3.774758283725564e-15
+A: pop6 (2-bosqich g'olibi),Composition,30,4,3.774758283725589e-15
+A: pop6 (2-bosqich g'olibi),Composition,30,5,7.327471962526166e-15
+A: pop6 (2-bosqich g'olibi),Composition,30,6,3.774758283725564e-15
+A: pop6 (2-bosqich g'olibi),Composition,30,7,3.774758283725584e-15
+A: pop6 (2-bosqich g'olibi),Composition,30,8,7.327471962526197e-15
+A: pop6 (2-bosqich g'olibi),Composition,30,9,7.327471962526169e-15
+A: pop6 (2-bosqich g'olibi),Composition,30,10,3.774758283725589e-15
+A: pop6 (2-bosqich g'olibi),Composition,30,11,5.551115123125896e-15
+A: pop6 (2-bosqich g'olibi),Composition,30,12,3.774758283725565e-15
+A: pop6 (2-bosqich g'olibi),Composition,30,13,2.220446049250313e-16
+A: pop6 (2-bosqich g'olibi),Composition,30,14,1.998401444325307e-15
+A: pop6 (2-bosqich g'olibi),DynamicSphere,30,0,0.11379385394526208
+A: pop6 (2-bosqich g'olibi),DynamicSphere,30,1,0.09371221194745315
+A: pop6 (2-bosqich g'olibi),DynamicSphere,30,2,0.11831726466318122
+A: pop6 (2-bosqich g'olibi),DynamicSphere,30,3,0.0761397899578075
+A: pop6 (2-bosqich g'olibi),DynamicSphere,30,4,0.1432574887011757
+A: pop6 (2-bosqich g'olibi),DynamicSphere,30,5,0.0469759163903421
+A: pop6 (2-bosqich g'olibi),DynamicSphere,30,6,0.10071113795916793
+A: pop6 (2-bosqich g'olibi),DynamicSphere,30,7,0.07715839408402836
+A: pop6 (2-bosqich g'olibi),DynamicSphere,30,8,0.12515525299039632
+A: pop6 (2-bosqich g'olibi),DynamicSphere,30,9,0.08754140966433284
+A: pop6 (2-bosqich g'olibi),DynamicSphere,30,10,0.09231955219549011
+A: pop6 (2-bosqich g'olibi),DynamicSphere,30,11,0.08030858666609507
+A: pop6 (2-bosqich g'olibi),DynamicSphere,30,12,0.1541483050067893
+A: pop6 (2-bosqich g'olibi),DynamicSphere,30,13,0.08453487838953067
+A: pop6 (2-bosqich g'olibi),DynamicSphere,30,14,0.0885908359420514
+A: pop6 (2-bosqich g'olibi),Griewank,30,0,0.0
+A: pop6 (2-bosqich g'olibi),Griewank,30,1,0.0
+A: pop6 (2-bosqich g'olibi),Griewank,30,2,0.0
+A: pop6 (2-bosqich g'olibi),Griewank,30,3,0.0
+A: pop6 (2-bosqich g'olibi),Griewank,30,4,0.0
+A: pop6 (2-bosqich g'olibi),Griewank,30,5,0.0
+A: pop6 (2-bosqich g'olibi),Griewank,30,6,0.0
+A: pop6 (2-bosqich g'olibi),Griewank,30,7,0.0
+A: pop6 (2-bosqich g'olibi),Griewank,30,8,0.0
+A: pop6 (2-bosqich g'olibi),Griewank,30,9,0.0
+A: pop6 (2-bosqich g'olibi),Griewank,30,10,0.0
+A: pop6 (2-bosqich g'olibi),Griewank,30,11,0.0
+A: pop6 (2-bosqich g'olibi),Griewank,30,12,0.0
+A: pop6 (2-bosqich g'olibi),Griewank,30,13,0.0
+A: pop6 (2-bosqich g'olibi),Griewank,30,14,0.0
+A: pop6 (2-bosqich g'olibi),Levy,30,0,3.0523835679544635e-30
+A: pop6 (2-bosqich g'olibi),Levy,30,1,2.4547671352441573e-30
+A: pop6 (2-bosqich g'olibi),Levy,30,2,1.7002831521130905e-30
+A: pop6 (2-bosqich g'olibi),Levy,30,3,1.3098332020322824e-30
+A: pop6 (2-bosqich g'olibi),Levy,30,4,2.4034730774029946e-30
+A: pop6 (2-bosqich g'olibi),Levy,30,5,2.8491975878546636e-30
+A: pop6 (2-bosqich g'olibi),Levy,30,6,2.505066067452893e-30
+A: pop6 (2-bosqich g'olibi),Levy,30,7,2.505066067452892e-30
+A: pop6 (2-bosqich g'olibi),Levy,30,8,2.255561657674055e-30
+A: pop6 (2-bosqich g'olibi),Levy,30,9,3.2022852389482526e-30
+A: pop6 (2-bosqich g'olibi),Levy,30,10,1.7082441571724855e-30
+A: pop6 (2-bosqich g'olibi),Levy,30,11,2.106655112312691e-30
+A: pop6 (2-bosqich g'olibi),Levy,30,12,4.347219172160122e-30
+A: pop6 (2-bosqich g'olibi),Levy,30,13,2.305860589882792e-30
+A: pop6 (2-bosqich g'olibi),Levy,30,14,1.3098332020322809e-30
+A: pop6 (2-bosqich g'olibi),NoisyRastrigin,30,0,0.26890227544072687
+A: pop6 (2-bosqich g'olibi),NoisyRastrigin,30,1,0.14605208417779814
+A: pop6 (2-bosqich g'olibi),NoisyRastrigin,30,2,0.1585193366958748
+A: pop6 (2-bosqich g'olibi),NoisyRastrigin,30,3,0.1693858368685781
+A: pop6 (2-bosqich g'olibi),NoisyRastrigin,30,4,0.2064074156860105
+A: pop6 (2-bosqich g'olibi),NoisyRastrigin,30,5,0.22087491440703388
+A: pop6 (2-bosqich g'olibi),NoisyRastrigin,30,6,0.18676052959174072
+A: pop6 (2-bosqich g'olibi),NoisyRastrigin,30,7,0.18637630637122626
+A: pop6 (2-bosqich g'olibi),NoisyRastrigin,30,8,0.17804882959313062
+A: pop6 (2-bosqich g'olibi),NoisyRastrigin,30,9,0.20476563351484778
+A: pop6 (2-bosqich g'olibi),NoisyRastrigin,30,10,0.2942037113028011
+A: pop6 (2-bosqich g'olibi),NoisyRastrigin,30,11,0.2046189465689583
+A: pop6 (2-bosqich g'olibi),NoisyRastrigin,30,12,0.24990112948007948
+A: pop6 (2-bosqich g'olibi),NoisyRastrigin,30,13,0.2555183886410308
+A: pop6 (2-bosqich g'olibi),NoisyRastrigin,30,14,0.18803194608124407
+A: pop6 (2-bosqich g'olibi),NoisySphere,30,0,0.0057636895020821135
+A: pop6 (2-bosqich g'olibi),NoisySphere,30,1,0.010433161171848416
+A: pop6 (2-bosqich g'olibi),NoisySphere,30,2,0.012072877803043187
+A: pop6 (2-bosqich g'olibi),NoisySphere,30,3,0.010598784548178844
+A: pop6 (2-bosqich g'olibi),NoisySphere,30,4,0.014255460626829407
+A: pop6 (2-bosqich g'olibi),NoisySphere,30,5,0.007265536383594243
+A: pop6 (2-bosqich g'olibi),NoisySphere,30,6,0.008309235055948203
+A: pop6 (2-bosqich g'olibi),NoisySphere,30,7,0.01571056663684838
+A: pop6 (2-bosqich g'olibi),NoisySphere,30,8,0.01083636753162585
+A: pop6 (2-bosqich g'olibi),NoisySphere,30,9,0.010016596200930991
+A: pop6 (2-bosqich g'olibi),NoisySphere,30,10,0.009814645745785824
+A: pop6 (2-bosqich g'olibi),NoisySphere,30,11,0.014770985854043045
+A: pop6 (2-bosqich g'olibi),NoisySphere,30,12,0.01192433465396075
+A: pop6 (2-bosqich g'olibi),NoisySphere,30,13,0.01049693165169483
+A: pop6 (2-bosqich g'olibi),NoisySphere,30,14,0.013293220364335414
+A: pop6 (2-bosqich g'olibi),Rosenbrock,30,0,4.425158132426758
+A: pop6 (2-bosqich g'olibi),Rosenbrock,30,1,4.789440404830304
+A: pop6 (2-bosqich g'olibi),Rosenbrock,30,2,2.9781200320019656
+A: pop6 (2-bosqich g'olibi),Rosenbrock,30,3,4.129207117172975
+A: pop6 (2-bosqich g'olibi),Rosenbrock,30,4,3.8396978840915215
+A: pop6 (2-bosqich g'olibi),Rosenbrock,30,5,2.300864981557079
+A: pop6 (2-bosqich g'olibi),Rosenbrock,30,6,1.4962635146092866
+A: pop6 (2-bosqich g'olibi),Rosenbrock,30,7,3.7708119522993484
+A: pop6 (2-bosqich g'olibi),Rosenbrock,30,8,2.97324803174441
+A: pop6 (2-bosqich g'olibi),Rosenbrock,30,9,3.6706115190865223
+A: pop6 (2-bosqich g'olibi),Rosenbrock,30,10,4.461827713123778
+A: pop6 (2-bosqich g'olibi),Rosenbrock,30,11,2.263076344026222
+A: pop6 (2-bosqich g'olibi),Rosenbrock,30,12,2.4434673383607435
+A: pop6 (2-bosqich g'olibi),Rosenbrock,30,13,3.4857935268557165
+A: pop6 (2-bosqich g'olibi),Rosenbrock,30,14,5.399640352259845
+A: pop6 (2-bosqich g'olibi),RotatedElliptic,30,0,140.98704754130816
+A: pop6 (2-bosqich g'olibi),RotatedElliptic,30,1,1744.5967420645425
+A: pop6 (2-bosqich g'olibi),RotatedElliptic,30,2,144.03969022629371
+A: pop6 (2-bosqich g'olibi),RotatedElliptic,30,3,230.5118407850962
+A: pop6 (2-bosqich g'olibi),RotatedElliptic,30,4,718.9525776811035
+A: pop6 (2-bosqich g'olibi),RotatedElliptic,30,5,60.47572776973485
+A: pop6 (2-bosqich g'olibi),RotatedElliptic,30,6,719.6515608447742
+A: pop6 (2-bosqich g'olibi),RotatedElliptic,30,7,13.979177109446393
+A: pop6 (2-bosqich g'olibi),RotatedElliptic,30,8,5.748474731396086
+A: pop6 (2-bosqich g'olibi),RotatedElliptic,30,9,3572.2999452903036
+A: pop6 (2-bosqich g'olibi),RotatedElliptic,30,10,41.22910474639986
+A: pop6 (2-bosqich g'olibi),RotatedElliptic,30,11,144.4493789986168
+A: pop6 (2-bosqich g'olibi),RotatedElliptic,30,12,1147.6261194659962
+A: pop6 (2-bosqich g'olibi),RotatedElliptic,30,13,2294.3513283286006
+A: pop6 (2-bosqich g'olibi),RotatedElliptic,30,14,6.945497192127803
+A: pop6 (2-bosqich g'olibi),Schwefel,30,0,118.43871644142564
+A: pop6 (2-bosqich g'olibi),Schwefel,30,1,236.8770510558661
+A: pop6 (2-bosqich g'olibi),Schwefel,30,2,118.43871644142746
+A: pop6 (2-bosqich g'olibi),Schwefel,30,3,0.00038182698881428223
+A: pop6 (2-bosqich g'olibi),Schwefel,30,4,355.3153856703011
+A: pop6 (2-bosqich g'olibi),Schwefel,30,5,236.87705105586974
+A: pop6 (2-bosqich g'olibi),Schwefel,30,6,118.43871644142746
+A: pop6 (2-bosqich g'olibi),Schwefel,30,7,236.87705105586792
+A: pop6 (2-bosqich g'olibi),Schwefel,30,8,118.43871644142746
+A: pop6 (2-bosqich g'olibi),Schwefel,30,9,236.87705105586247
+A: pop6 (2-bosqich g'olibi),Schwefel,30,10,236.8770510558661
+A: pop6 (2-bosqich g'olibi),Schwefel,30,11,118.43871644142746
+A: pop6 (2-bosqich g'olibi),Schwefel,30,12,118.43871644142746
+A: pop6 (2-bosqich g'olibi),Schwefel,30,13,0.00038182699063327163
+A: pop6 (2-bosqich g'olibi),Schwefel,30,14,0.00038182698881428223
+A: pop6 (2-bosqich g'olibi),Zakharov,30,0,9.342247467801303e-16
+A: pop6 (2-bosqich g'olibi),Zakharov,30,1,3.936696122887161e-15
+A: pop6 (2-bosqich g'olibi),Zakharov,30,2,7.516241567928085e-16
+A: pop6 (2-bosqich g'olibi),Zakharov,30,3,1.1439878912543295e-16
+A: pop6 (2-bosqich g'olibi),Zakharov,30,4,1.5584045100696162e-16
+A: pop6 (2-bosqich g'olibi),Zakharov,30,5,3.413162939478561e-16
+A: pop6 (2-bosqich g'olibi),Zakharov,30,6,1.2200075529719859e-15
+A: pop6 (2-bosqich g'olibi),Zakharov,30,7,1.3010142209267041e-16
+A: pop6 (2-bosqich g'olibi),Zakharov,30,8,2.493569498250022e-16
+A: pop6 (2-bosqich g'olibi),Zakharov,30,9,4.269919402601087e-15
+A: pop6 (2-bosqich g'olibi),Zakharov,30,10,4.6560419575048545e-15
+A: pop6 (2-bosqich g'olibi),Zakharov,30,11,1.6729632539903678e-16
+A: pop6 (2-bosqich g'olibi),Zakharov,30,12,6.222718284726631e-15
+A: pop6 (2-bosqich g'olibi),Zakharov,30,13,9.08863730357144e-16
+A: pop6 (2-bosqich g'olibi),Zakharov,30,14,3.2013582434430993e-15
+B: A + L-SHADE xotira,Ackley,30,0,7.549516567451064e-15
+B: A + L-SHADE xotira,Ackley,30,1,7.549516567451064e-15
+B: A + L-SHADE xotira,Ackley,30,2,7.549516567451064e-15
+B: A + L-SHADE xotira,Ackley,30,3,1.4654943925052066e-14
+B: A + L-SHADE xotira,Ackley,30,4,1.1102230246251565e-14
+B: A + L-SHADE xotira,Ackley,30,5,7.549516567451064e-15
+B: A + L-SHADE xotira,Ackley,30,6,7.549516567451064e-15
+B: A + L-SHADE xotira,Ackley,30,7,7.549516567451064e-15
+B: A + L-SHADE xotira,Ackley,30,8,7.549516567451064e-15
+B: A + L-SHADE xotira,Ackley,30,9,7.549516567451064e-15
+B: A + L-SHADE xotira,Ackley,30,10,7.549516567451064e-15
+B: A + L-SHADE xotira,Ackley,30,11,7.549516567451064e-15
+B: A + L-SHADE xotira,Ackley,30,12,7.549516567451064e-15
+B: A + L-SHADE xotira,Ackley,30,13,7.549516567451064e-15
+B: A + L-SHADE xotira,Ackley,30,14,1.1102230246251565e-14
+B: A + L-SHADE xotira,BentCigar,30,0,6.310887241768094e-23
+B: A + L-SHADE xotira,BentCigar,30,1,1.2621774483536189e-23
+B: A + L-SHADE xotira,BentCigar,30,2,2.0194839173657902e-22
+B: A + L-SHADE xotira,BentCigar,30,3,5.0487097934144756e-23
+B: A + L-SHADE xotira,BentCigar,30,4,3.660314600225495e-22
+B: A + L-SHADE xotira,BentCigar,30,5,1.2621774483536189e-23
+B: A + L-SHADE xotira,BentCigar,30,6,6.310887241768094e-23
+B: A + L-SHADE xotira,BentCigar,30,7,1.0097419586828951e-22
+B: A + L-SHADE xotira,BentCigar,30,8,2.524354896707238e-22
+B: A + L-SHADE xotira,BentCigar,30,9,5.0487097934144756e-23
+B: A + L-SHADE xotira,BentCigar,30,10,2.7767903863779616e-22
+B: A + L-SHADE xotira,BentCigar,30,11,2.524354896707238e-22
+B: A + L-SHADE xotira,BentCigar,30,12,0.0
+B: A + L-SHADE xotira,BentCigar,30,13,1.0097419586828951e-22
+B: A + L-SHADE xotira,BentCigar,30,14,1.0097419586828951e-22
+B: A + L-SHADE xotira,Composition,30,0,1.998401444325288e-15
+B: A + L-SHADE xotira,Composition,30,1,3.774758283725583e-15
+B: A + L-SHADE xotira,Composition,30,2,1.9984014443252834e-15
+B: A + L-SHADE xotira,Composition,30,3,1.998401444325307e-15
+B: A + L-SHADE xotira,Composition,30,4,3.774758283725595e-15
+B: A + L-SHADE xotira,Composition,30,5,1.998401444325288e-15
+B: A + L-SHADE xotira,Composition,30,6,3.774758283725583e-15
+B: A + L-SHADE xotira,Composition,30,7,2.220446049250313e-16
+B: A + L-SHADE xotira,Composition,30,8,2.220446049250313e-16
+B: A + L-SHADE xotira,Composition,30,9,2.220446049250313e-16
+B: A + L-SHADE xotira,Composition,30,10,3.774758283725564e-15
+B: A + L-SHADE xotira,Composition,30,11,7.327471962526281e-15
+B: A + L-SHADE xotira,Composition,30,12,3.774758283725614e-15
+B: A + L-SHADE xotira,Composition,30,13,3.774758283725564e-15
+B: A + L-SHADE xotira,Composition,30,14,1.998401444325307e-15
+B: A + L-SHADE xotira,DynamicSphere,30,0,0.11723879250507727
+B: A + L-SHADE xotira,DynamicSphere,30,1,0.07019333791378551
+B: A + L-SHADE xotira,DynamicSphere,30,2,0.05357265104253015
+B: A + L-SHADE xotira,DynamicSphere,30,3,0.08720845958621926
+B: A + L-SHADE xotira,DynamicSphere,30,4,0.0816496461724202
+B: A + L-SHADE xotira,DynamicSphere,30,5,0.05658507476728881
+B: A + L-SHADE xotira,DynamicSphere,30,6,0.04998178655267968
+B: A + L-SHADE xotira,DynamicSphere,30,7,0.08735735311585936
+B: A + L-SHADE xotira,DynamicSphere,30,8,0.06396520726583285
+B: A + L-SHADE xotira,DynamicSphere,30,9,0.12104471812727513
+B: A + L-SHADE xotira,DynamicSphere,30,10,0.1460750589192202
+B: A + L-SHADE xotira,DynamicSphere,30,11,0.1128766044865675
+B: A + L-SHADE xotira,DynamicSphere,30,12,0.14105054456465066
+B: A + L-SHADE xotira,DynamicSphere,30,13,0.14269436019628304
+B: A + L-SHADE xotira,DynamicSphere,30,14,0.04990602700987477
+B: A + L-SHADE xotira,Griewank,30,0,0.0
+B: A + L-SHADE xotira,Griewank,30,1,0.0
+B: A + L-SHADE xotira,Griewank,30,2,0.0
+B: A + L-SHADE xotira,Griewank,30,3,0.0
+B: A + L-SHADE xotira,Griewank,30,4,0.0
+B: A + L-SHADE xotira,Griewank,30,5,0.0
+B: A + L-SHADE xotira,Griewank,30,6,0.0
+B: A + L-SHADE xotira,Griewank,30,7,0.0
+B: A + L-SHADE xotira,Griewank,30,8,0.0
+B: A + L-SHADE xotira,Griewank,30,9,0.0
+B: A + L-SHADE xotira,Griewank,30,10,0.0
+B: A + L-SHADE xotira,Griewank,30,11,0.0
+B: A + L-SHADE xotira,Griewank,30,12,0.0
+B: A + L-SHADE xotira,Griewank,30,13,0.0
+B: A + L-SHADE xotira,Griewank,30,14,0.0
+B: A + L-SHADE xotira,Levy,30,0,4.269628615078167e-30
+B: A + L-SHADE xotira,Levy,30,1,2.106655112312694e-30
+B: A + L-SHADE xotira,Levy,30,2,1.2102304632472305e-30
+B: A + L-SHADE xotira,Levy,30,3,9.114222468920787e-31
+B: A + L-SHADE xotira,Levy,30,4,1.4997597826618576e-32
+B: A + L-SHADE xotira,Levy,30,5,2.0070523735276424e-30
+B: A + L-SHADE xotira,Levy,30,6,1.4997597826618576e-32
+B: A + L-SHADE xotira,Levy,30,7,8.118195081070268e-31
+B: A + L-SHADE xotira,Levy,30,8,9.114222468920771e-31
+B: A + L-SHADE xotira,Levy,30,9,4.134085529668223e-31
+B: A + L-SHADE xotira,Levy,30,10,1.1106277244621792e-30
+B: A + L-SHADE xotira,Levy,30,11,1.4997597826618576e-32
+B: A + L-SHADE xotira,Levy,30,12,1.899488629683192e-30
+B: A + L-SHADE xotira,Levy,30,13,1.4997597826618576e-32
+B: A + L-SHADE xotira,Levy,30,14,1.2102304632472312e-30
+B: A + L-SHADE xotira,NoisyRastrigin,30,0,0.24767348846061843
+B: A + L-SHADE xotira,NoisyRastrigin,30,1,0.15751005263848405
+B: A + L-SHADE xotira,NoisyRastrigin,30,2,0.21029071113823328
+B: A + L-SHADE xotira,NoisyRastrigin,30,3,0.22750064734086095
+B: A + L-SHADE xotira,NoisyRastrigin,30,4,0.27293467702810403
+B: A + L-SHADE xotira,NoisyRastrigin,30,5,0.21123732970600884
+B: A + L-SHADE xotira,NoisyRastrigin,30,6,0.17600053950654448
+B: A + L-SHADE xotira,NoisyRastrigin,30,7,0.201870312845017
+B: A + L-SHADE xotira,NoisyRastrigin,30,8,0.26702692066688627
+B: A + L-SHADE xotira,NoisyRastrigin,30,9,0.1707387862490375
+B: A + L-SHADE xotira,NoisyRastrigin,30,10,0.1841920855473056
+B: A + L-SHADE xotira,NoisyRastrigin,30,11,0.2608115819404073
+B: A + L-SHADE xotira,NoisyRastrigin,30,12,0.2537558458943572
+B: A + L-SHADE xotira,NoisyRastrigin,30,13,0.17869037080221517
+B: A + L-SHADE xotira,NoisyRastrigin,30,14,0.2018439314375442
+B: A + L-SHADE xotira,NoisySphere,30,0,0.008245858471371707
+B: A + L-SHADE xotira,NoisySphere,30,1,0.011448631379759933
+B: A + L-SHADE xotira,NoisySphere,30,2,0.024808282599301783
+B: A + L-SHADE xotira,NoisySphere,30,3,0.007452589122940386
+B: A + L-SHADE xotira,NoisySphere,30,4,0.009379106131701098
+B: A + L-SHADE xotira,NoisySphere,30,5,0.003770717426478646
+B: A + L-SHADE xotira,NoisySphere,30,6,0.011405006700946935
+B: A + L-SHADE xotira,NoisySphere,30,7,0.007839283793138732
+B: A + L-SHADE xotira,NoisySphere,30,8,0.012163628638333623
+B: A + L-SHADE xotira,NoisySphere,30,9,0.012388518316761795
+B: A + L-SHADE xotira,NoisySphere,30,10,0.009125905897913702
+B: A + L-SHADE xotira,NoisySphere,30,11,0.00751388620306968
+B: A + L-SHADE xotira,NoisySphere,30,12,0.01096231581130683
+B: A + L-SHADE xotira,NoisySphere,30,13,0.009362652561852819
+B: A + L-SHADE xotira,NoisySphere,30,14,0.008204657031661133
+B: A + L-SHADE xotira,Rosenbrock,30,0,2.2037763403079396
+B: A + L-SHADE xotira,Rosenbrock,30,1,2.864173780897204
+B: A + L-SHADE xotira,Rosenbrock,30,2,3.0814678477007034
+B: A + L-SHADE xotira,Rosenbrock,30,3,1.4603115760737344
+B: A + L-SHADE xotira,Rosenbrock,30,4,4.8812959398036195
+B: A + L-SHADE xotira,Rosenbrock,30,5,1.4707169606497428
+B: A + L-SHADE xotira,Rosenbrock,30,6,3.097446985151902
+B: A + L-SHADE xotira,Rosenbrock,30,7,3.4669656378324327
+B: A + L-SHADE xotira,Rosenbrock,30,8,3.5629484745728153
+B: A + L-SHADE xotira,Rosenbrock,30,9,1.8524324636411469
+B: A + L-SHADE xotira,Rosenbrock,30,10,2.191196445938677
+B: A + L-SHADE xotira,Rosenbrock,30,11,0.22382161849579674
+B: A + L-SHADE xotira,Rosenbrock,30,12,0.33212527226214117
+B: A + L-SHADE xotira,Rosenbrock,30,13,2.4982415301729377
+B: A + L-SHADE xotira,Rosenbrock,30,14,1.308219306199772
+B: A + L-SHADE xotira,RotatedElliptic,30,0,3889.042659254174
+B: A + L-SHADE xotira,RotatedElliptic,30,1,509.3642343016382
+B: A + L-SHADE xotira,RotatedElliptic,30,2,2503.2985643462475
+B: A + L-SHADE xotira,RotatedElliptic,30,3,2038.7714900677697
+B: A + L-SHADE xotira,RotatedElliptic,30,4,98.63492262765814
+B: A + L-SHADE xotira,RotatedElliptic,30,5,312.11444695795615
+B: A + L-SHADE xotira,RotatedElliptic,30,6,3600.5859036118886
+B: A + L-SHADE xotira,RotatedElliptic,30,7,880.8329101150772
+B: A + L-SHADE xotira,RotatedElliptic,30,8,2358.4300037182957
+B: A + L-SHADE xotira,RotatedElliptic,30,9,13.211776352600282
+B: A + L-SHADE xotira,RotatedElliptic,30,10,90.17100382350536
+B: A + L-SHADE xotira,RotatedElliptic,30,11,251.04562747379828
+B: A + L-SHADE xotira,RotatedElliptic,30,12,1170.986160852237
+B: A + L-SHADE xotira,RotatedElliptic,30,13,83.84644202610727
+B: A + L-SHADE xotira,RotatedElliptic,30,14,6218.0755537423265
+B: A + L-SHADE xotira,Schwefel,30,0,0.00038182698881428223
+B: A + L-SHADE xotira,Schwefel,30,1,0.00038182698881428223
+B: A + L-SHADE xotira,Schwefel,30,2,0.00038182698881428223
+B: A + L-SHADE xotira,Schwefel,30,3,0.00038182698881428223
+B: A + L-SHADE xotira,Schwefel,30,4,0.00038182698881428223
+B: A + L-SHADE xotira,Schwefel,30,5,0.00038182698881428223
+B: A + L-SHADE xotira,Schwefel,30,6,0.00038182698699529283
+B: A + L-SHADE xotira,Schwefel,30,7,0.00038182698881428223
+B: A + L-SHADE xotira,Schwefel,30,8,0.00038182698881428223
+B: A + L-SHADE xotira,Schwefel,30,9,0.00038182698881428223
+B: A + L-SHADE xotira,Schwefel,30,10,0.00038182698881428223
+B: A + L-SHADE xotira,Schwefel,30,11,0.00038182698881428223
+B: A + L-SHADE xotira,Schwefel,30,12,0.00038182698881428223
+B: A + L-SHADE xotira,Schwefel,30,13,0.00038182698881428223
+B: A + L-SHADE xotira,Schwefel,30,14,0.00038182698881428223
+B: A + L-SHADE xotira,Zakharov,30,0,1.1061657015422454e-16
+B: A + L-SHADE xotira,Zakharov,30,1,2.0637474753402833e-16
+B: A + L-SHADE xotira,Zakharov,30,2,7.466345883609529e-17
+B: A + L-SHADE xotira,Zakharov,30,3,1.39551902863794e-17
+B: A + L-SHADE xotira,Zakharov,30,4,1.6656144461361635e-17
+B: A + L-SHADE xotira,Zakharov,30,5,8.959272005540404e-18
+B: A + L-SHADE xotira,Zakharov,30,6,1.2295592479565457e-17
+B: A + L-SHADE xotira,Zakharov,30,7,2.575059681122852e-16
+B: A + L-SHADE xotira,Zakharov,30,8,7.615571728151101e-16
+B: A + L-SHADE xotira,Zakharov,30,9,2.4266166063319766e-17
+B: A + L-SHADE xotira,Zakharov,30,10,6.435513671386392e-16
+B: A + L-SHADE xotira,Zakharov,30,11,1.2296891241104393e-16
+B: A + L-SHADE xotira,Zakharov,30,12,2.890717820107153e-17
+B: A + L-SHADE xotira,Zakharov,30,13,8.526554408547708e-17
+B: A + L-SHADE xotira,Zakharov,30,14,3.570597889544401e-16
+C: A - jSO F cheklovi,Ackley,30,0,7.549516567451064e-15
+C: A - jSO F cheklovi,Ackley,30,1,7.549516567451064e-15
+C: A - jSO F cheklovi,Ackley,30,2,1.1102230246251565e-14
+C: A - jSO F cheklovi,Ackley,30,3,7.549516567451064e-15
+C: A - jSO F cheklovi,Ackley,30,4,7.549516567451064e-15
+C: A - jSO F cheklovi,Ackley,30,5,7.549516567451064e-15
+C: A - jSO F cheklovi,Ackley,30,6,1.1102230246251565e-14
+C: A - jSO F cheklovi,Ackley,30,7,7.549516567451064e-15
+C: A - jSO F cheklovi,Ackley,30,8,1.1102230246251565e-14
+C: A - jSO F cheklovi,Ackley,30,9,1.1102230246251565e-14
+C: A - jSO F cheklovi,Ackley,30,10,7.549516567451064e-15
+C: A - jSO F cheklovi,Ackley,30,11,7.549516567451064e-15
+C: A - jSO F cheklovi,Ackley,30,12,1.1102230246251565e-14
+C: A - jSO F cheklovi,Ackley,30,13,1.1102230246251565e-14
+C: A - jSO F cheklovi,Ackley,30,14,7.549516567451064e-15
+C: A - jSO F cheklovi,BentCigar,30,0,5.0487097934144756e-23
+C: A - jSO F cheklovi,BentCigar,30,1,1.2621774483536189e-23
+C: A - jSO F cheklovi,BentCigar,30,2,0.0
+C: A - jSO F cheklovi,BentCigar,30,3,1.1313555957310251e-23
+C: A - jSO F cheklovi,BentCigar,30,4,1.2621824970634123e-23
+C: A - jSO F cheklovi,BentCigar,30,5,2.145704817644773e-22
+C: A - jSO F cheklovi,BentCigar,30,6,5.0860678004169365e-23
+C: A - jSO F cheklovi,BentCigar,30,7,0.0
+C: A - jSO F cheklovi,BentCigar,30,8,1.1360153655437294e-22
+C: A - jSO F cheklovi,BentCigar,30,9,4.243744797684356e-22
+C: A - jSO F cheklovi,BentCigar,30,10,3.272951994226971e-22
+C: A - jSO F cheklovi,BentCigar,30,11,6.310887241768094e-23
+C: A - jSO F cheklovi,BentCigar,30,12,0.0
+C: A - jSO F cheklovi,BentCigar,30,13,6.310887241768094e-23
+C: A - jSO F cheklovi,BentCigar,30,14,1.0097419586828951e-22
+C: A - jSO F cheklovi,Composition,30,0,3.774758283725564e-15
+C: A - jSO F cheklovi,Composition,30,1,1.998401444325288e-15
+C: A - jSO F cheklovi,Composition,30,2,2.220446049250313e-16
+C: A - jSO F cheklovi,Composition,30,3,2.220446049250313e-16
+C: A - jSO F cheklovi,Composition,30,4,1.998401444325288e-15
+C: A - jSO F cheklovi,Composition,30,5,2.220446049250313e-16
+C: A - jSO F cheklovi,Composition,30,6,2.220446049250313e-16
+C: A - jSO F cheklovi,Composition,30,7,1.9984014443252944e-15
+C: A - jSO F cheklovi,Composition,30,8,2.220446049250313e-16
+C: A - jSO F cheklovi,Composition,30,9,1.998401444325288e-15
+C: A - jSO F cheklovi,Composition,30,10,2.220446049250313e-16
+C: A - jSO F cheklovi,Composition,30,11,1.998401444325288e-15
+C: A - jSO F cheklovi,Composition,30,12,1.998401444325288e-15
+C: A - jSO F cheklovi,Composition,30,13,2.220446049250313e-16
+C: A - jSO F cheklovi,Composition,30,14,1.998401444325288e-15
+C: A - jSO F cheklovi,DynamicSphere,30,0,0.06962086896964129
+C: A - jSO F cheklovi,DynamicSphere,30,1,0.1112203106253124
+C: A - jSO F cheklovi,DynamicSphere,30,2,0.06633099499394439
+C: A - jSO F cheklovi,DynamicSphere,30,3,0.12514598104158275
+C: A - jSO F cheklovi,DynamicSphere,30,4,0.06103880111310799
+C: A - jSO F cheklovi,DynamicSphere,30,5,0.088344651877667
+C: A - jSO F cheklovi,DynamicSphere,30,6,0.10624200174283464
+C: A - jSO F cheklovi,DynamicSphere,30,7,0.10680950948836951
+C: A - jSO F cheklovi,DynamicSphere,30,8,0.09602582512923051
+C: A - jSO F cheklovi,DynamicSphere,30,9,0.09277670074237707
+C: A - jSO F cheklovi,DynamicSphere,30,10,0.09292613378038021
+C: A - jSO F cheklovi,DynamicSphere,30,11,0.12156605577971748
+C: A - jSO F cheklovi,DynamicSphere,30,12,0.08633323539347414
+C: A - jSO F cheklovi,DynamicSphere,30,13,0.10855960855824993
+C: A - jSO F cheklovi,DynamicSphere,30,14,0.10745598320028293
+C: A - jSO F cheklovi,Griewank,30,0,0.0
+C: A - jSO F cheklovi,Griewank,30,1,0.0
+C: A - jSO F cheklovi,Griewank,30,2,0.0
+C: A - jSO F cheklovi,Griewank,30,3,0.0
+C: A - jSO F cheklovi,Griewank,30,4,0.0
+C: A - jSO F cheklovi,Griewank,30,5,0.0
+C: A - jSO F cheklovi,Griewank,30,6,0.0
+C: A - jSO F cheklovi,Griewank,30,7,0.0
+C: A - jSO F cheklovi,Griewank,30,8,0.0
+C: A - jSO F cheklovi,Griewank,30,9,0.0
+C: A - jSO F cheklovi,Griewank,30,10,0.0
+C: A - jSO F cheklovi,Griewank,30,11,0.0
+C: A - jSO F cheklovi,Griewank,30,12,0.0
+C: A - jSO F cheklovi,Griewank,30,13,0.0
+C: A - jSO F cheklovi,Griewank,30,14,0.0
+C: A - jSO F cheklovi,Levy,30,0,1.4997597826618576e-32
+C: A - jSO F cheklovi,Levy,30,1,1.146003366116696e-31
+C: A - jSO F cheklovi,Levy,30,2,3.6006961940884624e-30
+C: A - jSO F cheklovi,Levy,30,3,1.6579452249637484e-30
+C: A - jSO F cheklovi,Levy,30,4,1.146003366116696e-31
+C: A - jSO F cheklovi,Levy,30,5,1.3098332020322824e-30
+C: A - jSO F cheklovi,Levy,30,6,8.118195081070268e-31
+C: A - jSO F cheklovi,Levy,30,7,1.4997597826618576e-32
+C: A - jSO F cheklovi,Levy,30,8,1.0110249856771297e-30
+C: A - jSO F cheklovi,Levy,30,9,1.4997597826618576e-32
+C: A - jSO F cheklovi,Levy,30,10,1.6086414183874387e-30
+C: A - jSO F cheklovi,Levy,30,11,8.11819508107026e-31
+C: A - jSO F cheklovi,Levy,30,12,1.4997597826618576e-32
+C: A - jSO F cheklovi,Levy,30,13,2.505066067452893e-30
+C: A - jSO F cheklovi,Levy,30,14,3.3018879777333005e-30
+C: A - jSO F cheklovi,NoisyRastrigin,30,0,0.26198639813913616
+C: A - jSO F cheklovi,NoisyRastrigin,30,1,0.19782862221452113
+C: A - jSO F cheklovi,NoisyRastrigin,30,2,0.19305122232130323
+C: A - jSO F cheklovi,NoisyRastrigin,30,3,0.21629515858022152
+C: A - jSO F cheklovi,NoisyRastrigin,30,4,0.26123182941623746
+C: A - jSO F cheklovi,NoisyRastrigin,30,5,0.284117075409144
+C: A - jSO F cheklovi,NoisyRastrigin,30,6,0.20266898083721152
+C: A - jSO F cheklovi,NoisyRastrigin,30,7,0.148669218157492
+C: A - jSO F cheklovi,NoisyRastrigin,30,8,0.13714161158388727
+C: A - jSO F cheklovi,NoisyRastrigin,30,9,0.17670983703051135
+C: A - jSO F cheklovi,NoisyRastrigin,30,10,0.22662754816755637
+C: A - jSO F cheklovi,NoisyRastrigin,30,11,0.2689979549527415
+C: A - jSO F cheklovi,NoisyRastrigin,30,12,0.16670624702408077
+C: A - jSO F cheklovi,NoisyRastrigin,30,13,0.18604939595503467
+C: A - jSO F cheklovi,NoisyRastrigin,30,14,0.18514496872776753
+C: A - jSO F cheklovi,NoisySphere,30,0,0.010452917364308232
+C: A - jSO F cheklovi,NoisySphere,30,1,0.0077553783181317755
+C: A - jSO F cheklovi,NoisySphere,30,2,0.015061044605724664
+C: A - jSO F cheklovi,NoisySphere,30,3,0.007711757695965857
+C: A - jSO F cheklovi,NoisySphere,30,4,0.009321355073340967
+C: A - jSO F cheklovi,NoisySphere,30,5,0.00997764072219237
+C: A - jSO F cheklovi,NoisySphere,30,6,0.015592186088839945
+C: A - jSO F cheklovi,NoisySphere,30,7,0.005928808865150159
+C: A - jSO F cheklovi,NoisySphere,30,8,0.01262949364058048
+C: A - jSO F cheklovi,NoisySphere,30,9,0.011982057615255776
+C: A - jSO F cheklovi,NoisySphere,30,10,0.014706735928460295
+C: A - jSO F cheklovi,NoisySphere,30,11,0.01718231591082395
+C: A - jSO F cheklovi,NoisySphere,30,12,0.009329971815848565
+C: A - jSO F cheklovi,NoisySphere,30,13,0.008404395881888571
+C: A - jSO F cheklovi,NoisySphere,30,14,0.017657967043203816
+C: A - jSO F cheklovi,Rosenbrock,30,0,1.6657474449050536
+C: A - jSO F cheklovi,Rosenbrock,30,1,4.759405674251732
+C: A - jSO F cheklovi,Rosenbrock,30,2,3.4829303396276496
+C: A - jSO F cheklovi,Rosenbrock,30,3,1.1958796689123279
+C: A - jSO F cheklovi,Rosenbrock,30,4,5.896563252633587
+C: A - jSO F cheklovi,Rosenbrock,30,5,1.099647551269923
+C: A - jSO F cheklovi,Rosenbrock,30,6,3.044866254265845
+C: A - jSO F cheklovi,Rosenbrock,30,7,2.882352312570269
+C: A - jSO F cheklovi,Rosenbrock,30,8,3.6160237085664653
+C: A - jSO F cheklovi,Rosenbrock,30,9,5.670085111218375
+C: A - jSO F cheklovi,Rosenbrock,30,10,1.1775398510171786
+C: A - jSO F cheklovi,Rosenbrock,30,11,3.792440028654806
+C: A - jSO F cheklovi,Rosenbrock,30,12,3.0727273878803105
+C: A - jSO F cheklovi,Rosenbrock,30,13,2.031343623097486
+C: A - jSO F cheklovi,Rosenbrock,30,14,0.8538079127910678
+C: A - jSO F cheklovi,RotatedElliptic,30,0,11861.17082969421
+C: A - jSO F cheklovi,RotatedElliptic,30,1,7436.36276945477
+C: A - jSO F cheklovi,RotatedElliptic,30,2,469.35720997365075
+C: A - jSO F cheklovi,RotatedElliptic,30,3,6193.530116916652
+C: A - jSO F cheklovi,RotatedElliptic,30,4,5938.45577055844
+C: A - jSO F cheklovi,RotatedElliptic,30,5,7993.975571993261
+C: A - jSO F cheklovi,RotatedElliptic,30,6,1935.4743099056877
+C: A - jSO F cheklovi,RotatedElliptic,30,7,14643.622077001586
+C: A - jSO F cheklovi,RotatedElliptic,30,8,1004.1879008908015
+C: A - jSO F cheklovi,RotatedElliptic,30,9,518.9347569818369
+C: A - jSO F cheklovi,RotatedElliptic,30,10,569.1321367715509
+C: A - jSO F cheklovi,RotatedElliptic,30,11,15782.243182668964
+C: A - jSO F cheklovi,RotatedElliptic,30,12,8467.883936327418
+C: A - jSO F cheklovi,RotatedElliptic,30,13,6241.036469877822
+C: A - jSO F cheklovi,RotatedElliptic,30,14,3185.656056681847
+C: A - jSO F cheklovi,Schwefel,30,0,0.00038182698881428223
+C: A - jSO F cheklovi,Schwefel,30,1,0.00038182698881428223
+C: A - jSO F cheklovi,Schwefel,30,2,0.00038182698881428223
+C: A - jSO F cheklovi,Schwefel,30,3,0.00038182698881428223
+C: A - jSO F cheklovi,Schwefel,30,4,0.00038182698881428223
+C: A - jSO F cheklovi,Schwefel,30,5,0.00038182698881428223
+C: A - jSO F cheklovi,Schwefel,30,6,118.43871644142928
+C: A - jSO F cheklovi,Schwefel,30,7,0.00038182698881428223
+C: A - jSO F cheklovi,Schwefel,30,8,0.00038182698881428223
+C: A - jSO F cheklovi,Schwefel,30,9,0.00038182698881428223
+C: A - jSO F cheklovi,Schwefel,30,10,0.00038182698881428223
+C: A - jSO F cheklovi,Schwefel,30,11,0.00038182698881428223
+C: A - jSO F cheklovi,Schwefel,30,12,0.00038182698881428223
+C: A - jSO F cheklovi,Schwefel,30,13,0.00038182698881428223
+C: A - jSO F cheklovi,Schwefel,30,14,0.00038182698881428223
+C: A - jSO F cheklovi,Zakharov,30,0,1.3701169420406478e-14
+C: A - jSO F cheklovi,Zakharov,30,1,1.2537734616210353e-14
+C: A - jSO F cheklovi,Zakharov,30,2,3.3594600153550454e-15
+C: A - jSO F cheklovi,Zakharov,30,3,3.723523088311242e-15
+C: A - jSO F cheklovi,Zakharov,30,4,4.550105822887288e-16
+C: A - jSO F cheklovi,Zakharov,30,5,3.833645604018777e-16
+C: A - jSO F cheklovi,Zakharov,30,6,7.6600923183400895e-16
+C: A - jSO F cheklovi,Zakharov,30,7,1.0342388261888302e-16
+C: A - jSO F cheklovi,Zakharov,30,8,9.443841519041e-16
+C: A - jSO F cheklovi,Zakharov,30,9,3.1036009183542196e-15
+C: A - jSO F cheklovi,Zakharov,30,10,5.272045436257755e-15
+C: A - jSO F cheklovi,Zakharov,30,11,5.189382344920628e-18
+C: A - jSO F cheklovi,Zakharov,30,12,4.9443427221520414e-15
+C: A - jSO F cheklovi,Zakharov,30,13,2.650078875718491e-15
+C: A - jSO F cheklovi,Zakharov,30,14,2.2855776448492907e-16
+D: B + C,Ackley,30,0,7.549516567451064e-15
+D: B + C,Ackley,30,1,7.549516567451064e-15
+D: B + C,Ackley,30,2,1.1102230246251565e-14
+D: B + C,Ackley,30,3,1.1102230246251565e-14
+D: B + C,Ackley,30,4,7.549516567451064e-15
+D: B + C,Ackley,30,5,1.1102230246251565e-14
+D: B + C,Ackley,30,6,7.549516567451064e-15
+D: B + C,Ackley,30,7,7.549516567451064e-15
+D: B + C,Ackley,30,8,7.549516567451064e-15
+D: B + C,Ackley,30,9,1.1102230246251565e-14
+D: B + C,Ackley,30,10,7.549516567451064e-15
+D: B + C,Ackley,30,11,7.549516567451064e-15
+D: B + C,Ackley,30,12,7.549516567451064e-15
+D: B + C,Ackley,30,13,7.549516567451064e-15
+D: B + C,Ackley,30,14,7.549516567451064e-15
+D: B + C,BentCigar,30,0,0.0
+D: B + C,BentCigar,30,1,0.0
+D: B + C,BentCigar,30,2,0.0
+D: B + C,BentCigar,30,3,0.0
+D: B + C,BentCigar,30,4,0.0
+D: B + C,BentCigar,30,5,0.0
+D: B + C,BentCigar,30,6,0.0
+D: B + C,BentCigar,30,7,0.0
+D: B + C,BentCigar,30,8,0.0
+D: B + C,BentCigar,30,9,0.0
+D: B + C,BentCigar,30,10,0.0
+D: B + C,BentCigar,30,11,0.0
+D: B + C,BentCigar,30,12,0.0
+D: B + C,BentCigar,30,13,0.0
+D: B + C,BentCigar,30,14,0.0
+D: B + C,Composition,30,0,2.220446049250313e-16
+D: B + C,Composition,30,1,2.220446049250313e-16
+D: B + C,Composition,30,2,2.220446049250313e-16
+D: B + C,Composition,30,3,2.220446049250313e-16
+D: B + C,Composition,30,4,2.220446049250313e-16
+D: B + C,Composition,30,5,2.220446049250313e-16
+D: B + C,Composition,30,6,2.220446049250313e-16
+D: B + C,Composition,30,7,1.998401444325288e-15
+D: B + C,Composition,30,8,2.220446049250313e-16
+D: B + C,Composition,30,9,2.220446049250313e-16
+D: B + C,Composition,30,10,2.220446049250313e-16
+D: B + C,Composition,30,11,2.220446049250313e-16
+D: B + C,Composition,30,12,2.220446049250313e-16
+D: B + C,Composition,30,13,1.998401444325288e-15
+D: B + C,Composition,30,14,2.220446049250313e-16
+D: B + C,DynamicSphere,30,0,0.08161087907376778
+D: B + C,DynamicSphere,30,1,0.09715683980173542
+D: B + C,DynamicSphere,30,2,0.08615923625823611
+D: B + C,DynamicSphere,30,3,0.0966049251218473
+D: B + C,DynamicSphere,30,4,0.07168204391485021
+D: B + C,DynamicSphere,30,5,0.12000350417483736
+D: B + C,DynamicSphere,30,6,0.10165939900797627
+D: B + C,DynamicSphere,30,7,0.0646626971226464
+D: B + C,DynamicSphere,30,8,0.04877498343057352
+D: B + C,DynamicSphere,30,9,0.1301164932951941
+D: B + C,DynamicSphere,30,10,0.07221642714545522
+D: B + C,DynamicSphere,30,11,0.09700952266717709
+D: B + C,DynamicSphere,30,12,0.06589008495795748
+D: B + C,DynamicSphere,30,13,0.15606956121361593
+D: B + C,DynamicSphere,30,14,0.13181611805958635
+D: B + C,Griewank,30,0,0.0
+D: B + C,Griewank,30,1,0.0
+D: B + C,Griewank,30,2,0.0
+D: B + C,Griewank,30,3,0.0
+D: B + C,Griewank,30,4,0.0
+D: B + C,Griewank,30,5,0.0
+D: B + C,Griewank,30,6,0.0
+D: B + C,Griewank,30,7,0.0
+D: B + C,Griewank,30,8,0.0
+D: B + C,Griewank,30,9,0.0
+D: B + C,Griewank,30,10,0.0
+D: B + C,Griewank,30,11,0.0
+D: B + C,Griewank,30,12,0.0
+D: B + C,Griewank,30,13,0.0
+D: B + C,Griewank,30,14,0.0
+D: B + C,Levy,30,0,1.4997597826618576e-32
+D: B + C,Levy,30,1,1.4997597826618576e-32
+D: B + C,Levy,30,2,1.4997597826618576e-32
+D: B + C,Levy,30,3,0.08952825041644091
+D: B + C,Levy,30,4,1.6086414183874387e-30
+D: B + C,Levy,30,5,1.4997597826618576e-32
+D: B + C,Levy,30,6,1.4997597826618576e-32
+D: B + C,Levy,30,7,1.4997597826618576e-32
+D: B + C,Levy,30,8,1.4997597826618576e-32
+D: B + C,Levy,30,9,1.4997597826618576e-32
+D: B + C,Levy,30,10,1.4997597826618576e-32
+D: B + C,Levy,30,11,1.4997597826618576e-32
+D: B + C,Levy,30,12,1.4997597826618576e-32
+D: B + C,Levy,30,13,1.4997597826618576e-32
+D: B + C,Levy,30,14,1.4997597826618576e-32
+D: B + C,NoisyRastrigin,30,0,0.18022332650371276
+D: B + C,NoisyRastrigin,30,1,0.12137769606054327
+D: B + C,NoisyRastrigin,30,2,0.24332102907956177
+D: B + C,NoisyRastrigin,30,3,0.1734572963155383
+D: B + C,NoisyRastrigin,30,4,0.09933540163476273
+D: B + C,NoisyRastrigin,30,5,0.12863128457488493
+D: B + C,NoisyRastrigin,30,6,0.15877552601110345
+D: B + C,NoisyRastrigin,30,7,0.17448797203984512
+D: B + C,NoisyRastrigin,30,8,0.1910953273071314
+D: B + C,NoisyRastrigin,30,9,0.15492098481087346
+D: B + C,NoisyRastrigin,30,10,0.17059052652283668
+D: B + C,NoisyRastrigin,30,11,0.21194496399632
+D: B + C,NoisyRastrigin,30,12,0.13089433186105381
+D: B + C,NoisyRastrigin,30,13,0.18098776956335705
+D: B + C,NoisyRastrigin,30,14,0.296712296395782
+D: B + C,NoisySphere,30,0,0.018596793172849027
+D: B + C,NoisySphere,30,1,0.014281771605975727
+D: B + C,NoisySphere,30,2,0.012424281458244656
+D: B + C,NoisySphere,30,3,0.0078858019475193
+D: B + C,NoisySphere,30,4,0.0114461356545325
+D: B + C,NoisySphere,30,5,0.017080472690422198
+D: B + C,NoisySphere,30,6,0.012201769382084565
+D: B + C,NoisySphere,30,7,0.006157739187887628
+D: B + C,NoisySphere,30,8,0.012283893486285646
+D: B + C,NoisySphere,30,9,0.010271787687804465
+D: B + C,NoisySphere,30,10,0.006057553566928056
+D: B + C,NoisySphere,30,11,0.015083486877874225
+D: B + C,NoisySphere,30,12,0.01020605037895531
+D: B + C,NoisySphere,30,13,0.016003294402765756
+D: B + C,NoisySphere,30,14,0.018782128995758558
+D: B + C,Rosenbrock,30,0,1.0578255453774346
+D: B + C,Rosenbrock,30,1,2.1705904556255304
+D: B + C,Rosenbrock,30,2,2.451024822230438
+D: B + C,Rosenbrock,30,3,0.2772615048242255
+D: B + C,Rosenbrock,30,4,0.47515934679507427
+D: B + C,Rosenbrock,30,5,2.7795759106825964
+D: B + C,Rosenbrock,30,6,1.720227294615815
+D: B + C,Rosenbrock,30,7,5.790306272500433
+D: B + C,Rosenbrock,30,8,1.8449356474898246
+D: B + C,Rosenbrock,30,9,4.011071681070788
+D: B + C,Rosenbrock,30,10,2.832715296388639
+D: B + C,Rosenbrock,30,11,0.8425862058925101
+D: B + C,Rosenbrock,30,12,1.2785856755369989
+D: B + C,Rosenbrock,30,13,7.082460469123702
+D: B + C,Rosenbrock,30,14,2.157272848261057
+D: B + C,RotatedElliptic,30,0,16781.994045708878
+D: B + C,RotatedElliptic,30,1,15249.028235847796
+D: B + C,RotatedElliptic,30,2,1207.7587232518117
+D: B + C,RotatedElliptic,30,3,6952.630468818068
+D: B + C,RotatedElliptic,30,4,2212.9621913369015
+D: B + C,RotatedElliptic,30,5,6235.2155958835
+D: B + C,RotatedElliptic,30,6,1214.2721237925198
+D: B + C,RotatedElliptic,30,7,8748.716065467344
+D: B + C,RotatedElliptic,30,8,11968.5064834824
+D: B + C,RotatedElliptic,30,9,9393.36083537642
+D: B + C,RotatedElliptic,30,10,26614.327262411676
+D: B + C,RotatedElliptic,30,11,3207.0111214542508
+D: B + C,RotatedElliptic,30,12,4566.673656643019
+D: B + C,RotatedElliptic,30,13,28315.0469313002
+D: B + C,RotatedElliptic,30,14,11012.159001091282
+D: B + C,Schwefel,30,0,0.00038182698881428223
+D: B + C,Schwefel,30,1,0.00038182698881428223
+D: B + C,Schwefel,30,2,0.00038182698881428223
+D: B + C,Schwefel,30,3,0.00038182698881428223
+D: B + C,Schwefel,30,4,0.00038182698881428223
+D: B + C,Schwefel,30,5,0.00038182698881428223
+D: B + C,Schwefel,30,6,0.00038182698881428223
+D: B + C,Schwefel,30,7,0.00038182698881428223
+D: B + C,Schwefel,30,8,0.00038182698881428223
+D: B + C,Schwefel,30,9,0.00038182698881428223
+D: B + C,Schwefel,30,10,0.00038182698881428223
+D: B + C,Schwefel,30,11,0.00038182698881428223
+D: B + C,Schwefel,30,12,0.00038182700154720806
+D: B + C,Schwefel,30,13,0.00038182698881428223
+D: B + C,Schwefel,30,14,0.00038182698881428223
+D: B + C,Zakharov,30,0,1.2504681308008824e-16
+D: B + C,Zakharov,30,1,3.487168825571126e-16
+D: B + C,Zakharov,30,2,8.063401517596225e-15
+D: B + C,Zakharov,30,3,1.7679200055149238e-15
+D: B + C,Zakharov,30,4,2.6314785460111595e-17
+D: B + C,Zakharov,30,5,5.195899471367246e-17
+D: B + C,Zakharov,30,6,2.8456400910662533e-18
+D: B + C,Zakharov,30,7,7.880331098083521e-15
+D: B + C,Zakharov,30,8,4.459758745676378e-17
+D: B + C,Zakharov,30,9,9.348239345429275e-17
+D: B + C,Zakharov,30,10,2.5411409085715586e-17
+D: B + C,Zakharov,30,11,4.090956536811461e-17
+D: B + C,Zakharov,30,12,1.0520140373955657e-16
+D: B + C,Zakharov,30,13,1.41593527309318e-17
+D: B + C,Zakharov,30,14,4.012028265480099e-18
+E: A + p=0.11 doimiy,Ackley,30,0,7.549516567451064e-15
+E: A + p=0.11 doimiy,Ackley,30,1,1.1102230246251565e-14
+E: A + p=0.11 doimiy,Ackley,30,2,1.1102230246251565e-14
+E: A + p=0.11 doimiy,Ackley,30,3,7.549516567451064e-15
+E: A + p=0.11 doimiy,Ackley,30,4,1.1102230246251565e-14
+E: A + p=0.11 doimiy,Ackley,30,5,7.549516567451064e-15
+E: A + p=0.11 doimiy,Ackley,30,6,7.549516567451064e-15
+E: A + p=0.11 doimiy,Ackley,30,7,7.549516567451064e-15
+E: A + p=0.11 doimiy,Ackley,30,8,1.4654943925052066e-14
+E: A + p=0.11 doimiy,Ackley,30,9,7.549516567451064e-15
+E: A + p=0.11 doimiy,Ackley,30,10,1.1102230246251565e-14
+E: A + p=0.11 doimiy,Ackley,30,11,1.1102230246251565e-14
+E: A + p=0.11 doimiy,Ackley,30,12,1.1102230246251565e-14
+E: A + p=0.11 doimiy,Ackley,30,13,1.1102230246251565e-14
+E: A + p=0.11 doimiy,Ackley,30,14,1.1102230246251565e-14
+E: A + p=0.11 doimiy,BentCigar,30,0,2.524354896707238e-22
+E: A + p=0.11 doimiy,BentCigar,30,1,1.0097419586828951e-22
+E: A + p=0.11 doimiy,BentCigar,30,2,4.1651855795669423e-22
+E: A + p=0.11 doimiy,BentCigar,30,3,2.5559093329160782e-22
+E: A + p=0.11 doimiy,BentCigar,30,4,3.660314600225495e-22
+E: A + p=0.11 doimiy,BentCigar,30,5,1.0097419586828951e-22
+E: A + p=0.11 doimiy,BentCigar,30,6,1.135959703518257e-22
+E: A + p=0.11 doimiy,BentCigar,30,7,4.1651855795669423e-22
+E: A + p=0.11 doimiy,BentCigar,30,8,1.0097419586828951e-22
+E: A + p=0.11 doimiy,BentCigar,30,9,1.0097419586828951e-22
+E: A + p=0.11 doimiy,BentCigar,30,10,1.0097419586828951e-22
+E: A + p=0.11 doimiy,BentCigar,30,11,5.679798517591285e-22
+E: A + p=0.11 doimiy,BentCigar,30,12,3.0292258760486853e-22
+E: A + p=0.11 doimiy,BentCigar,30,13,2.7767903863779616e-22
+E: A + p=0.11 doimiy,BentCigar,30,14,1.1675141397270975e-22
+E: A + p=0.11 doimiy,Composition,30,0,1.998401444325307e-15
+E: A + p=0.11 doimiy,Composition,30,1,3.774758283725595e-15
+E: A + p=0.11 doimiy,Composition,30,2,7.327471962526204e-15
+E: A + p=0.11 doimiy,Composition,30,3,3.77475828372557e-15
+E: A + p=0.11 doimiy,Composition,30,4,3.774758283725608e-15
+E: A + p=0.11 doimiy,Composition,30,5,3.774758283725614e-15
+E: A + p=0.11 doimiy,Composition,30,6,3.7747582837255764e-15
+E: A + p=0.11 doimiy,Composition,30,7,3.774758283725614e-15
+E: A + p=0.11 doimiy,Composition,30,8,5.55111512312589e-15
+E: A + p=0.11 doimiy,Composition,30,9,3.774758283725583e-15
+E: A + p=0.11 doimiy,Composition,30,10,5.55111512312589e-15
+E: A + p=0.11 doimiy,Composition,30,11,3.774758283725589e-15
+E: A + p=0.11 doimiy,Composition,30,12,1.998401444325307e-15
+E: A + p=0.11 doimiy,Composition,30,13,7.327471962526211e-15
+E: A + p=0.11 doimiy,Composition,30,14,5.551115123125884e-15
+E: A + p=0.11 doimiy,DynamicSphere,30,0,0.09266756560897937
+E: A + p=0.11 doimiy,DynamicSphere,30,1,0.08692777771553792
+E: A + p=0.11 doimiy,DynamicSphere,30,2,0.07617138224641631
+E: A + p=0.11 doimiy,DynamicSphere,30,3,0.058705689442433956
+E: A + p=0.11 doimiy,DynamicSphere,30,4,0.0992761592901909
+E: A + p=0.11 doimiy,DynamicSphere,30,5,0.1127575972322284
+E: A + p=0.11 doimiy,DynamicSphere,30,6,0.11396402413743614
+E: A + p=0.11 doimiy,DynamicSphere,30,7,0.1009299729608775
+E: A + p=0.11 doimiy,DynamicSphere,30,8,0.09038929893772395
+E: A + p=0.11 doimiy,DynamicSphere,30,9,0.09196330823888225
+E: A + p=0.11 doimiy,DynamicSphere,30,10,0.07059835281718951
+E: A + p=0.11 doimiy,DynamicSphere,30,11,0.12633257884165086
+E: A + p=0.11 doimiy,DynamicSphere,30,12,0.08851288302315724
+E: A + p=0.11 doimiy,DynamicSphere,30,13,0.05624194911255367
+E: A + p=0.11 doimiy,DynamicSphere,30,14,0.07306946634014307
+E: A + p=0.11 doimiy,Griewank,30,0,0.0
+E: A + p=0.11 doimiy,Griewank,30,1,0.0
+E: A + p=0.11 doimiy,Griewank,30,2,0.0
+E: A + p=0.11 doimiy,Griewank,30,3,0.0
+E: A + p=0.11 doimiy,Griewank,30,4,0.0
+E: A + p=0.11 doimiy,Griewank,30,5,0.0
+E: A + p=0.11 doimiy,Griewank,30,6,0.0
+E: A + p=0.11 doimiy,Griewank,30,7,0.0
+E: A + p=0.11 doimiy,Griewank,30,8,0.0
+E: A + p=0.11 doimiy,Griewank,30,9,0.0
+E: A + p=0.11 doimiy,Griewank,30,10,0.0
+E: A + p=0.11 doimiy,Griewank,30,11,0.0
+E: A + p=0.11 doimiy,Griewank,30,12,0.0
+E: A + p=0.11 doimiy,Griewank,30,13,0.0
+E: A + p=0.11 doimiy,Griewank,30,14,0.0
+E: A + p=0.11 doimiy,Levy,30,0,1.8571507025338498e-30
+E: A + p=0.11 doimiy,Levy,30,1,2.80387428380805e-30
+E: A + p=0.11 doimiy,Levy,30,2,2.554369874029211e-30
+E: A + p=0.11 doimiy,Levy,30,3,2.505066067452895e-30
+E: A + p=0.11 doimiy,Levy,30,4,2.8038742838080468e-30
+E: A + p=0.11 doimiy,Levy,30,5,2.8038742838080513e-30
+E: A + p=0.11 doimiy,Levy,30,6,1.3098332020322816e-30
+E: A + p=0.11 doimiy,Levy,30,7,3.1006922488983487e-30
+E: A + p=0.11 doimiy,Levy,30,8,1.0110249856771288e-30
+E: A + p=0.11 doimiy,Levy,30,9,1.2102304632472314e-30
+E: A + p=0.11 doimiy,Levy,30,10,3.301887977733306e-30
+E: A + p=0.11 doimiy,Levy,30,11,4.397518104368868e-30
+E: A + p=0.11 doimiy,Levy,30,12,5.0508323302477935e-30
+E: A + p=0.11 doimiy,Levy,30,13,9.114222468920787e-31
+E: A + p=0.11 doimiy,Levy,30,14,1.7575479637487994e-30
+E: A + p=0.11 doimiy,NoisyRastrigin,30,0,0.16542796472858967
+E: A + p=0.11 doimiy,NoisyRastrigin,30,1,0.22463707026043878
+E: A + p=0.11 doimiy,NoisyRastrigin,30,2,0.1519621417192738
+E: A + p=0.11 doimiy,NoisyRastrigin,30,3,0.19922259258667196
+E: A + p=0.11 doimiy,NoisyRastrigin,30,4,0.1743427885260953
+E: A + p=0.11 doimiy,NoisyRastrigin,30,5,0.28754023478661495
+E: A + p=0.11 doimiy,NoisyRastrigin,30,6,0.22783974925296846
+E: A + p=0.11 doimiy,NoisyRastrigin,30,7,0.16754507361898163
+E: A + p=0.11 doimiy,NoisyRastrigin,30,8,0.2277684435922982
+E: A + p=0.11 doimiy,NoisyRastrigin,30,9,0.2368864218890181
+E: A + p=0.11 doimiy,NoisyRastrigin,30,10,0.2179047235489282
+E: A + p=0.11 doimiy,NoisyRastrigin,30,11,0.22278054237073697
+E: A + p=0.11 doimiy,NoisyRastrigin,30,12,0.17769947238579853
+E: A + p=0.11 doimiy,NoisyRastrigin,30,13,0.20499452669840323
+E: A + p=0.11 doimiy,NoisyRastrigin,30,14,0.21009538454395127
+E: A + p=0.11 doimiy,NoisySphere,30,0,0.011397428886473734
+E: A + p=0.11 doimiy,NoisySphere,30,1,0.009643588930917558
+E: A + p=0.11 doimiy,NoisySphere,30,2,0.01263789959013879
+E: A + p=0.11 doimiy,NoisySphere,30,3,0.012490604244999249
+E: A + p=0.11 doimiy,NoisySphere,30,4,0.006696778744763356
+E: A + p=0.11 doimiy,NoisySphere,30,5,0.014165669265150392
+E: A + p=0.11 doimiy,NoisySphere,30,6,0.005129939577790378
+E: A + p=0.11 doimiy,NoisySphere,30,7,0.010489917172928121
+E: A + p=0.11 doimiy,NoisySphere,30,8,0.01732038203683935
+E: A + p=0.11 doimiy,NoisySphere,30,9,0.013797375098153541
+E: A + p=0.11 doimiy,NoisySphere,30,10,0.016032112671074208
+E: A + p=0.11 doimiy,NoisySphere,30,11,0.008652031917124874
+E: A + p=0.11 doimiy,NoisySphere,30,12,0.015593121732300192
+E: A + p=0.11 doimiy,NoisySphere,30,13,0.007891342377729371
+E: A + p=0.11 doimiy,NoisySphere,30,14,0.009186892538173782
+E: A + p=0.11 doimiy,Rosenbrock,30,0,2.571496263453091
+E: A + p=0.11 doimiy,Rosenbrock,30,1,1.7298008275136585
+E: A + p=0.11 doimiy,Rosenbrock,30,2,1.8829872444913585
+E: A + p=0.11 doimiy,Rosenbrock,30,3,2.9448435169152822
+E: A + p=0.11 doimiy,Rosenbrock,30,4,4.106204751885188
+E: A + p=0.11 doimiy,Rosenbrock,30,5,3.042176178610281
+E: A + p=0.11 doimiy,Rosenbrock,30,6,4.590198176407393
+E: A + p=0.11 doimiy,Rosenbrock,30,7,1.5570340851876434
+E: A + p=0.11 doimiy,Rosenbrock,30,8,1.922988346769231
+E: A + p=0.11 doimiy,Rosenbrock,30,9,1.5479890732256973
+E: A + p=0.11 doimiy,Rosenbrock,30,10,2.6586445708963264
+E: A + p=0.11 doimiy,Rosenbrock,30,11,3.7443405127241567
+E: A + p=0.11 doimiy,Rosenbrock,30,12,2.7995069867551585
+E: A + p=0.11 doimiy,Rosenbrock,30,13,3.813924145773307
+E: A + p=0.11 doimiy,Rosenbrock,30,14,2.4799283753778534
+E: A + p=0.11 doimiy,RotatedElliptic,30,0,93.00408355537027
+E: A + p=0.11 doimiy,RotatedElliptic,30,1,53.346121692462894
+E: A + p=0.11 doimiy,RotatedElliptic,30,2,191.48909686079713
+E: A + p=0.11 doimiy,RotatedElliptic,30,3,3140.096171494206
+E: A + p=0.11 doimiy,RotatedElliptic,30,4,20.775077980664545
+E: A + p=0.11 doimiy,RotatedElliptic,30,5,13.763629691085676
+E: A + p=0.11 doimiy,RotatedElliptic,30,6,1001.2343025043997
+E: A + p=0.11 doimiy,RotatedElliptic,30,7,448.70004723259416
+E: A + p=0.11 doimiy,RotatedElliptic,30,8,1934.7111013622532
+E: A + p=0.11 doimiy,RotatedElliptic,30,9,2575.321637121937
+E: A + p=0.11 doimiy,RotatedElliptic,30,10,31.818068981658143
+E: A + p=0.11 doimiy,RotatedElliptic,30,11,963.5704030365208
+E: A + p=0.11 doimiy,RotatedElliptic,30,12,52.78573436230594
+E: A + p=0.11 doimiy,RotatedElliptic,30,13,658.6324256339185
+E: A + p=0.11 doimiy,RotatedElliptic,30,14,34.23337615148611
+E: A + p=0.11 doimiy,Schwefel,30,0,236.8770510558661
+E: A + p=0.11 doimiy,Schwefel,30,1,236.8770510558661
+E: A + p=0.11 doimiy,Schwefel,30,2,236.8770510558661
+E: A + p=0.11 doimiy,Schwefel,30,3,473.75372028473976
+E: A + p=0.11 doimiy,Schwefel,30,4,236.8770510558661
+E: A + p=0.11 doimiy,Schwefel,30,5,355.31538567030475
+E: A + p=0.11 doimiy,Schwefel,30,6,118.43871644142746
+E: A + p=0.11 doimiy,Schwefel,30,7,355.31538567030475
+E: A + p=0.11 doimiy,Schwefel,30,8,414.54543019994344
+E: A + p=0.11 doimiy,Schwefel,30,9,473.75372028473976
+E: A + p=0.11 doimiy,Schwefel,30,10,532.9837648143821
+E: A + p=0.11 doimiy,Schwefel,30,11,0.00038182698881428223
+E: A + p=0.11 doimiy,Schwefel,30,12,236.87705105586792
+E: A + p=0.11 doimiy,Schwefel,30,13,118.4387164414311
+E: A + p=0.11 doimiy,Schwefel,30,14,592.1920548991784
+E: A + p=0.11 doimiy,Zakharov,30,0,5.946525979301315e-17
+E: A + p=0.11 doimiy,Zakharov,30,1,1.836636608168337e-16
+E: A + p=0.11 doimiy,Zakharov,30,2,7.18084852357057e-16
+E: A + p=0.11 doimiy,Zakharov,30,3,6.993048615356928e-15
+E: A + p=0.11 doimiy,Zakharov,30,4,1.6094536486125584e-15
+E: A + p=0.11 doimiy,Zakharov,30,5,1.0373221519679114e-15
+E: A + p=0.11 doimiy,Zakharov,30,6,9.957031455337492e-17
+E: A + p=0.11 doimiy,Zakharov,30,7,5.712268920274308e-16
+E: A + p=0.11 doimiy,Zakharov,30,8,8.108117532731182e-16
+E: A + p=0.11 doimiy,Zakharov,30,9,3.9034748311486134e-16
+E: A + p=0.11 doimiy,Zakharov,30,10,6.197489493233665e-16
+E: A + p=0.11 doimiy,Zakharov,30,11,3.3196219378210844e-16
+E: A + p=0.11 doimiy,Zakharov,30,12,8.56107834785505e-16
+E: A + p=0.11 doimiy,Zakharov,30,13,3.541407809385375e-17
+E: A + p=0.11 doimiy,Zakharov,30,14,5.012948081927688e-16
+F: D + pop18,Ackley,30,0,7.549516567451064e-15
+F: D + pop18,Ackley,30,1,3.9968028886505635e-15
+F: D + pop18,Ackley,30,2,1.1102230246251565e-14
+F: D + pop18,Ackley,30,3,1.1102230246251565e-14
+F: D + pop18,Ackley,30,4,7.549516567451064e-15
+F: D + pop18,Ackley,30,5,1.1102230246251565e-14
+F: D + pop18,Ackley,30,6,1.1102230246251565e-14
+F: D + pop18,Ackley,30,7,1.1102230246251565e-14
+F: D + pop18,Ackley,30,8,1.1102230246251565e-14
+F: D + pop18,Ackley,30,9,1.1102230246251565e-14
+F: D + pop18,Ackley,30,10,1.1102230246251565e-14
+F: D + pop18,Ackley,30,11,7.549516567451064e-15
+F: D + pop18,Ackley,30,12,1.1102230246251565e-14
+F: D + pop18,Ackley,30,13,1.1102230246251565e-14
+F: D + pop18,Ackley,30,14,1.1102230246251565e-14
+F: D + pop18,BentCigar,30,0,1.2230003159265622e-14
+F: D + pop18,BentCigar,30,1,2.308945716581131e-12
+F: D + pop18,BentCigar,30,2,6.752416251543644e-11
+F: D + pop18,BentCigar,30,3,1.027503750291098e-13
+F: D + pop18,BentCigar,30,4,5.529321315984235e-13
+F: D + pop18,BentCigar,30,5,5.1461715004436884e-12
+F: D + pop18,BentCigar,30,6,8.981294110949151e-13
+F: D + pop18,BentCigar,30,7,8.782731232229907e-12
+F: D + pop18,BentCigar,30,8,3.6004752812110574e-15
+F: D + pop18,BentCigar,30,9,2.2213036984663133e-13
+F: D + pop18,BentCigar,30,10,2.840957360905006e-10
+F: D + pop18,BentCigar,30,11,1.4112904227627152e-11
+F: D + pop18,BentCigar,30,12,7.177339203671567e-12
+F: D + pop18,BentCigar,30,13,2.814601176180608e-10
+F: D + pop18,BentCigar,30,14,2.3732760238917767e-11
+F: D + pop18,Composition,30,0,9.103828801926547e-15
+F: D + pop18,Composition,30,1,1.0880185641326917e-14
+F: D + pop18,Composition,30,2,1.0880185641326946e-14
+F: D + pop18,Composition,30,3,9.103828801926607e-15
+F: D + pop18,Composition,30,4,9.103828801926609e-15
+F: D + pop18,Composition,30,5,1.0880185641326864e-14
+F: D + pop18,Composition,30,6,1.2656542480727334e-14
+F: D + pop18,Composition,30,7,7.327471962526256e-15
+F: D + pop18,Composition,30,8,9.103828801926593e-15
+F: D + pop18,Composition,30,9,3.774758283725565e-15
+F: D + pop18,Composition,30,10,9.103828801926546e-15
+F: D + pop18,Composition,30,11,7.327471962526196e-15
+F: D + pop18,Composition,30,12,1.0880185641326892e-14
+F: D + pop18,Composition,30,13,3.774758283725597e-15
+F: D + pop18,Composition,30,14,7.327471962526237e-15
+F: D + pop18,DynamicSphere,30,0,0.08288225239645411
+F: D + pop18,DynamicSphere,30,1,0.10198966143583403
+F: D + pop18,DynamicSphere,30,2,0.13928346942826245
+F: D + pop18,DynamicSphere,30,3,0.12033794524758801
+F: D + pop18,DynamicSphere,30,4,0.0977731006501557
+F: D + pop18,DynamicSphere,30,5,0.1341538176376591
+F: D + pop18,DynamicSphere,30,6,0.0600930447700246
+F: D + pop18,DynamicSphere,30,7,0.27972384892049834
+F: D + pop18,DynamicSphere,30,8,0.0911978829289731
+F: D + pop18,DynamicSphere,30,9,0.047296811968184346
+F: D + pop18,DynamicSphere,30,10,0.11708817247501953
+F: D + pop18,DynamicSphere,30,11,0.311147653993827
+F: D + pop18,DynamicSphere,30,12,0.07520200162061338
+F: D + pop18,DynamicSphere,30,13,0.1783888947224571
+F: D + pop18,DynamicSphere,30,14,0.08850396222115961
+F: D + pop18,Griewank,30,0,0.0
+F: D + pop18,Griewank,30,1,1.1102230246251565e-16
+F: D + pop18,Griewank,30,2,0.0
+F: D + pop18,Griewank,30,3,0.0
+F: D + pop18,Griewank,30,4,0.0
+F: D + pop18,Griewank,30,5,1.1102230246251565e-16
+F: D + pop18,Griewank,30,6,0.0
+F: D + pop18,Griewank,30,7,0.0
+F: D + pop18,Griewank,30,8,0.0
+F: D + pop18,Griewank,30,9,0.0
+F: D + pop18,Griewank,30,10,0.0
+F: D + pop18,Griewank,30,11,0.0
+F: D + pop18,Griewank,30,12,0.0
+F: D + pop18,Griewank,30,13,1.1102230246251565e-16
+F: D + pop18,Griewank,30,14,0.0
+F: D + pop18,Levy,30,0,9.15498852990413e-29
+F: D + pop18,Levy,30,1,5.619257224742443e-29
+F: D + pop18,Levy,30,2,1.938723272870285e-29
+F: D + pop18,Levy,30,3,6.372890640002162e-29
+F: D + pop18,Levy,30,4,5.397338552008336e-29
+F: D + pop18,Levy,30,5,5.989171673664829e-30
+F: D + pop18,Levy,30,6,8.898668154501975e-30
+F: D + pop18,Levy,30,7,3.4636042742704133e-29
+F: D + pop18,Levy,30,8,1.9298004479039768e-29
+F: D + pop18,Levy,30,9,7.285997529135348e-30
+F: D + pop18,Levy,30,10,7.556518994984856e-30
+F: D + pop18,Levy,30,11,9.475267531141616e-30
+F: D + pop18,Levy,30,12,7.428438322717441e-29
+F: D + pop18,Levy,30,13,2.1362209531387953e-28
+F: D + pop18,Levy,30,14,1.6016781037919635e-29
+F: D + pop18,NoisyRastrigin,30,0,1.1560031534789719
+F: D + pop18,NoisyRastrigin,30,1,4.169358943576151
+F: D + pop18,NoisyRastrigin,30,2,1.9013628603563557
+F: D + pop18,NoisyRastrigin,30,3,2.057918987227664
+F: D + pop18,NoisyRastrigin,30,4,1.5161253001313781
+F: D + pop18,NoisyRastrigin,30,5,1.89043613446273
+F: D + pop18,NoisyRastrigin,30,6,1.5777955693551853
+F: D + pop18,NoisyRastrigin,30,7,3.27395556627744
+F: D + pop18,NoisyRastrigin,30,8,2.373115295260316
+F: D + pop18,NoisyRastrigin,30,9,2.8936192358349864
+F: D + pop18,NoisyRastrigin,30,10,2.19243270121655
+F: D + pop18,NoisyRastrigin,30,11,2.6109681822663084
+F: D + pop18,NoisyRastrigin,30,12,2.22879527521855
+F: D + pop18,NoisyRastrigin,30,13,2.331427098889776
+F: D + pop18,NoisyRastrigin,30,14,2.820278916828281
+F: D + pop18,NoisySphere,30,0,0.012930442595617226
+F: D + pop18,NoisySphere,30,1,0.01522418639177043
+F: D + pop18,NoisySphere,30,2,0.013556493325714632
+F: D + pop18,NoisySphere,30,3,0.018861369591204515
+F: D + pop18,NoisySphere,30,4,0.014705190475551784
+F: D + pop18,NoisySphere,30,5,0.021230082908936188
+F: D + pop18,NoisySphere,30,6,0.014718869690427901
+F: D + pop18,NoisySphere,30,7,0.013844569667538359
+F: D + pop18,NoisySphere,30,8,0.01908572264069544
+F: D + pop18,NoisySphere,30,9,0.014736593634665455
+F: D + pop18,NoisySphere,30,10,0.02122846574443746
+F: D + pop18,NoisySphere,30,11,0.019582126462279983
+F: D + pop18,NoisySphere,30,12,0.015181956571004135
+F: D + pop18,NoisySphere,30,13,0.01829344958544164
+F: D + pop18,NoisySphere,30,14,0.017939135715085878
+F: D + pop18,Rosenbrock,30,0,13.133744604613675
+F: D + pop18,Rosenbrock,30,1,12.247411608695655
+F: D + pop18,Rosenbrock,30,2,12.968372504492416
+F: D + pop18,Rosenbrock,30,3,13.48296878939114
+F: D + pop18,Rosenbrock,30,4,11.18693507887749
+F: D + pop18,Rosenbrock,30,5,12.952242831338395
+F: D + pop18,Rosenbrock,30,6,14.416724168965745
+F: D + pop18,Rosenbrock,30,7,14.265058330566461
+F: D + pop18,Rosenbrock,30,8,13.047126317735895
+F: D + pop18,Rosenbrock,30,9,14.01718729274797
+F: D + pop18,Rosenbrock,30,10,12.876601944774237
+F: D + pop18,Rosenbrock,30,11,12.386021360700852
+F: D + pop18,Rosenbrock,30,12,13.560187971298612
+F: D + pop18,Rosenbrock,30,13,12.495215301636371
+F: D + pop18,Rosenbrock,30,14,12.928052628617479
+F: D + pop18,RotatedElliptic,30,0,2274.7570477879976
+F: D + pop18,RotatedElliptic,30,1,4.914649343525674
+F: D + pop18,RotatedElliptic,30,2,65.77452304511726
+F: D + pop18,RotatedElliptic,30,3,36.18260816001882
+F: D + pop18,RotatedElliptic,30,4,52.83806143406344
+F: D + pop18,RotatedElliptic,30,5,67.62624091791672
+F: D + pop18,RotatedElliptic,30,6,2.1760755529184452
+F: D + pop18,RotatedElliptic,30,7,2.6994464690806206
+F: D + pop18,RotatedElliptic,30,8,1.0033910352708717
+F: D + pop18,RotatedElliptic,30,9,7.128209394623989
+F: D + pop18,RotatedElliptic,30,10,1.2397439517679105
+F: D + pop18,RotatedElliptic,30,11,80.07537318103434
+F: D + pop18,RotatedElliptic,30,12,366.46316452744765
+F: D + pop18,RotatedElliptic,30,13,0.534017241404573
+F: D + pop18,RotatedElliptic,30,14,21.53563445333035
+F: D + pop18,Schwefel,30,0,0.32184684962521715
+F: D + pop18,Schwefel,30,1,0.3016265211717837
+F: D + pop18,Schwefel,30,2,0.01216663520608563
+F: D + pop18,Schwefel,30,3,0.07532754674866737
+F: D + pop18,Schwefel,30,4,0.030473806684312876
+F: D + pop18,Schwefel,30,5,0.00039073512380127795
+F: D + pop18,Schwefel,30,6,0.0004026361038995674
+F: D + pop18,Schwefel,30,7,0.0004822247283300385
+F: D + pop18,Schwefel,30,8,0.025254789588871063
+F: D + pop18,Schwefel,30,9,0.000522309439475066
+F: D + pop18,Schwefel,30,10,0.0016724596043786732
+F: D + pop18,Schwefel,30,11,0.018349480609685997
+F: D + pop18,Schwefel,30,12,0.00038257370761130005
+F: D + pop18,Schwefel,30,13,0.00038324818524415605
+F: D + pop18,Schwefel,30,14,0.08871654205540835
+F: D + pop18,Zakharov,30,0,1.174629302505688e-13
+F: D + pop18,Zakharov,30,1,3.2943960599620417e-13
+F: D + pop18,Zakharov,30,2,4.738172453925761e-13
+F: D + pop18,Zakharov,30,3,1.7051835395943636e-13
+F: D + pop18,Zakharov,30,4,1.3688596438266288e-12
+F: D + pop18,Zakharov,30,5,1.6289727040388348e-12
+F: D + pop18,Zakharov,30,6,9.544532656342989e-14
+F: D + pop18,Zakharov,30,7,3.759043226603965e-13
+F: D + pop18,Zakharov,30,8,2.2391889585785316e-13
+F: D + pop18,Zakharov,30,9,5.786056976020174e-13
+F: D + pop18,Zakharov,30,10,4.486480090829617e-14
+F: D + pop18,Zakharov,30,11,8.434736814499078e-13
+F: D + pop18,Zakharov,30,12,4.4970958788291797e-14
+F: D + pop18,Zakharov,30,13,6.4613741273713e-14
+F: D + pop18,Zakharov,30,14,7.411513495143157e-14
+G: B + pop10,Ackley,30,0,7.549516567451064e-15
+G: B + pop10,Ackley,30,1,7.549516567451064e-15
+G: B + pop10,Ackley,30,2,1.1102230246251565e-14
+G: B + pop10,Ackley,30,3,7.549516567451064e-15
+G: B + pop10,Ackley,30,4,7.549516567451064e-15
+G: B + pop10,Ackley,30,5,7.549516567451064e-15
+G: B + pop10,Ackley,30,6,7.549516567451064e-15
+G: B + pop10,Ackley,30,7,7.549516567451064e-15
+G: B + pop10,Ackley,30,8,1.1102230246251565e-14
+G: B + pop10,Ackley,30,9,7.549516567451064e-15
+G: B + pop10,Ackley,30,10,7.549516567451064e-15
+G: B + pop10,Ackley,30,11,1.1102230246251565e-14
+G: B + pop10,Ackley,30,12,1.1102230246251565e-14
+G: B + pop10,Ackley,30,13,7.549516567451064e-15
+G: B + pop10,Ackley,30,14,1.1102230246251565e-14
+G: B + pop10,BentCigar,30,0,8.633571751498059e-20
+G: B + pop10,BentCigar,30,1,5.898897036497043e-21
+G: B + pop10,BentCigar,30,2,1.6961253389639813e-21
+G: B + pop10,BentCigar,30,3,9.977900483479241e-20
+G: B + pop10,BentCigar,30,4,1.6905314639650476e-21
+G: B + pop10,BentCigar,30,5,3.032017022441361e-20
+G: B + pop10,BentCigar,30,6,3.4838978343913316e-20
+G: B + pop10,BentCigar,30,7,7.101242268555143e-20
+G: B + pop10,BentCigar,30,8,3.4594078550118317e-19
+G: B + pop10,BentCigar,30,9,2.0322050558933124e-19
+G: B + pop10,BentCigar,30,10,1.1359598297360018e-22
+G: B + pop10,BentCigar,30,11,3.4350972149707576e-20
+G: B + pop10,BentCigar,30,12,6.831751615500985e-21
+G: B + pop10,BentCigar,30,13,8.132392385680998e-21
+G: B + pop10,BentCigar,30,14,3.552541440195907e-21
+G: B + pop10,Composition,30,0,7.327471962526215e-15
+G: B + pop10,Composition,30,1,5.55111512312589e-15
+G: B + pop10,Composition,30,2,5.5511151231258955e-15
+G: B + pop10,Composition,30,3,3.774758283725607e-15
+G: B + pop10,Composition,30,4,9.103828801926534e-15
+G: B + pop10,Composition,30,5,5.55111512312589e-15
+G: B + pop10,Composition,30,6,5.5511151231259034e-15
+G: B + pop10,Composition,30,7,3.774758283725612e-15
+G: B + pop10,Composition,30,8,3.774758283725564e-15
+G: B + pop10,Composition,30,9,9.103828801926538e-15
+G: B + pop10,Composition,30,10,5.551115123125903e-15
+G: B + pop10,Composition,30,11,7.327471962526172e-15
+G: B + pop10,Composition,30,12,1.998401444325307e-15
+G: B + pop10,Composition,30,13,5.55111512312589e-15
+G: B + pop10,Composition,30,14,5.55111512312591e-15
+G: B + pop10,DynamicSphere,30,0,0.16415072637489264
+G: B + pop10,DynamicSphere,30,1,0.13202989448727825
+G: B + pop10,DynamicSphere,30,2,0.21228265617304767
+G: B + pop10,DynamicSphere,30,3,0.09107701000431595
+G: B + pop10,DynamicSphere,30,4,0.14695096165498586
+G: B + pop10,DynamicSphere,30,5,0.1132463356063664
+G: B + pop10,DynamicSphere,30,6,0.04923137462601011
+G: B + pop10,DynamicSphere,30,7,0.19947892960994834
+G: B + pop10,DynamicSphere,30,8,0.058330529981148314
+G: B + pop10,DynamicSphere,30,9,0.12087461739101879
+G: B + pop10,DynamicSphere,30,10,0.09050503512662324
+G: B + pop10,DynamicSphere,30,11,0.11101482096697479
+G: B + pop10,DynamicSphere,30,12,0.12393887183328615
+G: B + pop10,DynamicSphere,30,13,0.06256738545408769
+G: B + pop10,DynamicSphere,30,14,0.08755273389039157
+G: B + pop10,Griewank,30,0,0.0
+G: B + pop10,Griewank,30,1,0.0
+G: B + pop10,Griewank,30,2,0.0
+G: B + pop10,Griewank,30,3,0.0
+G: B + pop10,Griewank,30,4,0.0
+G: B + pop10,Griewank,30,5,0.0
+G: B + pop10,Griewank,30,6,0.0
+G: B + pop10,Griewank,30,7,0.0
+G: B + pop10,Griewank,30,8,0.0
+G: B + pop10,Griewank,30,9,0.0
+G: B + pop10,Griewank,30,10,0.0
+G: B + pop10,Griewank,30,11,0.0
+G: B + pop10,Griewank,30,12,0.0
+G: B + pop10,Griewank,30,13,0.0
+G: B + pop10,Griewank,30,14,0.0
+G: B + pop10,Levy,30,0,5.442849298795685e-30
+G: B + pop10,Levy,30,1,3.446814020564969e-30
+G: B + pop10,Levy,30,2,3.450794523094666e-30
+G: B + pop10,Levy,30,3,3.84522497570517e-30
+G: B + pop10,Levy,30,4,2.2062578510977424e-30
+G: B + pop10,Levy,30,5,1.7082441571724855e-30
+G: B + pop10,Levy,30,6,4.198312626798762e-30
+G: B + pop10,Levy,30,7,3.650000000664768e-30
+G: B + pop10,Levy,30,8,2.5050660674528944e-30
+G: B + pop10,Levy,30,9,3.301887977733302e-30
+G: B + pop10,Levy,30,10,2.8018840325431984e-30
+G: B + pop10,Levy,30,11,3.401490716518351e-30
+G: B + pop10,Levy,30,12,1.8058566446926878e-30
+G: B + pop10,Levy,30,13,3.922511717779125e-30
+G: B + pop10,Levy,30,14,2.9527808291694163e-30
+G: B + pop10,NoisyRastrigin,30,0,0.7818533936018159
+G: B + pop10,NoisyRastrigin,30,1,0.6546427994825272
+G: B + pop10,NoisyRastrigin,30,2,0.4669415421527816
+G: B + pop10,NoisyRastrigin,30,3,0.7856158605170958
+G: B + pop10,NoisyRastrigin,30,4,0.3898834490912044
+G: B + pop10,NoisyRastrigin,30,5,0.7510476052693011
+G: B + pop10,NoisyRastrigin,30,6,0.7534866074986155
+G: B + pop10,NoisyRastrigin,30,7,3.1441317208679713
+G: B + pop10,NoisyRastrigin,30,8,0.5642838304912061
+G: B + pop10,NoisyRastrigin,30,9,0.47913806913066104
+G: B + pop10,NoisyRastrigin,30,10,0.3702485501622377
+G: B + pop10,NoisyRastrigin,30,11,0.5560083188544649
+G: B + pop10,NoisyRastrigin,30,12,0.3987752192866072
+G: B + pop10,NoisyRastrigin,30,13,1.2437325476209669
+G: B + pop10,NoisyRastrigin,30,14,0.6645134066659875
+G: B + pop10,NoisySphere,30,0,0.014042201284075273
+G: B + pop10,NoisySphere,30,1,0.012034925910398666
+G: B + pop10,NoisySphere,30,2,0.014099235974996804
+G: B + pop10,NoisySphere,30,3,0.011811885429977787
+G: B + pop10,NoisySphere,30,4,0.010317417482604313
+G: B + pop10,NoisySphere,30,5,0.011305959702236357
+G: B + pop10,NoisySphere,30,6,0.009943240158021414
+G: B + pop10,NoisySphere,30,7,0.013000228706744797
+G: B + pop10,NoisySphere,30,8,0.013313781357751742
+G: B + pop10,NoisySphere,30,9,0.008171285322632523
+G: B + pop10,NoisySphere,30,10,0.011352656779714705
+G: B + pop10,NoisySphere,30,11,0.011480784655098782
+G: B + pop10,NoisySphere,30,12,0.009884076573566759
+G: B + pop10,NoisySphere,30,13,0.010616781879344681
+G: B + pop10,NoisySphere,30,14,0.008831361989134695
+G: B + pop10,Rosenbrock,30,0,9.251568544732795
+G: B + pop10,Rosenbrock,30,1,8.149422011551598
+G: B + pop10,Rosenbrock,30,2,7.842464684841896
+G: B + pop10,Rosenbrock,30,3,7.73906128511538
+G: B + pop10,Rosenbrock,30,4,8.19050357212452
+G: B + pop10,Rosenbrock,30,5,8.030312150101768
+G: B + pop10,Rosenbrock,30,6,7.716882097541018
+G: B + pop10,Rosenbrock,30,7,8.076545751745302
+G: B + pop10,Rosenbrock,30,8,8.25148036973253
+G: B + pop10,Rosenbrock,30,9,6.081994371872957
+G: B + pop10,Rosenbrock,30,10,6.557248187893926
+G: B + pop10,Rosenbrock,30,11,8.421812759980885
+G: B + pop10,Rosenbrock,30,12,7.6105942531628985
+G: B + pop10,Rosenbrock,30,13,8.422671819750546
+G: B + pop10,Rosenbrock,30,14,8.379429116788016
+G: B + pop10,RotatedElliptic,30,0,2.4790702669480438
+G: B + pop10,RotatedElliptic,30,1,39.7306037595438
+G: B + pop10,RotatedElliptic,30,2,40.767259548235536
+G: B + pop10,RotatedElliptic,30,3,158.81691800283156
+G: B + pop10,RotatedElliptic,30,4,95.78171092681436
+G: B + pop10,RotatedElliptic,30,5,45.29670931693264
+G: B + pop10,RotatedElliptic,30,6,12.71819169863709
+G: B + pop10,RotatedElliptic,30,7,0.8817131191332398
+G: B + pop10,RotatedElliptic,30,8,3.6389104924952616
+G: B + pop10,RotatedElliptic,30,9,3.1901268926920596
+G: B + pop10,RotatedElliptic,30,10,3.993481090844294
+G: B + pop10,RotatedElliptic,30,11,2.478204272288643
+G: B + pop10,RotatedElliptic,30,12,4.697886732239692
+G: B + pop10,RotatedElliptic,30,13,62.197102080038206
+G: B + pop10,RotatedElliptic,30,14,14.823662848159863
+G: B + pop10,Schwefel,30,0,0.00038182699972821865
+G: B + pop10,Schwefel,30,1,0.00038182700154720806
+G: B + pop10,Schwefel,30,2,0.00038182698881428223
+G: B + pop10,Schwefel,30,3,0.00038182698881428223
+G: B + pop10,Schwefel,30,4,0.00038182709067768883
+G: B + pop10,Schwefel,30,5,0.00038182698881428223
+G: B + pop10,Schwefel,30,6,0.00038182698881428223
+G: B + pop10,Schwefel,30,7,0.00038182698881428223
+G: B + pop10,Schwefel,30,8,0.00038182698881428223
+G: B + pop10,Schwefel,30,9,0.00038182698699529283
+G: B + pop10,Schwefel,30,10,0.00038182698881428223
+G: B + pop10,Schwefel,30,11,0.00038182698881428223
+G: B + pop10,Schwefel,30,12,0.00038182698881428223
+G: B + pop10,Schwefel,30,13,0.00038182698881428223
+G: B + pop10,Schwefel,30,14,0.00038182698881428223
+G: B + pop10,Zakharov,30,0,2.884667386093351e-16
+G: B + pop10,Zakharov,30,1,3.517501467096441e-15
+G: B + pop10,Zakharov,30,2,2.685977583657951e-15
+G: B + pop10,Zakharov,30,3,3.2694648532017214e-15
+G: B + pop10,Zakharov,30,4,2.5998856641663077e-16
+G: B + pop10,Zakharov,30,5,1.4505636643680693e-15
+G: B + pop10,Zakharov,30,6,1.0624296788752441e-15
+G: B + pop10,Zakharov,30,7,1.5824491213656406e-15
+G: B + pop10,Zakharov,30,8,1.0478608301402397e-14
+G: B + pop10,Zakharov,30,9,5.101105330061876e-14
+G: B + pop10,Zakharov,30,10,1.7233713701303565e-16
+G: B + pop10,Zakharov,30,11,2.4706226197662197e-15
+G: B + pop10,Zakharov,30,12,7.882783856525061e-16
+G: B + pop10,Zakharov,30,13,1.6599539194056842e-16
+G: B + pop10,Zakharov,30,14,1.1211381596331217e-15
+H: B + arc1.0,Ackley,30,0,7.549516567451064e-15
+H: B + arc1.0,Ackley,30,1,7.549516567451064e-15
+H: B + arc1.0,Ackley,30,2,1.1102230246251565e-14
+H: B + arc1.0,Ackley,30,3,7.549516567451064e-15
+H: B + arc1.0,Ackley,30,4,7.549516567451064e-15
+H: B + arc1.0,Ackley,30,5,1.1102230246251565e-14
+H: B + arc1.0,Ackley,30,6,7.549516567451064e-15
+H: B + arc1.0,Ackley,30,7,7.549516567451064e-15
+H: B + arc1.0,Ackley,30,8,7.549516567451064e-15
+H: B + arc1.0,Ackley,30,9,7.549516567451064e-15
+H: B + arc1.0,Ackley,30,10,7.549516567451064e-15
+H: B + arc1.0,Ackley,30,11,7.549516567451064e-15
+H: B + arc1.0,Ackley,30,12,7.549516567451064e-15
+H: B + arc1.0,Ackley,30,13,7.549516567451064e-15
+H: B + arc1.0,Ackley,30,14,7.549516567451064e-15
+H: B + arc1.0,BentCigar,30,0,6.310887241768094e-23
+H: B + arc1.0,BentCigar,30,1,5.0487097934144756e-23
+H: B + arc1.0,BentCigar,30,2,0.0
+H: B + arc1.0,BentCigar,30,3,5.0487097934144756e-23
+H: B + arc1.0,BentCigar,30,4,0.0
+H: B + arc1.0,BentCigar,30,5,5.0487097934144756e-23
+H: B + arc1.0,BentCigar,30,6,6.310887241768094e-23
+H: B + arc1.0,BentCigar,30,7,4.543838814073028e-22
+H: B + arc1.0,BentCigar,30,8,2.5243548967072378e-23
+H: B + arc1.0,BentCigar,30,9,0.0
+H: B + arc1.0,BentCigar,30,10,3.0292258760486853e-22
+H: B + arc1.0,BentCigar,30,11,0.0
+H: B + arc1.0,BentCigar,30,12,1.0097419586828951e-22
+H: B + arc1.0,BentCigar,30,13,1.2621774483536189e-23
+H: B + arc1.0,BentCigar,30,14,0.0
+H: B + arc1.0,Composition,30,0,3.774758283725614e-15
+H: B + arc1.0,Composition,30,1,3.774758283725564e-15
+H: B + arc1.0,Composition,30,2,2.220446049250313e-16
+H: B + arc1.0,Composition,30,3,3.774758283725564e-15
+H: B + arc1.0,Composition,30,4,1.998401444325307e-15
+H: B + arc1.0,Composition,30,5,3.774758283725564e-15
+H: B + arc1.0,Composition,30,6,1.998401444325288e-15
+H: B + arc1.0,Composition,30,7,5.551115123125884e-15
+H: B + arc1.0,Composition,30,8,3.774758283725583e-15
+H: B + arc1.0,Composition,30,9,3.774758283725583e-15
+H: B + arc1.0,Composition,30,10,2.220446049250313e-16
+H: B + arc1.0,Composition,30,11,7.32747196252621e-15
+H: B + arc1.0,Composition,30,12,1.998401444325307e-15
+H: B + arc1.0,Composition,30,13,3.774758283725583e-15
+H: B + arc1.0,Composition,30,14,1.9984014443252834e-15
+H: B + arc1.0,DynamicSphere,30,0,0.05699577294054292
+H: B + arc1.0,DynamicSphere,30,1,0.08717950132132708
+H: B + arc1.0,DynamicSphere,30,2,0.0672199714371676
+H: B + arc1.0,DynamicSphere,30,3,0.0732639892440588
+H: B + arc1.0,DynamicSphere,30,4,0.08213855854065068
+H: B + arc1.0,DynamicSphere,30,5,0.05648386205027176
+H: B + arc1.0,DynamicSphere,30,6,0.09667103924411692
+H: B + arc1.0,DynamicSphere,30,7,0.14969199517318324
+H: B + arc1.0,DynamicSphere,30,8,0.09574341695177871
+H: B + arc1.0,DynamicSphere,30,9,0.08897716654574193
+H: B + arc1.0,DynamicSphere,30,10,0.09515573601725026
+H: B + arc1.0,DynamicSphere,30,11,0.05836245126120484
+H: B + arc1.0,DynamicSphere,30,12,0.06548453377898096
+H: B + arc1.0,DynamicSphere,30,13,0.10182624661740586
+H: B + arc1.0,DynamicSphere,30,14,0.0919811976924796
+H: B + arc1.0,Griewank,30,0,0.0
+H: B + arc1.0,Griewank,30,1,0.0
+H: B + arc1.0,Griewank,30,2,0.0
+H: B + arc1.0,Griewank,30,3,0.0
+H: B + arc1.0,Griewank,30,4,0.0
+H: B + arc1.0,Griewank,30,5,0.0
+H: B + arc1.0,Griewank,30,6,0.0
+H: B + arc1.0,Griewank,30,7,0.0
+H: B + arc1.0,Griewank,30,8,0.0
+H: B + arc1.0,Griewank,30,9,0.0
+H: B + arc1.0,Griewank,30,10,0.0
+H: B + arc1.0,Griewank,30,11,0.0
+H: B + arc1.0,Griewank,30,12,0.0
+H: B + arc1.0,Griewank,30,13,0.0
+H: B + arc1.0,Griewank,30,14,0.0
+H: B + arc1.0,Levy,30,0,1.4997597826618576e-32
+H: B + arc1.0,Levy,30,1,1.4997597826618576e-32
+H: B + arc1.0,Levy,30,2,8.11819508107026e-31
+H: B + arc1.0,Levy,30,3,4.134085529668231e-31
+H: B + arc1.0,Levy,30,4,8.118195081070268e-31
+H: B + arc1.0,Levy,30,5,8.11819508107026e-31
+H: B + arc1.0,Levy,30,6,4.134085529668223e-31
+H: B + arc1.0,Levy,30,7,1.3098332020322809e-30
+H: B + arc1.0,Levy,30,8,1.6086414183874387e-30
+H: B + arc1.0,Levy,30,9,4.134085529668223e-31
+H: B + arc1.0,Levy,30,10,4.134085529668223e-31
+H: B + arc1.0,Levy,30,11,5.130112917518741e-31
+H: B + arc1.0,Levy,30,12,1.4997597826618576e-32
+H: B + arc1.0,Levy,30,13,4.134085529668231e-31
+H: B + arc1.0,Levy,30,14,1.4997597826618576e-32
+H: B + arc1.0,NoisyRastrigin,30,0,0.16699471679839561
+H: B + arc1.0,NoisyRastrigin,30,1,0.2685211953030162
+H: B + arc1.0,NoisyRastrigin,30,2,0.24224526547311243
+H: B + arc1.0,NoisyRastrigin,30,3,0.2452911522758363
+H: B + arc1.0,NoisyRastrigin,30,4,0.20394800625984644
+H: B + arc1.0,NoisyRastrigin,30,5,0.16336972922525206
+H: B + arc1.0,NoisyRastrigin,30,6,0.3594277441141589
+H: B + arc1.0,NoisyRastrigin,30,7,0.2885306378607879
+H: B + arc1.0,NoisyRastrigin,30,8,0.2194148889520875
+H: B + arc1.0,NoisyRastrigin,30,9,0.20634277446487914
+H: B + arc1.0,NoisyRastrigin,30,10,0.21556236935053974
+H: B + arc1.0,NoisyRastrigin,30,11,0.19795282556930083
+H: B + arc1.0,NoisyRastrigin,30,12,0.18486369069032627
+H: B + arc1.0,NoisyRastrigin,30,13,0.30490635111757136
+H: B + arc1.0,NoisyRastrigin,30,14,0.1731057276406478
+H: B + arc1.0,NoisySphere,30,0,0.022584890815574556
+H: B + arc1.0,NoisySphere,30,1,0.005185117049019974
+H: B + arc1.0,NoisySphere,30,2,0.009078078587232882
+H: B + arc1.0,NoisySphere,30,3,0.008663963295859434
+H: B + arc1.0,NoisySphere,30,4,0.010035224438230756
+H: B + arc1.0,NoisySphere,30,5,0.013219894852724833
+H: B + arc1.0,NoisySphere,30,6,0.007855250686185377
+H: B + arc1.0,NoisySphere,30,7,0.009210215804892055
+H: B + arc1.0,NoisySphere,30,8,0.010159887590031428
+H: B + arc1.0,NoisySphere,30,9,0.01572574430007424
+H: B + arc1.0,NoisySphere,30,10,0.011592402377676525
+H: B + arc1.0,NoisySphere,30,11,0.0090903396221992
+H: B + arc1.0,NoisySphere,30,12,0.010989368404423742
+H: B + arc1.0,NoisySphere,30,13,0.009207804024328615
+H: B + arc1.0,NoisySphere,30,14,0.011183583914730285
+H: B + arc1.0,Rosenbrock,30,0,0.6039657626362493
+H: B + arc1.0,Rosenbrock,30,1,2.170523109117182
+H: B + arc1.0,Rosenbrock,30,2,5.712411147748836
+H: B + arc1.0,Rosenbrock,30,3,0.9874667742440412
+H: B + arc1.0,Rosenbrock,30,4,3.6985213582151033
+H: B + arc1.0,Rosenbrock,30,5,2.375533469404534
+H: B + arc1.0,Rosenbrock,30,6,3.2257897205375157
+H: B + arc1.0,Rosenbrock,30,7,0.08667783725523086
+H: B + arc1.0,Rosenbrock,30,8,1.2833221464761078
+H: B + arc1.0,Rosenbrock,30,9,3.8675331440067167
+H: B + arc1.0,Rosenbrock,30,10,0.19704402825784695
+H: B + arc1.0,Rosenbrock,30,11,3.00619605512128
+H: B + arc1.0,Rosenbrock,30,12,2.215526918773607
+H: B + arc1.0,Rosenbrock,30,13,0.5577465454219837
+H: B + arc1.0,Rosenbrock,30,14,4.210932050426038
+H: B + arc1.0,RotatedElliptic,30,0,1348.6423797382702
+H: B + arc1.0,RotatedElliptic,30,1,1168.695013523214
+H: B + arc1.0,RotatedElliptic,30,2,412.1095409671453
+H: B + arc1.0,RotatedElliptic,30,3,11156.81083883293
+H: B + arc1.0,RotatedElliptic,30,4,5594.906030519839
+H: B + arc1.0,RotatedElliptic,30,5,41.00559100963694
+H: B + arc1.0,RotatedElliptic,30,6,68.8924665556995
+H: B + arc1.0,RotatedElliptic,30,7,504.07980394195454
+H: B + arc1.0,RotatedElliptic,30,8,1428.5057203256804
+H: B + arc1.0,RotatedElliptic,30,9,4443.446007147522
+H: B + arc1.0,RotatedElliptic,30,10,2616.843328488402
+H: B + arc1.0,RotatedElliptic,30,11,2590.0149926367335
+H: B + arc1.0,RotatedElliptic,30,12,4868.203177748428
+H: B + arc1.0,RotatedElliptic,30,13,674.4479643905223
+H: B + arc1.0,RotatedElliptic,30,14,20.252290931378425
+H: B + arc1.0,Schwefel,30,0,0.00038182698881428223
+H: B + arc1.0,Schwefel,30,1,0.00038182698881428223
+H: B + arc1.0,Schwefel,30,2,0.00038182698881428223
+H: B + arc1.0,Schwefel,30,3,0.00038182698881428223
+H: B + arc1.0,Schwefel,30,4,0.00038182698881428223
+H: B + arc1.0,Schwefel,30,5,0.00038182698881428223
+H: B + arc1.0,Schwefel,30,6,0.00038182698881428223
+H: B + arc1.0,Schwefel,30,7,0.00038182698881428223
+H: B + arc1.0,Schwefel,30,8,0.00038182698881428223
+H: B + arc1.0,Schwefel,30,9,0.00038182698881428223
+H: B + arc1.0,Schwefel,30,10,0.00038182698881428223
+H: B + arc1.0,Schwefel,30,11,0.00038182698881428223
+H: B + arc1.0,Schwefel,30,12,0.00038182698881428223
+H: B + arc1.0,Schwefel,30,13,0.00038182698881428223
+H: B + arc1.0,Schwefel,30,14,0.00038182698881428223
+H: B + arc1.0,Zakharov,30,0,7.702702670587705e-18
+H: B + arc1.0,Zakharov,30,1,2.9301942260328894e-16
+H: B + arc1.0,Zakharov,30,2,1.0837018686741039e-17
+H: B + arc1.0,Zakharov,30,3,3.0437980214868376e-17
+H: B + arc1.0,Zakharov,30,4,1.0671100629675289e-16
+H: B + arc1.0,Zakharov,30,5,3.4976868303469235e-17
+H: B + arc1.0,Zakharov,30,6,1.3138180528940957e-16
+H: B + arc1.0,Zakharov,30,7,2.675556797066513e-16
+H: B + arc1.0,Zakharov,30,8,1.4629509052329114e-17
+H: B + arc1.0,Zakharov,30,9,5.716392262169197e-16
+H: B + arc1.0,Zakharov,30,10,6.009018005387156e-18
+H: B + arc1.0,Zakharov,30,11,1.965123139090224e-15
+H: B + arc1.0,Zakharov,30,12,9.341551224410232e-16
+H: B + arc1.0,Zakharov,30,13,1.6157638108771037e-16
+H: B + arc1.0,Zakharov,30,14,6.456105243172577e-16
+L-SHADE,Ackley,30,0,1.8194334927557065e-12
+L-SHADE,Ackley,30,1,2.8532731732866523e-12
+L-SHADE,Ackley,30,2,1.318500864044836e-12
+L-SHADE,Ackley,30,3,4.096722960866828e-12
+L-SHADE,Ackley,30,4,1.830091633792108e-12
+L-SHADE,Ackley,30,5,1.2119194536808209e-12
+L-SHADE,Ackley,30,6,3.709477169877573e-12
+L-SHADE,Ackley,30,7,1.496136547984861e-12
+L-SHADE,Ackley,30,8,2.856825886965453e-12
+L-SHADE,Ackley,30,9,7.251976796851523e-13
+L-SHADE,Ackley,30,10,1.0378364834195963e-12
+L-SHADE,Ackley,30,11,2.934985587899064e-12
+L-SHADE,Ackley,30,12,2.4908963780490012e-12
+L-SHADE,Ackley,30,13,3.716582597235174e-12
+L-SHADE,Ackley,30,14,1.2758682998992299e-12
+L-SHADE,BentCigar,30,0,1.2473361006950348e-15
+L-SHADE,BentCigar,30,1,8.094024181219211e-15
+L-SHADE,BentCigar,30,2,1.2990728834267135e-16
+L-SHADE,BentCigar,30,3,2.5690076555878455e-14
+L-SHADE,BentCigar,30,4,7.435108189192803e-14
+L-SHADE,BentCigar,30,5,7.906660631321247e-16
+L-SHADE,BentCigar,30,6,1.1978065178325423e-14
+L-SHADE,BentCigar,30,7,7.963605846745719e-15
+L-SHADE,BentCigar,30,8,6.0810850467363346e-15
+L-SHADE,BentCigar,30,9,5.037253827396887e-14
+L-SHADE,BentCigar,30,10,1.4102691700015193e-14
+L-SHADE,BentCigar,30,11,6.54183629280618e-15
+L-SHADE,BentCigar,30,12,2.0347482119707486e-15
+L-SHADE,BentCigar,30,13,1.0730320903753152e-13
+L-SHADE,BentCigar,30,14,7.242833233255767e-16
+L-SHADE,Composition,30,0,8.066880496950749e-13
+L-SHADE,Composition,30,1,1.4005019367172018e-11
+L-SHADE,Composition,30,2,1.852962228112261e-12
+L-SHADE,Composition,30,3,3.4037217489392513e-12
+L-SHADE,Composition,30,4,5.181854945236142e-12
+L-SHADE,Composition,30,5,7.320810624398392e-13
+L-SHADE,Composition,30,6,2.6203483827460267e-12
+L-SHADE,Composition,30,7,4.18354240145815e-12
+L-SHADE,Composition,30,8,2.7020607973600906e-12
+L-SHADE,Composition,30,9,3.632871781227935e-12
+L-SHADE,Composition,30,10,4.1373571236323e-12
+L-SHADE,Composition,30,11,1.0521583604787738e-11
+L-SHADE,Composition,30,12,1.153077633380666e-12
+L-SHADE,Composition,30,13,5.082378962225923e-12
+L-SHADE,Composition,30,14,1.6806556146881412e-12
+L-SHADE,DynamicSphere,30,0,1.3103562276341325
+L-SHADE,DynamicSphere,30,1,1.3834599314945792
+L-SHADE,DynamicSphere,30,2,1.3215362312654753
+L-SHADE,DynamicSphere,30,3,1.1247802728817038
+L-SHADE,DynamicSphere,30,4,1.0387525336201842
+L-SHADE,DynamicSphere,30,5,1.9976285373965093
+L-SHADE,DynamicSphere,30,6,0.9909390651097054
+L-SHADE,DynamicSphere,30,7,0.9488127003756575
+L-SHADE,DynamicSphere,30,8,0.9086082502184607
+L-SHADE,DynamicSphere,30,9,1.0588897042776877
+L-SHADE,DynamicSphere,30,10,1.3328986375398122
+L-SHADE,DynamicSphere,30,11,1.807475658358339
+L-SHADE,DynamicSphere,30,12,0.7978097702767997
+L-SHADE,DynamicSphere,30,13,0.9366127015371762
+L-SHADE,DynamicSphere,30,14,1.530416354671121
+L-SHADE,Griewank,30,0,0.0
+L-SHADE,Griewank,30,1,0.0
+L-SHADE,Griewank,30,2,0.0
+L-SHADE,Griewank,30,3,0.0
+L-SHADE,Griewank,30,4,1.1102230246251565e-16
+L-SHADE,Griewank,30,5,0.0
+L-SHADE,Griewank,30,6,0.0
+L-SHADE,Griewank,30,7,0.0
+L-SHADE,Griewank,30,8,0.0
+L-SHADE,Griewank,30,9,0.0
+L-SHADE,Griewank,30,10,1.1102230246251565e-16
+L-SHADE,Griewank,30,11,0.0
+L-SHADE,Griewank,30,12,0.0
+L-SHADE,Griewank,30,13,0.0
+L-SHADE,Griewank,30,14,0.0
+L-SHADE,Levy,30,0,3.215833777169537e-23
+L-SHADE,Levy,30,1,1.8282083263820355e-24
+L-SHADE,Levy,30,2,3.520623325949833e-24
+L-SHADE,Levy,30,3,4.814993837933921e-24
+L-SHADE,Levy,30,4,1.2591075860335315e-24
+L-SHADE,Levy,30,5,7.477307304524614e-24
+L-SHADE,Levy,30,6,1.2639027274598432e-23
+L-SHADE,Levy,30,7,1.0502290086661212e-23
+L-SHADE,Levy,30,8,3.8462747294688796e-23
+L-SHADE,Levy,30,9,2.733183815405579e-24
+L-SHADE,Levy,30,10,9.35039689416554e-24
+L-SHADE,Levy,30,11,9.213080571422006e-24
+L-SHADE,Levy,30,12,4.6375595851882566e-24
+L-SHADE,Levy,30,13,2.5471159839572187e-24
+L-SHADE,Levy,30,14,4.736607501700112e-23
+L-SHADE,NoisyRastrigin,30,0,1.4458021391464655
+L-SHADE,NoisyRastrigin,30,1,1.6683884317543463
+L-SHADE,NoisyRastrigin,30,2,1.4850248355680549
+L-SHADE,NoisyRastrigin,30,3,1.7722947707410643
+L-SHADE,NoisyRastrigin,30,4,2.281458495774384
+L-SHADE,NoisyRastrigin,30,5,1.4363536410123476
+L-SHADE,NoisyRastrigin,30,6,0.9876171548996808
+L-SHADE,NoisyRastrigin,30,7,1.5047809605346085
+L-SHADE,NoisyRastrigin,30,8,1.4235177698805153
+L-SHADE,NoisyRastrigin,30,9,2.172639007264525
+L-SHADE,NoisyRastrigin,30,10,1.6521202165875977
+L-SHADE,NoisyRastrigin,30,11,2.338623885870607
+L-SHADE,NoisyRastrigin,30,12,1.8456146530415811
+L-SHADE,NoisyRastrigin,30,13,0.6290454109779784
+L-SHADE,NoisyRastrigin,30,14,2.061405811054943
+L-SHADE,NoisySphere,30,0,0.017333856057253016
+L-SHADE,NoisySphere,30,1,0.01609511080789075
+L-SHADE,NoisySphere,30,2,0.010170765160462884
+L-SHADE,NoisySphere,30,3,0.01758541315349972
+L-SHADE,NoisySphere,30,4,0.011644951507610947
+L-SHADE,NoisySphere,30,5,0.0133722296695964
+L-SHADE,NoisySphere,30,6,0.009962135997192713
+L-SHADE,NoisySphere,30,7,0.009371713811404501
+L-SHADE,NoisySphere,30,8,0.009293872797427888
+L-SHADE,NoisySphere,30,9,0.014855985341306636
+L-SHADE,NoisySphere,30,10,0.02000561180609564
+L-SHADE,NoisySphere,30,11,0.012619800108435365
+L-SHADE,NoisySphere,30,12,0.01299610220222283
+L-SHADE,NoisySphere,30,13,0.011520456592373893
+L-SHADE,NoisySphere,30,14,0.014195318388917843
+L-SHADE,Rosenbrock,30,0,13.78315286998967
+L-SHADE,Rosenbrock,30,1,14.890698945625852
+L-SHADE,Rosenbrock,30,2,13.436475538459524
+L-SHADE,Rosenbrock,30,3,14.096463137411583
+L-SHADE,Rosenbrock,30,4,13.527591218930647
+L-SHADE,Rosenbrock,30,5,13.950263547792302
+L-SHADE,Rosenbrock,30,6,13.07531978071523
+L-SHADE,Rosenbrock,30,7,13.315940923284378
+L-SHADE,Rosenbrock,30,8,13.844501093578735
+L-SHADE,Rosenbrock,30,9,14.733301621559406
+L-SHADE,Rosenbrock,30,10,13.357864050190349
+L-SHADE,Rosenbrock,30,11,13.552302233235768
+L-SHADE,Rosenbrock,30,12,12.955680042155524
+L-SHADE,Rosenbrock,30,13,13.537083905977799
+L-SHADE,Rosenbrock,30,14,11.584078567745237
+L-SHADE,RotatedElliptic,30,0,1351.0779536930627
+L-SHADE,RotatedElliptic,30,1,330.9596477469057
+L-SHADE,RotatedElliptic,30,2,248.81169376187887
+L-SHADE,RotatedElliptic,30,3,3003.9863587066297
+L-SHADE,RotatedElliptic,30,4,2997.15622977601
+L-SHADE,RotatedElliptic,30,5,1279.4882446768704
+L-SHADE,RotatedElliptic,30,6,1610.0345675306187
+L-SHADE,RotatedElliptic,30,7,402.08260390931866
+L-SHADE,RotatedElliptic,30,8,13608.152576131555
+L-SHADE,RotatedElliptic,30,9,1131.3607140997574
+L-SHADE,RotatedElliptic,30,10,403.57980542054446
+L-SHADE,RotatedElliptic,30,11,2373.9168922819827
+L-SHADE,RotatedElliptic,30,12,2843.009466353316
+L-SHADE,RotatedElliptic,30,13,2454.672725244422
+L-SHADE,RotatedElliptic,30,14,641.2119095746799
+L-SHADE,Schwefel,30,0,0.02938878954410029
+L-SHADE,Schwefel,30,1,0.11414065694043529
+L-SHADE,Schwefel,30,2,0.0706525589193916
+L-SHADE,Schwefel,30,3,0.019127913679767516
+L-SHADE,Schwefel,30,4,0.11958579384554469
+L-SHADE,Schwefel,30,5,0.007458872139977757
+L-SHADE,Schwefel,30,6,0.0241045856182609
+L-SHADE,Schwefel,30,7,0.05310624417870713
+L-SHADE,Schwefel,30,8,0.10505209885559452
+L-SHADE,Schwefel,30,9,0.15446099424116255
+L-SHADE,Schwefel,30,10,0.03892071751579351
+L-SHADE,Schwefel,30,11,0.34349345355622063
+L-SHADE,Schwefel,30,12,0.08276104455762834
+L-SHADE,Schwefel,30,13,0.09063575212348951
+L-SHADE,Schwefel,30,14,0.03578579495660961
+L-SHADE,Zakharov,30,0,2.6400886183443965e-09
+L-SHADE,Zakharov,30,1,3.1870981369765356e-09
+L-SHADE,Zakharov,30,2,1.7612188775354925e-09
+L-SHADE,Zakharov,30,3,1.4851958967024992e-09
+L-SHADE,Zakharov,30,4,3.7918978731713145e-10
+L-SHADE,Zakharov,30,5,1.1409751451143675e-09
+L-SHADE,Zakharov,30,6,7.576817643907081e-10
+L-SHADE,Zakharov,30,7,2.5034074891701266e-10
+L-SHADE,Zakharov,30,8,8.578900642658734e-10
+L-SHADE,Zakharov,30,9,8.162414059719166e-11
+L-SHADE,Zakharov,30,10,7.671685055492796e-09
+L-SHADE,Zakharov,30,11,3.61410823406744e-10
+L-SHADE,Zakharov,30,12,2.147676261840661e-10
+L-SHADE,Zakharov,30,13,5.2328342656975774e-09
+L-SHADE,Zakharov,30,14,1.3937359918659459e-09
+jSO,Ackley,30,0,8.815170815523743e-13
+jSO,Ackley,30,1,4.303224443447107e-13
+jSO,Ackley,30,2,7.505107646466058e-14
+jSO,Ackley,30,3,1.1550760348200129e-12
+jSO,Ackley,30,4,2.8821389719269064e-13
+jSO,Ackley,30,5,2.313704783318826e-13
+jSO,Ackley,30,6,1.1057821325266559e-13
+jSO,Ackley,30,7,1.745270594710746e-13
+jSO,Ackley,30,8,1.745270594710746e-13
+jSO,Ackley,30,9,2.349231920106831e-13
+jSO,Ackley,30,10,1.1057821325266559e-13
+jSO,Ackley,30,11,8.317790900491673e-13
+jSO,Ackley,30,12,1.7128520823916915e-12
+jSO,Ackley,30,13,5.155875726359227e-13
+jSO,Ackley,30,14,5.262457136723242e-13
+jSO,BentCigar,30,0,1.361681213106249e-16
+jSO,BentCigar,30,1,5.624005502264454e-17
+jSO,BentCigar,30,2,9.18949205403215e-17
+jSO,BentCigar,30,3,1.7338443292089206e-18
+jSO,BentCigar,30,4,5.547584120571929e-17
+jSO,BentCigar,30,5,9.360619416827974e-19
+jSO,BentCigar,30,6,1.1528328679542215e-18
+jSO,BentCigar,30,7,9.064543741348921e-18
+jSO,BentCigar,30,8,7.124859062102994e-17
+jSO,BentCigar,30,9,4.0676148197523045e-16
+jSO,BentCigar,30,10,5.194241599714875e-18
+jSO,BentCigar,30,11,7.123769770135514e-19
+jSO,BentCigar,30,12,1.3612707177587562e-19
+jSO,BentCigar,30,13,9.966321177906903e-18
+jSO,BentCigar,30,14,2.5542867099128393e-18
+jSO,Composition,30,0,3.359534872519952e-13
+jSO,Composition,30,1,4.922728891197018e-13
+jSO,Composition,30,2,3.53717055646042e-13
+jSO,Composition,30,3,3.714806240400925e-13
+jSO,Composition,30,4,1.584732345359358e-12
+jSO,Composition,30,5,1.4055423491761754e-13
+jSO,Composition,30,6,4.0700776082819964e-13
+jSO,Composition,30,7,2.648992136758254e-13
+jSO,Composition,30,8,2.151612221725294e-13
+jSO,Composition,30,9,5.722089468930324e-13
+jSO,Composition,30,10,3.803624082371203e-13
+jSO,Composition,30,11,1.796340853844708e-13
+jSO,Composition,30,12,2.453592884423824e-13
+jSO,Composition,30,13,5.633271626959904e-13
+jSO,Composition,30,14,2.435829316029807e-13
+jSO,DynamicSphere,30,0,1.0251258675223887
+jSO,DynamicSphere,30,1,1.2887387391536433
+jSO,DynamicSphere,30,2,1.2118978523293558
+jSO,DynamicSphere,30,3,1.2508364170419701
+jSO,DynamicSphere,30,4,0.6926232512132624
+jSO,DynamicSphere,30,5,1.040966378926618
+jSO,DynamicSphere,30,6,1.0933492125299444
+jSO,DynamicSphere,30,7,0.8684532976753766
+jSO,DynamicSphere,30,8,1.0431898367268186
+jSO,DynamicSphere,30,9,1.5063640337369806
+jSO,DynamicSphere,30,10,1.294535011921086
+jSO,DynamicSphere,30,11,1.2048353390065059
+jSO,DynamicSphere,30,12,1.6438395702963975
+jSO,DynamicSphere,30,13,0.9927739500017223
+jSO,DynamicSphere,30,14,0.9812819763750213
+jSO,Griewank,30,0,0.0
+jSO,Griewank,30,1,0.0
+jSO,Griewank,30,2,0.0
+jSO,Griewank,30,3,0.0
+jSO,Griewank,30,4,0.0
+jSO,Griewank,30,5,0.0
+jSO,Griewank,30,6,0.0
+jSO,Griewank,30,7,0.0
+jSO,Griewank,30,8,0.0
+jSO,Griewank,30,9,0.0
+jSO,Griewank,30,10,0.0
+jSO,Griewank,30,11,0.0
+jSO,Griewank,30,12,0.0
+jSO,Griewank,30,13,0.0
+jSO,Griewank,30,14,0.0
+jSO,Levy,30,0,1.903896714559949e-24
+jSO,Levy,30,1,3.719849176979168e-25
+jSO,Levy,30,2,1.0062424975430347e-24
+jSO,Levy,30,3,1.5132149496510322e-25
+jSO,Levy,30,4,3.8948515812574846e-24
+jSO,Levy,30,5,1.05397861272814e-25
+jSO,Levy,30,6,1.7078635677329477e-25
+jSO,Levy,30,7,6.091627372155408e-25
+jSO,Levy,30,8,1.3441496091817386e-25
+jSO,Levy,30,9,1.8044626495759986e-25
+jSO,Levy,30,10,6.717677236716187e-25
+jSO,Levy,30,11,1.2877079003657653e-25
+jSO,Levy,30,12,2.5858384219875393e-25
+jSO,Levy,30,13,9.539455011672953e-26
+jSO,Levy,30,14,2.1060587695898437e-25
+jSO,NoisyRastrigin,30,0,4.529922051836847
+jSO,NoisyRastrigin,30,1,2.9995211269426285
+jSO,NoisyRastrigin,30,2,4.134091315359777
+jSO,NoisyRastrigin,30,3,3.8983451952845876
+jSO,NoisyRastrigin,30,4,5.17095414880316
+jSO,NoisyRastrigin,30,5,1.9529617098632173
+jSO,NoisyRastrigin,30,6,3.9310879337477758
+jSO,NoisyRastrigin,30,7,4.129021397208977
+jSO,NoisyRastrigin,30,8,6.132421466970698
+jSO,NoisyRastrigin,30,9,5.015113045144609
+jSO,NoisyRastrigin,30,10,6.850989029320981
+jSO,NoisyRastrigin,30,11,1.1751741375906697
+jSO,NoisyRastrigin,30,12,4.200958228225746
+jSO,NoisyRastrigin,30,13,7.09870993277036
+jSO,NoisyRastrigin,30,14,8.368559598629961
+jSO,NoisySphere,30,0,0.007510746785821546
+jSO,NoisySphere,30,1,0.007033905914511928
+jSO,NoisySphere,30,2,0.007848972403115434
+jSO,NoisySphere,30,3,0.005471558157342238
+jSO,NoisySphere,30,4,0.005578527057224432
+jSO,NoisySphere,30,5,0.011051707064906465
+jSO,NoisySphere,30,6,0.014700747395811398
+jSO,NoisySphere,30,7,0.010529541809749654
+jSO,NoisySphere,30,8,0.007571018679692926
+jSO,NoisySphere,30,9,0.010971818174532072
+jSO,NoisySphere,30,10,0.007126824541670549
+jSO,NoisySphere,30,11,0.008780732221960566
+jSO,NoisySphere,30,12,0.014025221003769604
+jSO,NoisySphere,30,13,0.006556030860376928
+jSO,NoisySphere,30,14,0.01161274303935061
+jSO,Rosenbrock,30,0,12.41688105490943
+jSO,Rosenbrock,30,1,12.2376987558167
+jSO,Rosenbrock,30,2,12.89408847490963
+jSO,Rosenbrock,30,3,12.823891269296467
+jSO,Rosenbrock,30,4,12.750171927010069
+jSO,Rosenbrock,30,5,12.667246399759861
+jSO,Rosenbrock,30,6,11.931610700352165
+jSO,Rosenbrock,30,7,13.684856224107163
+jSO,Rosenbrock,30,8,12.543923292559706
+jSO,Rosenbrock,30,9,12.29949554332358
+jSO,Rosenbrock,30,10,13.419220073463567
+jSO,Rosenbrock,30,11,12.384111695601216
+jSO,Rosenbrock,30,12,11.75914359374556
+jSO,Rosenbrock,30,13,11.929317503982903
+jSO,Rosenbrock,30,14,13.084604886881376
+jSO,RotatedElliptic,30,0,254.89856584063966
+jSO,RotatedElliptic,30,1,312.26878740469215
+jSO,RotatedElliptic,30,2,2133.3225769130845
+jSO,RotatedElliptic,30,3,1623.0779087358433
+jSO,RotatedElliptic,30,4,247.75096419821764
+jSO,RotatedElliptic,30,5,518.1013936619505
+jSO,RotatedElliptic,30,6,66.49308870569557
+jSO,RotatedElliptic,30,7,204.79122110050042
+jSO,RotatedElliptic,30,8,3165.0187700041442
+jSO,RotatedElliptic,30,9,567.6038721944141
+jSO,RotatedElliptic,30,10,1205.7498749033684
+jSO,RotatedElliptic,30,11,109.22663842486648
+jSO,RotatedElliptic,30,12,67.08353556858877
+jSO,RotatedElliptic,30,13,779.0624198527782
+jSO,RotatedElliptic,30,14,1201.6241557335914
+jSO,Schwefel,30,0,3.7702991887745156
+jSO,Schwefel,30,1,4.552893592759574
+jSO,Schwefel,30,2,0.4155575696113374
+jSO,Schwefel,30,3,2.9222769302414235
+jSO,Schwefel,30,4,0.4848870561399963
+jSO,Schwefel,30,5,21.73722249576349
+jSO,Schwefel,30,6,3.007869053782997
+jSO,Schwefel,30,7,1.0133403158597503
+jSO,Schwefel,30,8,2.053158516262556
+jSO,Schwefel,30,9,0.9316833441989729
+jSO,Schwefel,30,10,6.011260908222539
+jSO,Schwefel,30,11,8.376353003583063
+jSO,Schwefel,30,12,0.14051645212930453
+jSO,Schwefel,30,13,0.39848790963696956
+jSO,Schwefel,30,14,2.994181592244786
+jSO,Zakharov,30,0,3.259600358814835e-10
+jSO,Zakharov,30,1,4.629813501208449e-11
+jSO,Zakharov,30,2,2.802221217352911e-10
+jSO,Zakharov,30,3,4.5763912046286064e-10
+jSO,Zakharov,30,4,2.494707342506397e-10
+jSO,Zakharov,30,5,6.787659416686145e-10
+jSO,Zakharov,30,6,2.2525478602049343e-10
+jSO,Zakharov,30,7,1.6024528227771712e-10
+jSO,Zakharov,30,8,1.0328510838760501e-09
+jSO,Zakharov,30,9,6.934791477555058e-10
+jSO,Zakharov,30,10,3.095465349358685e-11
+jSO,Zakharov,30,11,5.724284742195267e-10
+jSO,Zakharov,30,12,1.9257692258498843e-10
+jSO,Zakharov,30,13,3.034969860429773e-09
+jSO,Zakharov,30,14,1.919857042387524e-09
+LSHADE-cnEpSin,Ackley,30,0,4.836131495267182e-13
+LSHADE-cnEpSin,Ackley,30,1,1.0946799022804043e-12
+LSHADE-cnEpSin,Ackley,30,2,5.475619957451272e-13
+LSHADE-cnEpSin,Ackley,30,3,2.5623947408348613e-13
+LSHADE-cnEpSin,Ackley,30,4,3.0242475190789264e-13
+LSHADE-cnEpSin,Ackley,30,5,2.1715962361668062e-13
+LSHADE-cnEpSin,Ackley,30,6,1.1088907569956064e-12
+LSHADE-cnEpSin,Ackley,30,7,7.145395386487507e-13
+LSHADE-cnEpSin,Ackley,30,8,2.9172220195050613e-12
+LSHADE-cnEpSin,Ackley,30,9,1.745270594710746e-13
+LSHADE-cnEpSin,Ackley,30,10,1.780797731498751e-13
+LSHADE-cnEpSin,Ackley,30,11,1.816324868286756e-13
+LSHADE-cnEpSin,Ackley,30,12,1.1124434706744069e-12
+LSHADE-cnEpSin,Ackley,30,13,5.901945598907332e-13
+LSHADE-cnEpSin,Ackley,30,14,1.63113966777928e-12
+LSHADE-cnEpSin,BentCigar,30,0,3.807600463835219e-17
+LSHADE-cnEpSin,BentCigar,30,1,1.18715300211136e-16
+LSHADE-cnEpSin,BentCigar,30,2,1.3238515182002503e-17
+LSHADE-cnEpSin,BentCigar,30,3,2.5483656503601923e-17
+LSHADE-cnEpSin,BentCigar,30,4,1.9545112307456984e-15
+LSHADE-cnEpSin,BentCigar,30,5,6.432390391096679e-18
+LSHADE-cnEpSin,BentCigar,30,6,2.7772796161224813e-16
+LSHADE-cnEpSin,BentCigar,30,7,5.274300515193547e-16
+LSHADE-cnEpSin,BentCigar,30,8,1.3639560080362879e-17
+LSHADE-cnEpSin,BentCigar,30,9,1.3317784464246363e-15
+LSHADE-cnEpSin,BentCigar,30,10,1.2042210621563713e-17
+LSHADE-cnEpSin,BentCigar,30,11,9.454959190665788e-17
+LSHADE-cnEpSin,BentCigar,30,12,8.247304584249574e-18
+LSHADE-cnEpSin,BentCigar,30,13,4.954139203965446e-18
+LSHADE-cnEpSin,BentCigar,30,14,2.5394936034618e-17
+LSHADE-cnEpSin,Composition,30,0,2.986499936245011e-13
+LSHADE-cnEpSin,Composition,30,1,4.443112544557254e-13
+LSHADE-cnEpSin,Composition,30,2,7.07212066688094e-13
+LSHADE-cnEpSin,Composition,30,3,1.909805646973872e-12
+LSHADE-cnEpSin,Composition,30,4,2.1105339698291124e-12
+LSHADE-cnEpSin,Composition,30,5,1.1939338406872428e-12
+LSHADE-cnEpSin,Composition,30,6,2.4713564528179047e-13
+LSHADE-cnEpSin,Composition,30,7,3.0575542098211733e-13
+LSHADE-cnEpSin,Composition,30,8,4.549693954921628e-13
+LSHADE-cnEpSin,Composition,30,9,4.1588954502523265e-13
+LSHADE-cnEpSin,Composition,30,10,6.166178678782364e-13
+LSHADE-cnEpSin,Composition,30,11,4.869438186014808e-13
+LSHADE-cnEpSin,Composition,30,12,4.1944225870404375e-13
+LSHADE-cnEpSin,Composition,30,13,2.206457239158311e-12
+LSHADE-cnEpSin,Composition,30,14,6.770140004181403e-13
+LSHADE-cnEpSin,DynamicSphere,30,0,0.7559960667770101
+LSHADE-cnEpSin,DynamicSphere,30,1,0.5528120312169164
+LSHADE-cnEpSin,DynamicSphere,30,2,1.610543961620495
+LSHADE-cnEpSin,DynamicSphere,30,3,0.8725485674150246
+LSHADE-cnEpSin,DynamicSphere,30,4,0.4383129990422852
+LSHADE-cnEpSin,DynamicSphere,30,5,1.2935537964117338
+LSHADE-cnEpSin,DynamicSphere,30,6,0.7344933173259786
+LSHADE-cnEpSin,DynamicSphere,30,7,1.3991644116250743
+LSHADE-cnEpSin,DynamicSphere,30,8,0.8028663941796932
+LSHADE-cnEpSin,DynamicSphere,30,9,0.8581764032971227
+LSHADE-cnEpSin,DynamicSphere,30,10,0.8397656509503946
+LSHADE-cnEpSin,DynamicSphere,30,11,0.8396557657000949
+LSHADE-cnEpSin,DynamicSphere,30,12,1.022192469846578
+LSHADE-cnEpSin,DynamicSphere,30,13,0.962612880281896
+LSHADE-cnEpSin,DynamicSphere,30,14,0.7876517857058285
+LSHADE-cnEpSin,Griewank,30,0,0.0
+LSHADE-cnEpSin,Griewank,30,1,0.0
+LSHADE-cnEpSin,Griewank,30,2,0.0
+LSHADE-cnEpSin,Griewank,30,3,0.0
+LSHADE-cnEpSin,Griewank,30,4,0.0
+LSHADE-cnEpSin,Griewank,30,5,0.0
+LSHADE-cnEpSin,Griewank,30,6,0.0
+LSHADE-cnEpSin,Griewank,30,7,0.0
+LSHADE-cnEpSin,Griewank,30,8,0.0
+LSHADE-cnEpSin,Griewank,30,9,0.0
+LSHADE-cnEpSin,Griewank,30,10,0.0
+LSHADE-cnEpSin,Griewank,30,11,0.0
+LSHADE-cnEpSin,Griewank,30,12,0.0
+LSHADE-cnEpSin,Griewank,30,13,0.0
+LSHADE-cnEpSin,Griewank,30,14,0.0
+LSHADE-cnEpSin,Levy,30,0,6.50703013422621e-27
+LSHADE-cnEpSin,Levy,30,1,1.877347476259892e-26
+LSHADE-cnEpSin,Levy,30,2,2.3939368543049322e-26
+LSHADE-cnEpSin,Levy,30,3,8.899682894338814e-25
+LSHADE-cnEpSin,Levy,30,4,4.364826942159174e-24
+LSHADE-cnEpSin,Levy,30,5,1.681090143704176e-26
+LSHADE-cnEpSin,Levy,30,6,3.4078159467919386e-24
+LSHADE-cnEpSin,Levy,30,7,7.238523713233144e-25
+LSHADE-cnEpSin,Levy,30,8,1.5851503702386877e-25
+LSHADE-cnEpSin,Levy,30,9,1.20253253900977e-25
+LSHADE-cnEpSin,Levy,30,10,1.4979781565314882e-24
+LSHADE-cnEpSin,Levy,30,11,9.702181890309487e-26
+LSHADE-cnEpSin,Levy,30,12,1.7765163657763797e-25
+LSHADE-cnEpSin,Levy,30,13,5.166265986035011e-25
+LSHADE-cnEpSin,Levy,30,14,3.5178596342082863e-26
+LSHADE-cnEpSin,NoisyRastrigin,30,0,3.9332328038498225
+LSHADE-cnEpSin,NoisyRastrigin,30,1,3.2796673911881893
+LSHADE-cnEpSin,NoisyRastrigin,30,2,5.2172714320732805
+LSHADE-cnEpSin,NoisyRastrigin,30,3,4.718306374490625
+LSHADE-cnEpSin,NoisyRastrigin,30,4,4.264889033555292
+LSHADE-cnEpSin,NoisyRastrigin,30,5,3.1475712586141995
+LSHADE-cnEpSin,NoisyRastrigin,30,6,6.704156005353257
+LSHADE-cnEpSin,NoisyRastrigin,30,7,5.441225913931749
+LSHADE-cnEpSin,NoisyRastrigin,30,8,5.330386931342396
+LSHADE-cnEpSin,NoisyRastrigin,30,9,3.494206013366277
+LSHADE-cnEpSin,NoisyRastrigin,30,10,5.472030949476089
+LSHADE-cnEpSin,NoisyRastrigin,30,11,2.317904796184905
+LSHADE-cnEpSin,NoisyRastrigin,30,12,3.0554642254426696
+LSHADE-cnEpSin,NoisyRastrigin,30,13,4.010303185521444
+LSHADE-cnEpSin,NoisyRastrigin,30,14,5.00751050557229
+LSHADE-cnEpSin,NoisySphere,30,0,0.014531139564273163
+LSHADE-cnEpSin,NoisySphere,30,1,0.012258957226688754
+LSHADE-cnEpSin,NoisySphere,30,2,0.009568830061274323
+LSHADE-cnEpSin,NoisySphere,30,3,0.006209284878512766
+LSHADE-cnEpSin,NoisySphere,30,4,0.0080455774979081
+LSHADE-cnEpSin,NoisySphere,30,5,0.00731396484530909
+LSHADE-cnEpSin,NoisySphere,30,6,0.010692912687614884
+LSHADE-cnEpSin,NoisySphere,30,7,0.010496608500494374
+LSHADE-cnEpSin,NoisySphere,30,8,0.007758969287240563
+LSHADE-cnEpSin,NoisySphere,30,9,0.008956311204861553
+LSHADE-cnEpSin,NoisySphere,30,10,0.008324023923798557
+LSHADE-cnEpSin,NoisySphere,30,11,0.007816004970721418
+LSHADE-cnEpSin,NoisySphere,30,12,0.010107889126777531
+LSHADE-cnEpSin,NoisySphere,30,13,0.005897246295959475
+LSHADE-cnEpSin,NoisySphere,30,14,0.011646379642882183
+LSHADE-cnEpSin,Rosenbrock,30,0,13.437798223729317
+LSHADE-cnEpSin,Rosenbrock,30,1,13.06849203475064
+LSHADE-cnEpSin,Rosenbrock,30,2,14.04595332136217
+LSHADE-cnEpSin,Rosenbrock,30,3,13.604735248499257
+LSHADE-cnEpSin,Rosenbrock,30,4,11.64665084586128
+LSHADE-cnEpSin,Rosenbrock,30,5,14.279990965398138
+LSHADE-cnEpSin,Rosenbrock,30,6,14.080712907253593
+LSHADE-cnEpSin,Rosenbrock,30,7,12.434202769821859
+LSHADE-cnEpSin,Rosenbrock,30,8,12.753843595701323
+LSHADE-cnEpSin,Rosenbrock,30,9,12.226713382787423
+LSHADE-cnEpSin,Rosenbrock,30,10,13.299079627751006
+LSHADE-cnEpSin,Rosenbrock,30,11,14.55144046770614
+LSHADE-cnEpSin,Rosenbrock,30,12,11.990218894261394
+LSHADE-cnEpSin,Rosenbrock,30,13,14.845673299632896
+LSHADE-cnEpSin,Rosenbrock,30,14,12.187230419810488
+LSHADE-cnEpSin,RotatedElliptic,30,0,0.5977487011490155
+LSHADE-cnEpSin,RotatedElliptic,30,1,0.03348537426572311
+LSHADE-cnEpSin,RotatedElliptic,30,2,1.6191423209662466
+LSHADE-cnEpSin,RotatedElliptic,30,3,0.03832314558823801
+LSHADE-cnEpSin,RotatedElliptic,30,4,3.4542799460957725
+LSHADE-cnEpSin,RotatedElliptic,30,5,4.956423186347721
+LSHADE-cnEpSin,RotatedElliptic,30,6,0.35858621703831467
+LSHADE-cnEpSin,RotatedElliptic,30,7,0.020605831880545322
+LSHADE-cnEpSin,RotatedElliptic,30,8,113.71194515990362
+LSHADE-cnEpSin,RotatedElliptic,30,9,0.02672518731341979
+LSHADE-cnEpSin,RotatedElliptic,30,10,0.4219303789274817
+LSHADE-cnEpSin,RotatedElliptic,30,11,0.01375907571840854
+LSHADE-cnEpSin,RotatedElliptic,30,12,0.8479661806350697
+LSHADE-cnEpSin,RotatedElliptic,30,13,0.051011827792437674
+LSHADE-cnEpSin,RotatedElliptic,30,14,0.17245996269868896
+LSHADE-cnEpSin,Schwefel,30,0,161.6413766659207
+LSHADE-cnEpSin,Schwefel,30,1,10.939912199321043
+LSHADE-cnEpSin,Schwefel,30,2,0.9552352264508954
+LSHADE-cnEpSin,Schwefel,30,3,5.482860976144366
+LSHADE-cnEpSin,Schwefel,30,4,49.69522399930247
+LSHADE-cnEpSin,Schwefel,30,5,8.839887198775614
+LSHADE-cnEpSin,Schwefel,30,6,3.6715676267285744
+LSHADE-cnEpSin,Schwefel,30,7,9.274340776186364
+LSHADE-cnEpSin,Schwefel,30,8,0.3213388458098052
+LSHADE-cnEpSin,Schwefel,30,9,1.8266665858918714
+LSHADE-cnEpSin,Schwefel,30,10,3.7766357834461814
+LSHADE-cnEpSin,Schwefel,30,11,6.1703738740616245
+LSHADE-cnEpSin,Schwefel,30,12,2.235126295092414
+LSHADE-cnEpSin,Schwefel,30,13,12.04921389141964
+LSHADE-cnEpSin,Schwefel,30,14,2.806049873403026
+LSHADE-cnEpSin,Zakharov,30,0,3.270667834810404e-13
+LSHADE-cnEpSin,Zakharov,30,1,3.575147603850181e-12
+LSHADE-cnEpSin,Zakharov,30,2,3.388120585106394e-13
+LSHADE-cnEpSin,Zakharov,30,3,1.0679876301177113e-12
+LSHADE-cnEpSin,Zakharov,30,4,7.132546633272393e-14
+LSHADE-cnEpSin,Zakharov,30,5,1.4761106587619246e-12
+LSHADE-cnEpSin,Zakharov,30,6,4.958285974048098e-12
+LSHADE-cnEpSin,Zakharov,30,7,7.214772752596347e-14
+LSHADE-cnEpSin,Zakharov,30,8,4.475827367157824e-13
+LSHADE-cnEpSin,Zakharov,30,9,1.0482410444424235e-12
+LSHADE-cnEpSin,Zakharov,30,10,8.781424579676097e-14
+LSHADE-cnEpSin,Zakharov,30,11,5.291886034489113e-14
+LSHADE-cnEpSin,Zakharov,30,12,2.7303787272656954e-12
+LSHADE-cnEpSin,Zakharov,30,13,4.3000182688293416e-12
+LSHADE-cnEpSin,Zakharov,30,14,7.471082085000155e-13
+CMA-ES,Ackley,30,0,7.549516567451064e-15
+CMA-ES,Ackley,30,1,7.711052426840952
+CMA-ES,Ackley,30,2,5.497445946270577
+CMA-ES,Ackley,30,3,12.889276420520872
+CMA-ES,Ackley,30,4,8.052841597647351
+CMA-ES,Ackley,30,5,4.533418145905291
+CMA-ES,Ackley,30,6,11.321296853897996
+CMA-ES,Ackley,30,7,7.549516567451064e-15
+CMA-ES,Ackley,30,8,6.604982566975014
+CMA-ES,Ackley,30,9,8.79004358972281
+CMA-ES,Ackley,30,10,10.540282630738371
+CMA-ES,Ackley,30,11,7.98268677511453
+CMA-ES,Ackley,30,12,8.95711297136446
+CMA-ES,Ackley,30,13,10.67262770641577
+CMA-ES,Ackley,30,14,7.549516567451064e-15
+CMA-ES,BentCigar,30,0,3823397598.6155925
+CMA-ES,BentCigar,30,1,536574554.7376314
+CMA-ES,BentCigar,30,2,2300656372.1416335
+CMA-ES,BentCigar,30,3,0.0
+CMA-ES,BentCigar,30,4,0.0
+CMA-ES,BentCigar,30,5,0.0
+CMA-ES,BentCigar,30,6,0.0
+CMA-ES,BentCigar,30,7,890874282.8634537
+CMA-ES,BentCigar,30,8,1.9199493137634385e-23
+CMA-ES,BentCigar,30,9,536574554.7376314
+CMA-ES,BentCigar,30,10,890874282.8634537
+CMA-ES,BentCigar,30,11,829145989.3448821
+CMA-ES,BentCigar,30,12,0.0
+CMA-ES,BentCigar,30,13,1.3467977687957716e-22
+CMA-ES,BentCigar,30,14,0.0
+CMA-ES,Composition,30,0,2.220446049250313e-16
+CMA-ES,Composition,30,1,2.220446049250313e-16
+CMA-ES,Composition,30,2,2.220446049250313e-16
+CMA-ES,Composition,30,3,2.220446049250313e-16
+CMA-ES,Composition,30,4,2.220446049250313e-16
+CMA-ES,Composition,30,5,2.220446049250313e-16
+CMA-ES,Composition,30,6,1000.9225095641498
+CMA-ES,Composition,30,7,939.828895176962
+CMA-ES,Composition,30,8,2.220446049250313e-16
+CMA-ES,Composition,30,9,807.5777818682378
+CMA-ES,Composition,30,10,884.3562662102881
+CMA-ES,Composition,30,11,2.220446049250313e-16
+CMA-ES,Composition,30,12,2.220446049250313e-16
+CMA-ES,Composition,30,13,2.220446049250313e-16
+CMA-ES,Composition,30,14,2.220446049250313e-16
+CMA-ES,DynamicSphere,30,0,706.9946958835864
+CMA-ES,DynamicSphere,30,1,1247.023385029599
+CMA-ES,DynamicSphere,30,2,0.019348480960577244
+CMA-ES,DynamicSphere,30,3,0.012212652251922107
+CMA-ES,DynamicSphere,30,4,0.011701192311379616
+CMA-ES,DynamicSphere,30,5,906.8554722237805
+CMA-ES,DynamicSphere,30,6,0.01047119034798958
+CMA-ES,DynamicSphere,30,7,2245.58015858166
+CMA-ES,DynamicSphere,30,8,3454.1512780999187
+CMA-ES,DynamicSphere,30,9,0.009344882142991588
+CMA-ES,DynamicSphere,30,10,0.011777713482372398
+CMA-ES,DynamicSphere,30,11,706.9672585124564
+CMA-ES,DynamicSphere,30,12,540.0525569673969
+CMA-ES,DynamicSphere,30,13,2159.1531399672763
+CMA-ES,DynamicSphere,30,14,1246.9073887006616
+CMA-ES,Griewank,30,0,5.891128913454804
+CMA-ES,Griewank,30,1,24.82991196332534
+CMA-ES,Griewank,30,2,30.43894532296194
+CMA-ES,Griewank,30,3,5.891128913454804
+CMA-ES,Griewank,30,4,0.014779776754825669
+CMA-ES,Griewank,30,5,17.776994691742896
+CMA-ES,Griewank,30,6,5.89329232275681
+CMA-ES,Griewank,30,7,0.012316072519261478
+CMA-ES,Griewank,30,8,0.0
+CMA-ES,Griewank,30,9,0.0
+CMA-ES,Griewank,30,10,0.0
+CMA-ES,Griewank,30,11,7.175953262463528
+CMA-ES,Griewank,30,12,5.891128913454804
+CMA-ES,Griewank,30,13,0.0
+CMA-ES,Griewank,30,14,0.0
+CMA-ES,Levy,30,0,6.82345318189189
+CMA-ES,Levy,30,1,6.788387259986936
+CMA-ES,Levy,30,2,21.811025040074274
+CMA-ES,Levy,30,3,17.856311759648992
+CMA-ES,Levy,30,4,1.9421563567317066
+CMA-ES,Levy,30,5,15.07707724995325
+CMA-ES,Levy,30,6,10.282072607480856
+CMA-ES,Levy,30,7,5.226006266188164
+CMA-ES,Levy,30,8,21.630185608151216
+CMA-ES,Levy,30,9,0.2685847512493228
+CMA-ES,Levy,30,10,15.62860400069719
+CMA-ES,Levy,30,11,1.0206718754404769
+CMA-ES,Levy,30,12,20.329367535448153
+CMA-ES,Levy,30,13,12.14556157780515
+CMA-ES,Levy,30,14,19.12050731277345
+CMA-ES,NoisyRastrigin,30,0,89.3508726923232
+CMA-ES,NoisyRastrigin,30,1,128.03998439092572
+CMA-ES,NoisyRastrigin,30,2,105.91573632996392
+CMA-ES,NoisyRastrigin,30,3,64.49958616708926
+CMA-ES,NoisyRastrigin,30,4,62.3648500403776
+CMA-ES,NoisyRastrigin,30,5,76.82056553658872
+CMA-ES,NoisyRastrigin,30,6,76.05009220516712
+CMA-ES,NoisyRastrigin,30,7,56.16029190658828
+CMA-ES,NoisyRastrigin,30,8,78.37411043228649
+CMA-ES,NoisyRastrigin,30,9,60.19102500334124
+CMA-ES,NoisyRastrigin,30,10,75.97259719211078
+CMA-ES,NoisyRastrigin,30,11,61.053359553178126
+CMA-ES,NoisyRastrigin,30,12,117.34579351893713
+CMA-ES,NoisyRastrigin,30,13,88.60878014669132
+CMA-ES,NoisyRastrigin,30,14,82.79303255975003
+CMA-ES,NoisySphere,30,0,1313.7814058982854
+CMA-ES,NoisySphere,30,1,0.16487827889207088
+CMA-ES,NoisySphere,30,2,0.15671689550050605
+CMA-ES,NoisySphere,30,3,3105.073540466301
+CMA-ES,NoisySphere,30,4,0.18357998247445328
+CMA-ES,NoisySphere,30,5,705.1281338751062
+CMA-ES,NoisySphere,30,6,566.9280737512938
+CMA-ES,NoisySphere,30,7,1781.2114176705816
+CMA-ES,NoisySphere,30,8,1356.0970165192189
+CMA-ES,NoisySphere,30,9,566.881507211032
+CMA-ES,NoisySphere,30,10,2332.3402660668735
+CMA-ES,NoisySphere,30,11,0.15008236070920483
+CMA-ES,NoisySphere,30,12,0.15610119795272448
+CMA-ES,NoisySphere,30,13,1044.2822602469817
+CMA-ES,NoisySphere,30,14,1175.6224574972925
+CMA-ES,Rosenbrock,30,0,505406.72077195265
+CMA-ES,Rosenbrock,30,1,107344.75224261635
+CMA-ES,Rosenbrock,30,2,9.328773242304228e-28
+CMA-ES,Rosenbrock,30,3,1.2315942971343318e-26
+CMA-ES,Rosenbrock,30,4,2.4701207094732932e-29
+CMA-ES,Rosenbrock,30,5,195212.9035550794
+CMA-ES,Rosenbrock,30,6,8.662185777392473e-28
+CMA-ES,Rosenbrock,30,7,946929.4148129241
+CMA-ES,Rosenbrock,30,8,2.1607146713036395e-26
+CMA-ES,Rosenbrock,30,9,145739.64334902808
+CMA-ES,Rosenbrock,30,10,1.5260514211500473e-27
+CMA-ES,Rosenbrock,30,11,4.93324027841275e-27
+CMA-ES,Rosenbrock,30,12,358499.27495982096
+CMA-ES,Rosenbrock,30,13,544002.8533877978
+CMA-ES,Rosenbrock,30,14,4.917610971728059e-27
+CMA-ES,RotatedElliptic,30,0,381805.21898296993
+CMA-ES,RotatedElliptic,30,1,3100753.3929856448
+CMA-ES,RotatedElliptic,30,2,1385373.6433904679
+CMA-ES,RotatedElliptic,30,3,1258868.914683095
+CMA-ES,RotatedElliptic,30,4,1149925.1005820872
+CMA-ES,RotatedElliptic,30,5,1098706.614986689
+CMA-ES,RotatedElliptic,30,6,3365584.351730579
+CMA-ES,RotatedElliptic,30,7,413057.72661928437
+CMA-ES,RotatedElliptic,30,8,2376128.399530943
+CMA-ES,RotatedElliptic,30,9,36655.84911707346
+CMA-ES,RotatedElliptic,30,10,14163649.538609678
+CMA-ES,RotatedElliptic,30,11,6686206.656444495
+CMA-ES,RotatedElliptic,30,12,215482.94810541408
+CMA-ES,RotatedElliptic,30,13,141438.50133127786
+CMA-ES,RotatedElliptic,30,14,4148992.079920966
+CMA-ES,Schwefel,30,0,4530.20922673539
+CMA-ES,Schwefel,30,1,5326.8857222343595
+CMA-ES,Schwefel,30,2,5610.685761675674
+CMA-ES,Schwefel,30,3,5639.856779770834
+CMA-ES,Schwefel,30,4,5129.439004171804
+CMA-ES,Schwefel,30,5,5217.187138393881
+CMA-ES,Schwefel,30,6,5052.021920793591
+CMA-ES,Schwefel,30,7,5762.592951443072
+CMA-ES,Schwefel,30,8,5821.834143005433
+CMA-ES,Schwefel,30,9,5700.384515875538
+CMA-ES,Schwefel,30,10,5944.571973386776
+CMA-ES,Schwefel,30,11,5582.625184994833
+CMA-ES,Schwefel,30,12,5310.141502340217
+CMA-ES,Schwefel,30,13,3528.879917182747
+CMA-ES,Schwefel,30,14,5266.068494122685
+CMA-ES,Zakharov,30,0,10.338165755231081
+CMA-ES,Zakharov,30,1,6.860008387511783e-29
+CMA-ES,Zakharov,30,2,5.989179903857651e-29
+CMA-ES,Zakharov,30,3,9.221660722517187e-29
+CMA-ES,Zakharov,30,4,7.727447234463794e-29
+CMA-ES,Zakharov,30,5,6.491847619342719e-29
+CMA-ES,Zakharov,30,6,6.929650014300826e-29
+CMA-ES,Zakharov,30,7,5.180674513203889e-29
+CMA-ES,Zakharov,30,8,6.09689045222909
+CMA-ES,Zakharov,30,9,7.015007229436068e-29
+CMA-ES,Zakharov,30,10,9.881792470255356e-29
+CMA-ES,Zakharov,30,11,6.995362744003318e-29
+CMA-ES,Zakharov,30,12,6.85322911410754e-29
+CMA-ES,Zakharov,30,13,7.639701866197512e-29
+CMA-ES,Zakharov,30,14,7.299197452029848e-29
+SHADE,Ackley,30,0,3.9968028886505635e-15
+SHADE,Ackley,30,1,3.9968028886505635e-15
+SHADE,Ackley,30,2,7.549516567451064e-15
+SHADE,Ackley,30,3,3.9968028886505635e-15
+SHADE,Ackley,30,4,7.549516567451064e-15
+SHADE,Ackley,30,5,7.549516567451064e-15
+SHADE,Ackley,30,6,7.549516567451064e-15
+SHADE,Ackley,30,7,7.549516567451064e-15
+SHADE,Ackley,30,8,7.549516567451064e-15
+SHADE,Ackley,30,9,7.549516567451064e-15
+SHADE,Ackley,30,10,7.549516567451064e-15
+SHADE,Ackley,30,11,7.549516567451064e-15
+SHADE,Ackley,30,12,7.549516567451064e-15
+SHADE,Ackley,30,13,7.549516567451064e-15
+SHADE,Ackley,30,14,7.549516567451064e-15
+SHADE,BentCigar,30,0,0.0
+SHADE,BentCigar,30,1,0.0
+SHADE,BentCigar,30,2,0.0
+SHADE,BentCigar,30,3,0.0
+SHADE,BentCigar,30,4,0.0
+SHADE,BentCigar,30,5,0.0
+SHADE,BentCigar,30,6,0.0
+SHADE,BentCigar,30,7,0.0
+SHADE,BentCigar,30,8,0.0
+SHADE,BentCigar,30,9,0.0
+SHADE,BentCigar,30,10,0.0
+SHADE,BentCigar,30,11,0.0
+SHADE,BentCigar,30,12,0.0
+SHADE,BentCigar,30,13,0.0
+SHADE,BentCigar,30,14,0.0
+SHADE,Composition,30,0,2.220446049250313e-16
+SHADE,Composition,30,1,2.220446049250313e-16
+SHADE,Composition,30,2,2.220446049250313e-16
+SHADE,Composition,30,3,2.220446049250313e-16
+SHADE,Composition,30,4,2.220446049250313e-16
+SHADE,Composition,30,5,2.220446049250313e-16
+SHADE,Composition,30,6,2.220446049250313e-16
+SHADE,Composition,30,7,2.220446049250313e-16
+SHADE,Composition,30,8,2.220446049250313e-16
+SHADE,Composition,30,9,2.220446049250313e-16
+SHADE,Composition,30,10,2.220446049250313e-16
+SHADE,Composition,30,11,2.220446049250313e-16
+SHADE,Composition,30,12,2.220446049250313e-16
+SHADE,Composition,30,13,2.220446049250313e-16
+SHADE,Composition,30,14,2.220446049250313e-16
+SHADE,DynamicSphere,30,0,1.9314717396260337
+SHADE,DynamicSphere,30,1,1.3502695097985522
+SHADE,DynamicSphere,30,2,2.4387699058121344
+SHADE,DynamicSphere,30,3,2.3234621000960356
+SHADE,DynamicSphere,30,4,2.169610586838542
+SHADE,DynamicSphere,30,5,1.673609272028075
+SHADE,DynamicSphere,30,6,2.345048930898461
+SHADE,DynamicSphere,30,7,2.123039489518795
+SHADE,DynamicSphere,30,8,1.9391750504863239
+SHADE,DynamicSphere,30,9,1.8852388964026037
+SHADE,DynamicSphere,30,10,2.260803873814934
+SHADE,DynamicSphere,30,11,1.6869974528882594
+SHADE,DynamicSphere,30,12,2.3698307380434764
+SHADE,DynamicSphere,30,13,1.9733989571501551
+SHADE,DynamicSphere,30,14,2.2465661624031483
+SHADE,Griewank,30,0,0.0
+SHADE,Griewank,30,1,0.0
+SHADE,Griewank,30,2,0.0
+SHADE,Griewank,30,3,0.0
+SHADE,Griewank,30,4,0.0
+SHADE,Griewank,30,5,0.0
+SHADE,Griewank,30,6,0.0
+SHADE,Griewank,30,7,0.0
+SHADE,Griewank,30,8,0.0
+SHADE,Griewank,30,9,0.0
+SHADE,Griewank,30,10,0.0
+SHADE,Griewank,30,11,0.0
+SHADE,Griewank,30,12,0.0
+SHADE,Griewank,30,13,0.0
+SHADE,Griewank,30,14,0.0
+SHADE,Levy,30,0,1.4997597826618576e-32
+SHADE,Levy,30,1,1.4997597826618576e-32
+SHADE,Levy,30,2,1.4997597826618576e-32
+SHADE,Levy,30,3,1.4997597826618576e-32
+SHADE,Levy,30,4,1.4997597826618576e-32
+SHADE,Levy,30,5,1.4997597826618576e-32
+SHADE,Levy,30,6,1.4997597826618576e-32
+SHADE,Levy,30,7,1.4997597826618576e-32
+SHADE,Levy,30,8,1.4997597826618576e-32
+SHADE,Levy,30,9,1.4997597826618576e-32
+SHADE,Levy,30,10,1.4997597826618576e-32
+SHADE,Levy,30,11,1.4997597826618576e-32
+SHADE,Levy,30,12,1.4997597826618576e-32
+SHADE,Levy,30,13,1.4997597826618576e-32
+SHADE,Levy,30,14,1.4997597826618576e-32
+SHADE,NoisyRastrigin,30,0,12.445699884386833
+SHADE,NoisyRastrigin,30,1,15.098296151417278
+SHADE,NoisyRastrigin,30,2,13.676719079082126
+SHADE,NoisyRastrigin,30,3,11.76117649872647
+SHADE,NoisyRastrigin,30,4,12.162971502187593
+SHADE,NoisyRastrigin,30,5,10.715104787162588
+SHADE,NoisyRastrigin,30,6,15.961047362663924
+SHADE,NoisyRastrigin,30,7,12.231433590600908
+SHADE,NoisyRastrigin,30,8,12.106922523527503
+SHADE,NoisyRastrigin,30,9,15.17577105054302
+SHADE,NoisyRastrigin,30,10,13.814954555424316
+SHADE,NoisyRastrigin,30,11,13.616346806815487
+SHADE,NoisyRastrigin,30,12,12.187342212529769
+SHADE,NoisyRastrigin,30,13,11.838811181241343
+SHADE,NoisyRastrigin,30,14,11.876618293566018
+SHADE,NoisySphere,30,0,0.012162007428114227
+SHADE,NoisySphere,30,1,0.006553179280815277
+SHADE,NoisySphere,30,2,0.010263213861104781
+SHADE,NoisySphere,30,3,0.011509264765748364
+SHADE,NoisySphere,30,4,0.012137586493223454
+SHADE,NoisySphere,30,5,0.012993855775015908
+SHADE,NoisySphere,30,6,0.014347440733933016
+SHADE,NoisySphere,30,7,0.010864153963639926
+SHADE,NoisySphere,30,8,0.013210523479809036
+SHADE,NoisySphere,30,9,0.008305334917080165
+SHADE,NoisySphere,30,10,0.014368732513212365
+SHADE,NoisySphere,30,11,0.009348543226364107
+SHADE,NoisySphere,30,12,0.007644041113548385
+SHADE,NoisySphere,30,13,0.013608382708857029
+SHADE,NoisySphere,30,14,0.009612175031726036
+SHADE,Rosenbrock,30,0,0.5176518921743972
+SHADE,Rosenbrock,30,1,0.8733792457915699
+SHADE,Rosenbrock,30,2,0.5927366388760421
+SHADE,Rosenbrock,30,3,1.0299405653259361
+SHADE,Rosenbrock,30,4,0.27219861729830713
+SHADE,Rosenbrock,30,5,0.9517601062255381
+SHADE,Rosenbrock,30,6,1.7730773017764911
+SHADE,Rosenbrock,30,7,0.9738235860327642
+SHADE,Rosenbrock,30,8,0.7189128214123252
+SHADE,Rosenbrock,30,9,2.295154315658017
+SHADE,Rosenbrock,30,10,0.9315612351266866
+SHADE,Rosenbrock,30,11,0.004117986594496847
+SHADE,Rosenbrock,30,12,0.6901428652603159
+SHADE,Rosenbrock,30,13,0.07179496033853565
+SHADE,Rosenbrock,30,14,0.47407578052627386
+SHADE,RotatedElliptic,30,0,61178.05688433331
+SHADE,RotatedElliptic,30,1,80526.64061265199
+SHADE,RotatedElliptic,30,2,40836.734810588256
+SHADE,RotatedElliptic,30,3,151690.7053369079
+SHADE,RotatedElliptic,30,4,118567.61979860422
+SHADE,RotatedElliptic,30,5,87599.65956536931
+SHADE,RotatedElliptic,30,6,84903.32082866588
+SHADE,RotatedElliptic,30,7,47241.04085594845
+SHADE,RotatedElliptic,30,8,46510.28537163382
+SHADE,RotatedElliptic,30,9,70763.08644467714
+SHADE,RotatedElliptic,30,10,238180.55196405106
+SHADE,RotatedElliptic,30,11,111790.65953772585
+SHADE,RotatedElliptic,30,12,46859.843597525
+SHADE,RotatedElliptic,30,13,168384.36558800144
+SHADE,RotatedElliptic,30,14,123712.45628185023
+SHADE,Schwefel,30,0,0.004409193450555904
+SHADE,Schwefel,30,1,1.239885696062629
+SHADE,Schwefel,30,2,0.08689338191288698
+SHADE,Schwefel,30,3,0.02554881190917513
+SHADE,Schwefel,30,4,118.46701619454325
+SHADE,Schwefel,30,5,2.9999245647723
+SHADE,Schwefel,30,6,29.31228119055777
+SHADE,Schwefel,30,7,0.6964430821444694
+SHADE,Schwefel,30,8,12.869714467784434
+SHADE,Schwefel,30,9,9.425577155081555
+SHADE,Schwefel,30,10,0.007597166377308895
+SHADE,Schwefel,30,11,0.03179205098786042
+SHADE,Schwefel,30,12,0.013297361501827254
+SHADE,Schwefel,30,13,0.005026030350563815
+SHADE,Schwefel,30,14,0.015606655779265566
+SHADE,Zakharov,30,0,3.5534207326857483e-13
+SHADE,Zakharov,30,1,6.94236765517269e-12
+SHADE,Zakharov,30,2,1.9753710799438167e-12
+SHADE,Zakharov,30,3,9.387269930294879e-14
+SHADE,Zakharov,30,4,1.214067505141883e-13
+SHADE,Zakharov,30,5,7.509370287234598e-13
+SHADE,Zakharov,30,6,1.3374906361578582e-13
+SHADE,Zakharov,30,7,1.2562369481190749e-11
+SHADE,Zakharov,30,8,6.246731367773469e-11
+SHADE,Zakharov,30,9,1.3924382311835945e-13
+SHADE,Zakharov,30,10,4.692283939913751e-11
+SHADE,Zakharov,30,11,1.7825708215811143e-11
+SHADE,Zakharov,30,12,4.186792534271735e-14
+SHADE,Zakharov,30,13,6.339964262058346e-11
+SHADE,Zakharov,30,14,9.596848246773e-14
+DE,Ackley,30,0,3.9968028886505635e-15
+DE,Ackley,30,1,6.437173016848874e-09
+DE,Ackley,30,2,7.549516567451064e-15
+DE,Ackley,30,3,3.9968028886505635e-15
+DE,Ackley,30,4,3.9968028886505635e-15
+DE,Ackley,30,5,3.9968028886505635e-15
+DE,Ackley,30,6,3.9968028886505635e-15
+DE,Ackley,30,7,7.549516567451064e-15
+DE,Ackley,30,8,3.9968028886505635e-15
+DE,Ackley,30,9,7.549516567451064e-15
+DE,Ackley,30,10,3.9968028886505635e-15
+DE,Ackley,30,11,3.9968028886505635e-15
+DE,Ackley,30,12,3.9968028886505635e-15
+DE,Ackley,30,13,3.9968028886505635e-15
+DE,Ackley,30,14,3.9968028886505635e-15
+DE,BentCigar,30,0,5.0487097934144756e-23
+DE,BentCigar,30,1,2.524354896707238e-22
+DE,BentCigar,30,2,5.0487097934144756e-23
+DE,BentCigar,30,3,5.0487097934144756e-23
+DE,BentCigar,30,4,3.0292258760486853e-22
+DE,BentCigar,30,5,4.543838814073028e-22
+DE,BentCigar,30,6,4.0389678347315804e-22
+DE,BentCigar,30,7,4.67005655890839e-22
+DE,BentCigar,30,8,2.0194839173657902e-22
+DE,BentCigar,30,9,0.0
+DE,BentCigar,30,10,5.048709793414476e-22
+DE,BentCigar,30,11,4.0389678347315804e-22
+DE,BentCigar,30,12,5.0487097934144756e-23
+DE,BentCigar,30,13,2.524354896707238e-22
+DE,BentCigar,30,14,2.524354896707238e-22
+DE,Composition,30,0,7.327471962526185e-15
+DE,Composition,30,1,5.551115123125884e-15
+DE,Composition,30,2,7.32747196252626e-15
+DE,Composition,30,3,1.998401444325307e-15
+DE,Composition,30,4,1.0880185641326963e-14
+DE,Composition,30,5,5.551115123125909e-15
+DE,Composition,30,6,5.551115123125909e-15
+DE,Composition,30,7,9.103828801926536e-15
+DE,Composition,30,8,2.220446049250313e-16
+DE,Composition,30,9,7.32747196252626e-15
+DE,Composition,30,10,2.220446049250313e-16
+DE,Composition,30,11,1.998401444325307e-15
+DE,Composition,30,12,2.1538326677729678e-14
+DE,Composition,30,13,5.551115123125884e-15
+DE,Composition,30,14,1.998401444325307e-15
+DE,DynamicSphere,30,0,0.8110498615669185
+DE,DynamicSphere,30,1,0.45323656301488796
+DE,DynamicSphere,30,2,0.0336269529454523
+DE,DynamicSphere,30,3,0.4723633238772777
+DE,DynamicSphere,30,4,0.32463099944305357
+DE,DynamicSphere,30,5,0.32061876891778746
+DE,DynamicSphere,30,6,0.1631745362535569
+DE,DynamicSphere,30,7,0.5333418516499617
+DE,DynamicSphere,30,8,0.19118760815329788
+DE,DynamicSphere,30,9,0.9680623511925897
+DE,DynamicSphere,30,10,0.16889410520897824
+DE,DynamicSphere,30,11,0.6075998075734587
+DE,DynamicSphere,30,12,0.2216643375719354
+DE,DynamicSphere,30,13,0.38905201655963534
+DE,DynamicSphere,30,14,0.8826969937218202
+DE,Griewank,30,0,0.014779776754825669
+DE,Griewank,30,1,1.1102230246251565e-16
+DE,Griewank,30,2,0.0
+DE,Griewank,30,3,0.0
+DE,Griewank,30,4,0.0
+DE,Griewank,30,5,0.007396040334114895
+DE,Griewank,30,6,0.0
+DE,Griewank,30,7,0.0
+DE,Griewank,30,8,0.014779776754825669
+DE,Griewank,30,9,0.0
+DE,Griewank,30,10,0.0
+DE,Griewank,30,11,0.0
+DE,Griewank,30,12,0.0
+DE,Griewank,30,13,0.0
+DE,Griewank,30,14,0.0
+DE,Levy,30,0,0.4543240185907736
+DE,Levy,30,1,0.5438522690072146
+DE,Levy,30,2,0.4543240185907736
+DE,Levy,30,3,0.4543240185907736
+DE,Levy,30,4,0.4543240185907736
+DE,Levy,30,5,0.4543240185907736
+DE,Levy,30,6,2.122128241318715e-31
+DE,Levy,30,7,0.17905650083288185
+DE,Levy,30,8,0.4543240185907736
+DE,Levy,30,9,1.375808499882003
+DE,Levy,30,10,0.9086480371815472
+DE,Levy,30,11,1.7277466680329545
+DE,Levy,30,12,1.4997597826618576e-32
+DE,Levy,30,13,1.362972055772321
+DE,Levy,30,14,0.4543240185907736
+DE,NoisyRastrigin,30,0,39.726538060869515
+DE,NoisyRastrigin,30,1,39.88901138141814
+DE,NoisyRastrigin,30,2,99.01653201415463
+DE,NoisyRastrigin,30,3,99.99368497980552
+DE,NoisyRastrigin,30,4,130.21954941495216
+DE,NoisyRastrigin,30,5,53.23160334711847
+DE,NoisyRastrigin,30,6,129.85884320742016
+DE,NoisyRastrigin,30,7,43.72402180997736
+DE,NoisyRastrigin,30,8,26.03250991618038
+DE,NoisyRastrigin,30,9,79.3138578276102
+DE,NoisyRastrigin,30,10,19.26794266809374
+DE,NoisyRastrigin,30,11,92.82373274170875
+DE,NoisyRastrigin,30,12,47.49275155276622
+DE,NoisyRastrigin,30,13,50.56985926664857
+DE,NoisyRastrigin,30,14,64.70637610068314
+DE,NoisySphere,30,0,0.010724723436168735
+DE,NoisySphere,30,1,0.01440312869123101
+DE,NoisySphere,30,2,0.023704970261319923
+DE,NoisySphere,30,3,0.010272547745256147
+DE,NoisySphere,30,4,0.01819963368835855
+DE,NoisySphere,30,5,0.014035126490349582
+DE,NoisySphere,30,6,0.007643237700820602
+DE,NoisySphere,30,7,0.01208553080251134
+DE,NoisySphere,30,8,0.015317437516480117
+DE,NoisySphere,30,9,0.014789381644218386
+DE,NoisySphere,30,10,0.015414705240331474
+DE,NoisySphere,30,11,0.009534201706887143
+DE,NoisySphere,30,12,0.015700141823340202
+DE,NoisySphere,30,13,0.012510764691710991
+DE,NoisySphere,30,14,0.01374465434687222
+DE,Rosenbrock,30,0,25.719054326001643
+DE,Rosenbrock,30,1,72.80592233940537
+DE,Rosenbrock,30,2,96.78586037992562
+DE,Rosenbrock,30,3,23.15937679529949
+DE,Rosenbrock,30,4,1.9885811847168702
+DE,Rosenbrock,30,5,20.696892177238908
+DE,Rosenbrock,30,6,18.730034961146544
+DE,Rosenbrock,30,7,26.436222251274746
+DE,Rosenbrock,30,8,17.114175664510544
+DE,Rosenbrock,30,9,26.80546029805881
+DE,Rosenbrock,30,10,20.72063668750946
+DE,Rosenbrock,30,11,14.322613809937843
+DE,Rosenbrock,30,12,25.94061539615513
+DE,Rosenbrock,30,13,79.34897633451911
+DE,Rosenbrock,30,14,25.765600685775283
+DE,RotatedElliptic,30,0,5832294.708118673
+DE,RotatedElliptic,30,1,4963610.51604555
+DE,RotatedElliptic,30,2,5149954.132308189
+DE,RotatedElliptic,30,3,1741967.4110073037
+DE,RotatedElliptic,30,4,5350283.72618934
+DE,RotatedElliptic,30,5,3191815.8223662344
+DE,RotatedElliptic,30,6,2673024.00605417
+DE,RotatedElliptic,30,7,4990348.213892987
+DE,RotatedElliptic,30,8,3866744.9399147048
+DE,RotatedElliptic,30,9,3529896.793602712
+DE,RotatedElliptic,30,10,1848852.937824704
+DE,RotatedElliptic,30,11,2550096.1238303613
+DE,RotatedElliptic,30,12,5190584.433257384
+DE,RotatedElliptic,30,13,4248281.491068297
+DE,RotatedElliptic,30,14,3110112.873784457
+DE,Schwefel,30,0,2257.914037062139
+DE,Schwefel,30,1,2031.1136662842327
+DE,Schwefel,30,2,2223.454270952421
+DE,Schwefel,30,3,1661.1711854534515
+DE,Schwefel,30,4,2740.8329065030266
+DE,Schwefel,30,5,1138.9934119102854
+DE,Schwefel,30,6,2142.5098214720347
+DE,Schwefel,30,7,1664.229468042924
+DE,Schwefel,30,8,1245.812740684125
+DE,Schwefel,30,9,2653.138097575971
+DE,Schwefel,30,10,1545.249830170491
+DE,Schwefel,30,11,1182.088931534896
+DE,Schwefel,30,12,2095.162347795962
+DE,Schwefel,30,13,2867.723759537186
+DE,Schwefel,30,14,2049.4417675401583
+DE,Zakharov,30,0,0.02069065578835115
+DE,Zakharov,30,1,0.11718773594177995
+DE,Zakharov,30,2,0.06930341363939008
+DE,Zakharov,30,3,0.18506005534463701
+DE,Zakharov,30,4,0.007903573717051686
+DE,Zakharov,30,5,0.025223121325587888
+DE,Zakharov,30,6,0.28641653530152583
+DE,Zakharov,30,7,0.04355553687605384
+DE,Zakharov,30,8,0.05302152351629791
+DE,Zakharov,30,9,0.4920553631638267
+DE,Zakharov,30,10,0.311473761758995
+DE,Zakharov,30,11,0.22685596901218175
+DE,Zakharov,30,12,0.28324767177159793
+DE,Zakharov,30,13,0.09209375845006537
+DE,Zakharov,30,14,0.13116954237320416
