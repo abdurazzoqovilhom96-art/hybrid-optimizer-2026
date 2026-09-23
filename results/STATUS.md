@@ -9,7 +9,7 @@ Holat faqat git'dan o'qiladi. To'liq ko'rsatma: `docs/AUTONOMOUS_PROMPT.md`.
 | FAZA_B — GitHub Actions to'liq eksperiment | **ishlayapti** | 30D va 50D tugadi; faqat 100D qoldi |
 | FAZA_C — `docs/RESULTS.md` yakuniy tahlil | qisman | protokol bo'limi yozildi; raqamlar kutilmoqda |
 
-**Oxirgi tekshiruv:** 2026-09-23 18:05 UTC
+**Oxirgi tekshiruv:** 2026-09-23 19:06 UTC
 
 ## Muzlatilgan parametrlar
 
@@ -30,6 +30,11 @@ Holat faqat git'dan o'qiladi. To'liq ko'rsatma: `docs/AUTONOMOUS_PROMPT.md`.
 - 18:05 UTC: 100D 106 daqiqadan beri ishlamoqda; chegara 350 daqiqa
   (~22:08 UTC gacha), shuning uchun zaxira yetarli.
 - `docs/RESULTS.md` ning protokol bo'limi yozildi (raqamlarga bog'liq emas).
+- 19:06 UTC: 100D 166 daqiqadan beri ishlamoqda (chegara 350, ~22:08 UTC gacha).
+- `scripts/weaknesses.py` yozildi va sinovdan o'tkazildi: 8-bo'lim uchun
+  mag'lubiyat va teng natijalarni jadvallardan avtomatik ajratadi. Teng
+  natija Holm p qiymati bilan aniqlanadi, o'rtachalar taqqoslanishi bilan
+  emas - aks holda ahamiyatsiz farq g'alaba deb sanalardi.
 
 ## Kutilayotgan zaif tomon
 
