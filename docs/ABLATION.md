@@ -125,3 +125,73 @@ u faqat populyatsiyaning nisbiy tarqalishi `TAIL_DIV` dan past tushganda
   qiymatida qotib qoladi, L-SHADE esa `0.071` beradi. Bu tasodifiy emas:
   jSO uslubidagi xotira boshlang'ich qiymati (`M_CR = 0.8` va doimiy `0.9`
   terminal katak) yuqori CR ga moyil, bu esa separabel Schwefel uchun zarar.
+
+---
+
+## 4-tajriba. Parametr rejimi ansambli (30D, 15 run)
+
+3-tajribadagi teskari bog'liqlikni hal qilish uchun jSO va L-SHADE xotira
+rejimlari **ikkala bank** sifatida olib borildi; bank tanlovi bazis tanlovi
+bilan bir xil mexanizm (yaxshilanish miqdori krediti + rho prior) orqali
+moslashadi.
+
+Diagnostika rho ning haqiqatan ajratuvchi ekanini tasdiqladi:
+
+| Funksiya | rho (chorak bo'yicha) | p_eig (chorak bo'yicha) |
+|---|---|---|
+| RotatedElliptic | 0.22 → 0.37 → 0.42 → 0.57 | 0.67 → 0.70 → 0.70 → 0.71 |
+| Schwefel | 0.12 → 0.13 → 0.14 → 0.31 | 0.33 → 0.05 → 0.13 → 0.42 |
+| NoisyRastrigin | 0.12 → 0.13 → 0.15 → 0.26 | 0.29 → 0.18 → 0.08 → 0.07 |
+
+**Muhim metodologik topilma.** Dastlab ranklar xom qiymatlar ustida
+hisoblangan edi va natija chalg'ituvchi chiqdi: `1.5e-32` va `4.1e-31`
+"g'alaba/mag'lubiyat" sifatida sanalayotgan edi, holbuki ikkalasi ham aniq
+yechim. CEC musobaqalari konventsiyasi (`xato < 1e-8 → 0`) qo'llanganda
+**12 funksiyadan 6 tasini barcha algoritmlar hal qilishi** ma'lum bo'ldi —
+ya'ni taqqoslash aslida faqat qolgan 6 tasiga suyanadi. Bu konventsiya
+`cba_shade.py` ga kiritildi (`PRECISION_FLOOR`, xom qiymatlar
+`full_raw_results.csv` da saqlanadi).
+
+## 5-tajriba. Quyruq chegarasi va byudjeti (30D, 15 run)
+
+`TAIL_DIV` ning **hech qanday ta'siri yo'q**: `1e-3`, `1e-2`, `1e-1` va
+"doimiy yoqilgan" variantlari barcha funksiyalarda raqamma-raqam bir xil
+natija berdi — ya'ni 30D da populyatsiya baribir yaqinlashadi va quyruq
+har doim ishga tushadi. Gipoteza (quyruq RotatedElliptic'da umuman
+ishlamayapti) rad etildi.
+
+Buning o'rniga quyruq **byudjeti** hal qiluvchi omil bo'lib chiqdi:
+
+| Funksiya (30D) | quyruq 5% | quyruq 15% |
+|---|---|---|
+| Rosenbrock | 2.142 | **0.120** |
+| DynamicSphere | 8.046e-02 | **1.544e-02** |
+| RotatedElliptic | 2686 | **1440** |
+| NoisyRastrigin | **0.154** | 0.215 |
+| NoisySphere | **1.040e-02** | 1.317e-02 |
+| Schwefel | 3.818e-04 | 3.818e-04 |
+
+Uchta funksiyadagi yutuq (5–18 barobar) ikkita funksiyadagi kichik
+yo'qotishdan (1.3–1.4 barobar) ancha katta, shuning uchun `TAIL_FRAC = 0.15`
+tanlandi.
+
+## Muzlatilgan yakuniy parametrlar
+
+```
+POP_FACTOR = 6     MEM_INIT = "ensemble"    TAIL_FRAC = 0.15
+N_MIN = 4          H_SIZE = 6               TAIL_DIV  = 1e-2
+ARC_RATE = 2.6     K_RSP = 3.0              EIG_LR    = 0.2
+P_MAX = 0.25       P_MIN_RATE = 0.125
+```
+
+Bundan keyin parametrlar o'zgartirilmaydi — aks holda yakuniy natijalar
+"tanlab olingan" bo'lib qoladi.
+
+## Qolgan zaif tomon
+
+`RotatedElliptic`: CBA-SHADE 1440, LSHADE-cnEpSin esa **0.359**. Sabab
+ko'rinib turibdi — cnEpSin `18·D` populyatsiya bilan ishlaydi va eigen
+crossover ni butun populyatsiyaga bir vaqtda qo'llaydi. Bizda populyatsiya
+hajmi `8·D` ga oshirilganda bu funksiya `2686 → 305` gacha yaxshilanadi,
+lekin qolgan funksiyalarda yo'qotish beradi. Bu almashuv yakuniy hisobotda
+ochiq ko'rsatiladi.

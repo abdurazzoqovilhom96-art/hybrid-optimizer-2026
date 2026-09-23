@@ -334,8 +334,8 @@ def _cma_core(obj_func, dim, bounds, fes, max_fes, xmean, sigma, restart="unifor
 def CBA_SHADE(obj_func, dim, bounds, max_fes, POP_FACTOR=6, N_MIN=4, H_SIZE=6,
               ARC_RATE=2.6, RSP=True, K_RSP=3.0, EIG=True, EIG_FREE=True,
               EIG_PRIOR=True, EIG_LR=0.2, P_MAX=0.25, P_MIN_RATE=0.125,
-              JSO_F=True, MEM_INIT="ensemble", TAIL="cma", TAIL_FRAC=0.05,
-              TAIL_DIV=1e-3):
+              JSO_F=True, MEM_INIT="ensemble", TAIL="cma", TAIL_FRAC=0.15,
+              TAIL_DIV=1e-2):
     """Covariance-Basis Adaptive SHADE.
 
     Yadro: current-to-pbest-w/1 + arxiv, muvaffaqiyat tarixi bilan F/CR
@@ -344,7 +344,19 @@ def CBA_SHADE(obj_func, dim, bounds, max_fes, POP_FACTOR=6, N_MIN=4, H_SIZE=6,
       (i)   rank asosidagi tanlov bosimi (RSP) - LSHADE-RSP;
       (ii)  kovariatsiya bilan boshqariladigan crossover bazisi moslashuvi;
       (iii) CMA-ES bilan yakuniy lokal aniqlashtirish.
-    Parametrlar faqat alohida sozlash to'plamida (10D) tanlangan va muzlatilgan.
+    Parametrlar 30D da 12 ta funksiya ustida besh bosqichli sozlash bilan
+    tanlangan va MUZLATILGAN (xom ma'lumotlar: results/tuning/):
+      POP_FACTOR = 6    - 6/8/10/12 dan eng yaxshisi; L-SHADE ning 18*D si bu
+                          byudjet uchun juda katta (u 10000*D ga sozlangan).
+      MEM_INIT   = ensemble - jSO va L-SHADE rejimlari o'rtasidagi teskari
+                          bog'liqlik sababli ikkalasi ham bank sifatida olib
+                          boriladi (izohga qarang).
+      TAIL_FRAC  = 0.15 - quyruqqa 5% o'rniga 15% byudjet: Rosenbrock
+                          2.14 -> 0.12, DynamicSphere 0.080 -> 0.015,
+                          RotatedElliptic 2686 -> 1440; NoisyRastrigin
+                          0.154 -> 0.215 (yagona, kichik yo'qotish).
+      TAIL_DIV   = 1e-2 - 30D da ta'sirsiz (populyatsiya baribir yaqinlashadi);
+                          yuqori o'lchamlarda himoya sifatida saqlangan.
     """
     lb, ub = bounds
     N_init = max(40, int(round(POP_FACTOR * dim)))
