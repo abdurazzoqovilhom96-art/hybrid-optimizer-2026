@@ -330,10 +330,11 @@ def _cma_core(obj_func, dim, bounds, fes, max_fes, xmean, sigma, restart="unifor
             gen, eigeneval = 0, fes
 
 # ------------------------------- ASOSIY ALGORITM ------------------------------
-def CBA_SHADE(obj_func, dim, bounds, max_fes, POP_FACTOR=18, N_MIN=4, H_SIZE=6,
+def CBA_SHADE(obj_func, dim, bounds, max_fes, POP_FACTOR=6, N_MIN=4, H_SIZE=6,
               ARC_RATE=2.6, RSP=True, K_RSP=3.0, EIG=True, EIG_FREE=True,
               EIG_PRIOR=True, EIG_LR=0.2, P_MAX=0.25, P_MIN_RATE=0.125,
-              JSO_F=True, TAIL="cma", TAIL_FRAC=0.05, TAIL_DIV=1e-3):
+              JSO_F=True, MEM_INIT="jso", TAIL="cma", TAIL_FRAC=0.05,
+              TAIL_DIV=1e-3):
     """Covariance-Basis Adaptive SHADE.
 
     Yadro: current-to-pbest-w/1 + arxiv, muvaffaqiyat tarixi bilan F/CR
@@ -355,8 +356,16 @@ def CBA_SHADE(obj_func, dim, bounds, max_fes, POP_FACTOR=18, N_MIN=4, H_SIZE=6,
     fitness = np.array([obj_func(ind) for ind in pop])
     fes = pop_size
 
-    M_F, M_CR = np.full(H_SIZE, 0.3), np.full(H_SIZE, 0.8)
-    M_F[-1], M_CR[-1] = 0.9, 0.9          # jSO: oxirgi xotira katagi doimiy
+    # Xotira boshlang'ich holati: jSO (M_CR=0.8 + doimiy terminal katak) yuqori
+    # CR ga moyil - aylantirilgan masalalar uchun mos; L-SHADE (0.5/0.5, barcha
+    # kataklar yangilanadi) separabel masalalarda erkinroq.
+    if MEM_INIT == "lshade":
+        M_F, M_CR = np.full(H_SIZE, 0.5), np.full(H_SIZE, 0.5)
+        n_upd = H_SIZE
+    else:
+        M_F, M_CR = np.full(H_SIZE, 0.3), np.full(H_SIZE, 0.8)
+        M_F[-1], M_CR[-1] = 0.9, 0.9      # jSO: oxirgi xotira katagi doimiy
+        n_upd = H_SIZE - 1
     k_mem = 0
     archive = np.empty((0, dim))
     p_eig = 0.5                            # eigen-bazisda crossover ehtimolligi
@@ -444,9 +453,13 @@ def CBA_SHADE(obj_func, dim, bounds, max_fes, POP_FACTOR=18, N_MIN=4, H_SIZE=6,
             mf = _lehmer(F[improved], w)
             mcr = -1.0 if (M_CR[k_mem] == -1 or np.sum(w * CR[improved]) == 0) \
                        else _lehmer(CR[improved], w)
-            M_F[k_mem] = (M_F[k_mem] + mf) / 2.0
-            M_CR[k_mem] = -1.0 if mcr == -1 else (M_CR[k_mem] + mcr) / 2.0
-            k_mem = (k_mem + 1) % (H_SIZE - 1)
+            if MEM_INIT == "lshade":       # L-SHADE: to'g'ridan-to'g'ri almashtirish
+                M_F[k_mem] = mf
+                M_CR[k_mem] = mcr
+            else:                          # jSO/iL-SHADE: avvalgisi bilan o'rtachalash
+                M_F[k_mem] = (M_F[k_mem] + mf) / 2.0
+                M_CR[k_mem] = -1.0 if mcr == -1 else (M_CR[k_mem] + mcr) / 2.0
+            k_mem = (k_mem + 1) % n_upd
 
         # --- Bazis moslashuvi: kredit = yaxshilanish MIQDORI (FIR krediti) ---
         if EIG:
