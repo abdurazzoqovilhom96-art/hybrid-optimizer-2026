@@ -81,6 +81,15 @@ jobs:
           RUNS: "1"
           OUT_DIR: results/complexity
         run: python cba_shade.py
+      # Commit-back muvaffaqiyatsiz bo'lsa ham asosiy jadvallar jurnaldan
+      # o'qilishi uchun ularni bu yerda chop etamiz (zaxira kanal).
+      - name: Print the key tables into the job log
+        run: |
+          for f in overall_average_ranks.csv friedman_posthoc.csv win_tie_loss.csv; do
+            echo "===== $f ====="; cat "results/full/tables/$f"; echo
+          done
+          echo "===== friedman_test.txt ====="; cat results/full/tables/friedman_test.txt; echo
+          echo "===== summary_results.csv ====="; cat results/full/tables/summary_results.csv
       - uses: actions/upload-artifact@v4
         with:
           name: full-analysis
