@@ -1,0 +1,88 @@
+name: CBA-SHADE full experiment
+
+on:
+  workflow_dispatch:
+    inputs:
+      runs:
+        description: "Independent runs per instance"
+        default: "30"
+      include_classic:
+        description: "Also run the metaphor-based baselines (1 = yes)"
+        default: "0"
+
+permissions:
+  contents: write
+
+jobs:
+  chunk:
+    name: ${{ matrix.dim }}D
+    runs-on: ubuntu-latest
+    timeout-minutes: 350
+    strategy:
+      fail-fast: false
+      matrix:
+        dim: [30, 50, 100]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install --quiet numpy pandas scipy joblib matplotlib
+      - name: Run ${{ matrix.dim }}D chunk
+        env:
+          DIMS: ${{ matrix.dim }}
+          RUNS: ${{ inputs.runs }}
+          INCLUDE_CLASSIC: ${{ inputs.include_classic }}
+          OUT_DIR: chunk
+        run: python cba_shade.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: chunk-${{ matrix.dim }}
+          path: chunk/
+          retention-days: 30
+
+  analyse:
+    name: Merge and analyse
+    needs: chunk
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install --quiet numpy pandas scipy joblib matplotlib
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: chunk-*
+          path: chunks
+      - name: Merge every chunk into one analysis
+        env:
+          ANALYZE_ONLY: "1"
+          MERGE: chunks/chunk-30,chunks/chunk-50,chunks/chunk-100
+          OUT_DIR: results/full
+        run: python cba_shade.py
+      - name: Computational complexity (T0/T1/T2)
+        env:
+          COMPLEXITY: "1"
+          QUICK: "1"
+          RUNS: "1"
+          OUT_DIR: results/complexity
+        run: python cba_shade.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: full-analysis
+          path: results/
+          retention-days: 90
+      - name: Commit the results back to the branch
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -f results/
+          if git diff --cached --quiet; then
+            echo "Natijalarda o'zgarish yo'q"
+          else
+            git commit -m "Add full experiment results from workflow run ${{ github.run_number }}"
+            git pull --rebase origin "${{ github.ref_name }}"
+            git push origin HEAD:"${{ github.ref_name }}"
+          fi

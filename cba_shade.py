@@ -963,6 +963,9 @@ target = ALGO_NAME
 #   RUNS=30            run soni
 #   OUT_DIR=nom        chiqish papkasi nomi
 #   MERGE=d1,d2        avvalgi bo'laklarning papkalarini qo'shib tahlil qilish
+#   ANALYZE_ONLY=1     eksperimentni o'tkazmay, faqat MERGE dagi tayyor
+#                      bo'laklardan jadval, statistika va grafiklarni qurish
+#   PRECISION_FLOOR=0  CEC aniqlik chegarasini o'chirish (standart 1e-8)
 #   INCLUDE_CLASSIC=1  metafora asosidagi eski algoritmlarni ham qo'shish
 QUICK = os.environ.get("QUICK", os.environ.get("TEMOA_QUICK", "0")) == "1"
 dimensions = [10] if QUICK else [30, 50, 100]
@@ -975,6 +978,12 @@ FES_PER_DIM = 3000
 N_POINTS = 100
 SEED_BASE = 42
 MERGE_DIRS = [d.strip().rstrip("/") for d in os.environ.get("MERGE", "").split(",") if d.strip()]
+ANALYZE_ONLY = os.environ.get("ANALYZE_ONLY") == "1"
+# CEC musobaqalari konventsiyasi: 1e-8 dan kichik xato 0 deb qabul qilinadi.
+# Busiz ranklar mashina aniqligidagi ma'nosiz farqlar bilan buziladi - masalan
+# 1.5e-32 va 4.1e-31 "g'alaba/mag'lubiyat" sifatida sanaladi, holbuki ikkalasi
+# ham aniq yechim. Xom qiymatlar full_raw_results.csv da o'zgarishsiz saqlanadi.
+PRECISION_FLOOR = float(os.environ.get("PRECISION_FLOOR", "1e-8"))
 _slug = ALGO_NAME.lower().replace("-", "_")
 _tag = "_" + "_".join(str(d) for d in dimensions) + "D" if os.environ.get("DIMS") else ""
 out_dir = os.environ.get("OUT_DIR") or (f"{_slug}_quicktest{_tag}" if QUICK
@@ -1039,13 +1048,19 @@ def holm(pvals):
 if __name__ == "__main__":
     for d in ["tables", "figures", "raw_data"]: os.makedirs(f"{out_dir}/{d}", exist_ok=True)
 
-    tasks = [(a, f, d, r) for a in algorithms for f in funcs for d in dimensions for r in range(runs)]
-    print(f"[*] {ALGO_NAME} experiment. Total tasks: {len(tasks)} "
-          f"(QUICK={QUICK}, SHIFTED={SHIFTED}, CLASSIC={INCLUDE_CLASSIC})")
-    start_time = time.time()
-    results_raw = Parallel(n_jobs=-1, backend="loky", verbose=5)(
-        delayed(run_task)(a, f, d, r) for (a, f, d, r) in tasks)
-    print(f"[*] Execution completed in {time.time() - start_time:.2f} seconds.")
+    if ANALYZE_ONLY:
+        if not MERGE_DIRS:
+            raise SystemExit("[!] ANALYZE_ONLY=1 uchun MERGE=... ko'rsatilishi shart")
+        print(f"[*] ANALYZE_ONLY: eksperiment o'tkazilmaydi, MERGE dan tahlil qilinadi")
+        results_raw = []
+    else:
+        tasks = [(a, f, d, r) for a in algorithms for f in funcs for d in dimensions for r in range(runs)]
+        print(f"[*] {ALGO_NAME} experiment. Total tasks: {len(tasks)} "
+              f"(QUICK={QUICK}, SHIFTED={SHIFTED}, CLASSIC={INCLUDE_CLASSIC})")
+        start_time = time.time()
+        results_raw = Parallel(n_jobs=-1, backend="loky", verbose=5)(
+            delayed(run_task)(a, f, d, r) for (a, f, d, r) in tasks)
+        print(f"[*] Execution completed in {time.time() - start_time:.2f} seconds.")
 
     # ==========================================================================
     # 4. MA'LUMOTLARNI EKSPORT QILISH
@@ -1057,9 +1072,11 @@ if __name__ == "__main__":
                              "Run": run_id, "Best": final})
         curves[func_name][dim][alg_name].append(curve)
 
-    df_raw = pd.DataFrame(summary_data)
+    df_raw = pd.DataFrame(summary_data,
+                          columns=["Algorithm", "Function", "Dimension", "Run", "Best"])
     curve_store = {f"{f}|{d}|{a}": np.array(curves[f][d][a])
-                   for f in funcs for d in dimensions for a in algorithms}
+                   for f in funcs for d in dimensions for a in algorithms
+                   if curves[f][d][a]}
 
     # Avvalgi bo'laklarni qo'shish (Colab uchun: har bir o'lcham alohida sessiyada)
     for mdir in MERGE_DIRS:
@@ -1074,11 +1091,25 @@ if __name__ == "__main__":
                 curve_store.update({k: z[k] for k in z.files})
         print(f"[*] MERGE: {mdir} qo'shildi")
     df_raw = df_raw.drop_duplicates(subset=["Algorithm", "Function", "Dimension", "Run"])
+    # MERGE dan keyin (ayniqsa ANALYZE_ONLY da) ustunlar object turida qolishi
+    # mumkin - statistik testlar buni qabul qilmaydi.
+    df_raw["Best"] = pd.to_numeric(df_raw["Best"], errors="coerce")
+    for col in ("Dimension", "Run"):
+        df_raw[col] = pd.to_numeric(df_raw[col], errors="coerce").astype("int64")
+    df_raw = df_raw.dropna(subset=["Best"])
+    if df_raw.empty:
+        raise SystemExit("[!] Tahlil qilinadigan natija yo'q (MERGE papkalarini tekshiring)")
     dimensions = sorted(df_raw["Dimension"].unique())
     alg_names = [target] + [a for a in df_raw["Algorithm"].unique() if a != target]
 
     df_raw.to_csv(f"{out_dir}/raw_data/full_raw_results.csv", index=False)
     np.savez_compressed(f"{out_dir}/raw_data/curves.npz", **curve_store)
+
+    if PRECISION_FLOOR > 0:
+        n_floor = int((df_raw["Best"] < PRECISION_FLOOR).sum())
+        df_raw["Best"] = df_raw["Best"].where(df_raw["Best"] >= PRECISION_FLOOR, 0.0)
+        print(f"[*] CEC aniqlik chegarasi {PRECISION_FLOOR:g}: {n_floor} ta natija "
+              f"0 ga tenglashtirildi (xom qiymatlar raw_data/ da saqlandi)")
 
     df_summary = df_raw.groupby(["Function", "Dimension", "Algorithm"])["Best"].agg(["mean", "std"]).reset_index()
     df_summary.to_csv(f"{out_dir}/tables/summary_mean_std.csv", index=False)
