@@ -333,7 +333,7 @@ def _cma_core(obj_func, dim, bounds, fes, max_fes, xmean, sigma, restart="unifor
 def CBA_SHADE(obj_func, dim, bounds, max_fes, POP_FACTOR=18, N_MIN=4, H_SIZE=6,
               ARC_RATE=2.6, RSP=True, K_RSP=3.0, EIG=True, EIG_FREE=True,
               EIG_PRIOR=True, EIG_LR=0.2, P_MAX=0.25, P_MIN_RATE=0.125,
-              JSO_F=True, TAIL="cma", TAIL_FRAC=0.05):
+              JSO_F=True, TAIL="cma", TAIL_FRAC=0.05, TAIL_DIV=1e-3):
     """Covariance-Basis Adaptive SHADE.
 
     Yadro: current-to-pbest-w/1 + arxiv, muvaffaqiyat tarixi bilan F/CR
@@ -348,6 +348,8 @@ def CBA_SHADE(obj_func, dim, bounds, max_fes, POP_FACTOR=18, N_MIN=4, H_SIZE=6,
     N_init = max(40, int(round(POP_FACTOR * dim)))
     pop_size = N_init
     tail_start = int((1.0 - TAIL_FRAC) * max_fes) if TAIL != "none" else max_fes
+    span = float(np.mean(ub - lb))
+    do_tail = False
 
     pop = lb + np.random.rand(pop_size, dim) * (ub - lb)
     fitness = np.array([obj_func(ind) for ind in pop])
@@ -361,7 +363,7 @@ def CBA_SHADE(obj_func, dim, bounds, max_fes, POP_FACTOR=18, N_MIN=4, H_SIZE=6,
     eig_credit = np.array([0.5, 0.5])      # [koordinata bazisi, eigen bazisi]
     B = np.eye(dim)
 
-    while fes < tail_start:
+    while fes < max_fes:
         t = fes / max_fes
         order = np.argsort(fitness)
         pop, fitness = pop[order], fitness[order]
@@ -472,10 +474,23 @@ def CBA_SHADE(obj_func, dim, bounds, max_fes, POP_FACTOR=18, N_MIN=4, H_SIZE=6,
         if len(archive) > arc_max:
             archive = archive[np.random.choice(len(archive), arc_max, replace=False)]
 
+        # --- Yakuniy aniqlashtirishga o'tish SHARTI --------------------------
+        # CMA-ES quyrug'i faqat populyatsiya yaqinlashganda foyda beradi: bunda
+        # 4 ta individdan iborat DE populyatsiyasidan ko'ra lokal kovariatsiya
+        # modeli ancha tezroq aniqlashtiradi. Populyatsiya hali tarqoq bo'lsa
+        # (ko'p ekstremumli yoki shovqinli relyef) quyruq zarar qiladi -
+        # ablatsiya: NoisyRastrigin 30D da 1.55 -> 14.0. Shuning uchun quyruq
+        # tarqalish TAIL_DIV dan past tushgandagina ishga tushadi.
+        if TAIL == "cma" and fes >= tail_start:
+            if float(np.mean(np.std(pop, axis=0))) / span < TAIL_DIV:
+                do_tail = True
+                break                      # qolgan byudjetni CMA-ES oladi
+            # aks holda DE sikli byudjet oxirigacha davom etadi
+
     # --- Yakuniy aniqlashtirish: CMA-ES (LSHADE-SPACMA / EBOwithCMAR uslubi) --
-    if TAIL == "cma" and fes < max_fes:
+    if do_tail and fes < max_fes:
         best_i = np.argmin(fitness)
-        sigma0 = float(np.mean(np.std(pop, axis=0))) + 1e-12 * float(np.mean(ub - lb))
+        sigma0 = float(np.mean(np.std(pop, axis=0))) + 1e-12 * span
         _cma_core(obj_func, dim, bounds, fes, max_fes, pop[best_i].copy(),
                   sigma0, restart="local")
 
@@ -893,14 +908,32 @@ target = ALGO_NAME
 # ==============================================================================
 # 3. YUKORI TEZLIKDAGI PARALLEL EKSPERIMENT
 # ==============================================================================
-QUICK = os.environ.get("TEMOA_QUICK") == "1"     # smoke test: TEMOA_QUICK=1
+# To'liq protokol: 12 funksiya x {30, 50, 100} D x 30 run. Bu Colab kabi
+# 2 yadroli muhitda bir necha soat oladi, shuning uchun tajribani bo'laklab
+# ishlatish mumkin (quyidagi muhit o'zgaruvchilari), keyin MERGE bilan
+# barcha bo'laklarni birlashtirib yagona statistika va grafiklar olinadi.
+#
+#   QUICK=1            10D x 3 run smoke-test
+#   DIMS=30            faqat 30D (vergul bilan: DIMS=30,50)
+#   RUNS=30            run soni
+#   OUT_DIR=nom        chiqish papkasi nomi
+#   MERGE=d1,d2        avvalgi bo'laklarning papkalarini qo'shib tahlil qilish
+#   INCLUDE_CLASSIC=1  metafora asosidagi eski algoritmlarni ham qo'shish
+QUICK = os.environ.get("QUICK", os.environ.get("TEMOA_QUICK", "0")) == "1"
 dimensions = [10] if QUICK else [30, 50, 100]
 runs = 3 if QUICK else 30
+if os.environ.get("DIMS"):
+    dimensions = [int(x) for x in os.environ["DIMS"].split(",")]
+if os.environ.get("RUNS"):
+    runs = int(os.environ["RUNS"])
 FES_PER_DIM = 3000
 N_POINTS = 100
 SEED_BASE = 42
+MERGE_DIRS = [d.strip().rstrip("/") for d in os.environ.get("MERGE", "").split(",") if d.strip()]
 _slug = ALGO_NAME.lower().replace("-", "_")
-out_dir = f"{_slug}_quicktest" if QUICK else f"{_slug}_outputs"
+_tag = "_" + "_".join(str(d) for d in dimensions) + "D" if os.environ.get("DIMS") else ""
+out_dir = os.environ.get("OUT_DIR") or (f"{_slug}_quicktest{_tag}" if QUICK
+                                        else f"{_slug}_outputs{_tag}")
 
 def run_task(alg_name, func_name, dim, run_id):
     # Bir xil (dim, run) uchun hamma algoritmlarga bir xil seed
@@ -928,7 +961,8 @@ if __name__ == "__main__":
     print(f"[*] {ALGO_NAME} experiment. Total tasks: {len(tasks)} "
           f"(QUICK={QUICK}, SHIFTED={SHIFTED}, CLASSIC={INCLUDE_CLASSIC})")
     start_time = time.time()
-    results_raw = Parallel(n_jobs=-1, backend="loky")(delayed(run_task)(a, f, d, r) for (a, f, d, r) in tasks)
+    results_raw = Parallel(n_jobs=-1, backend="loky", verbose=5)(
+        delayed(run_task)(a, f, d, r) for (a, f, d, r) in tasks)
     print(f"[*] Execution completed in {time.time() - start_time:.2f} seconds.")
 
     # ==========================================================================
@@ -942,11 +976,37 @@ if __name__ == "__main__":
         curves[func_name][dim][alg_name].append(curve)
 
     df_raw = pd.DataFrame(summary_data)
+    curve_store = {f"{f}|{d}|{a}": np.array(curves[f][d][a])
+                   for f in funcs for d in dimensions for a in algorithms}
+
+    # Avvalgi bo'laklarni qo'shish (Colab uchun: har bir o'lcham alohida sessiyada)
+    for mdir in MERGE_DIRS:
+        m_csv = f"{mdir}/raw_data/full_raw_results.csv"
+        if not os.path.exists(m_csv):
+            print(f"[!] MERGE: {m_csv} topilmadi, o'tkazib yuborildi")
+            continue
+        df_raw = pd.concat([df_raw, pd.read_csv(m_csv)], ignore_index=True)
+        m_npz = f"{mdir}/raw_data/curves.npz"
+        if os.path.exists(m_npz):
+            with np.load(m_npz) as z:
+                curve_store.update({k: z[k] for k in z.files})
+        print(f"[*] MERGE: {mdir} qo'shildi")
+    df_raw = df_raw.drop_duplicates(subset=["Algorithm", "Function", "Dimension", "Run"])
+    dimensions = sorted(df_raw["Dimension"].unique())
+    alg_names = [target] + [a for a in df_raw["Algorithm"].unique() if a != target]
+
     df_raw.to_csv(f"{out_dir}/raw_data/full_raw_results.csv", index=False)
+    np.savez_compressed(f"{out_dir}/raw_data/curves.npz", **curve_store)
 
     df_summary = df_raw.groupby(["Function", "Dimension", "Algorithm"])["Best"].agg(["mean", "std"]).reset_index()
     df_summary.to_csv(f"{out_dir}/tables/summary_mean_std.csv", index=False)
     df_pivot = df_summary.pivot(index=["Function", "Dimension"], columns="Algorithm", values="mean")
+    df_pivot = df_pivot[alg_names]
+    n_before = len(df_pivot)
+    df_pivot = df_pivot.dropna()
+    if len(df_pivot) < n_before:
+        print(f"[!] {n_before - len(df_pivot)} ta instansiya to'liq emas (ba'zi "
+              f"algoritmlar ishlatilmagan) - rank tahlilidan chiqarildi")
     df_pivot.to_csv(f"{out_dir}/tables/summary_results.csv")
     try:
         df_pivot.to_latex(f"{out_dir}/tables/summary_table.tex", float_format="%.2e")
@@ -958,7 +1018,7 @@ if __name__ == "__main__":
     avg_ranks = ranks.mean(axis=0).sort_values().reset_index()
     avg_ranks.columns = ["Algorithm", "Average_Rank"]
     avg_ranks.to_csv(f"{out_dir}/tables/overall_average_ranks.csv", index=False)
-    fr_stat, fr_p = friedmanchisquare(*[df_pivot[a].values for a in algorithms])
+    fr_stat, fr_p = friedmanchisquare(*[df_pivot[a].values for a in alg_names])
     with open(f"{out_dir}/tables/friedman_test.txt", "w") as fh:
         fh.write(f"Friedman chi2 = {fr_stat:.4f}, p = {fr_p:.4e}\n")
         fh.write(avg_ranks.to_string(index=False))
@@ -987,7 +1047,7 @@ if __name__ == "__main__":
     print(df_post.to_string(index=False))
 
     # Wilcoxon rank-sum (Mann-Whitney U) + Holm tuzatishi, +/=/- hisoblari
-    competitors = [a for a in algorithms if a != target]
+    competitors = [a for a in alg_names if a != target]
     pvals, wtl = [], {c: {"+": 0, "=": 0, "-": 0} for c in competitors}
     for f in funcs:
         for d in dimensions:
@@ -1020,8 +1080,11 @@ if __name__ == "__main__":
         offset = NOISE_AMP if PROBLEMS[f][4] == "noisy" else 0.0
         for d in dimensions:
             plt.figure(figsize=(10, 6))
-            for a in algorithms:
-                avg_conv = np.mean(curves[f][d][a], axis=0) + offset
+            for a in alg_names:
+                key = f"{f}|{d}|{a}"
+                if key not in curve_store or len(curve_store[key]) == 0:
+                    continue
+                avg_conv = np.mean(curve_store[key], axis=0) + offset
                 plt.plot(x_fes(d), np.maximum(avg_conv, 1e-300), label=a,
                          linewidth=2.5 if a == target else 1.0)
             plt.yscale("log")
