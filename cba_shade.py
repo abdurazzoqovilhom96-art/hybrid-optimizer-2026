@@ -202,12 +202,13 @@ class Tracker:
 # 2. CBA-SHADE VA RAQOBATCHILAR
 # ==============================================================================
 # ---- DE oilasi uchun umumiy yordamchi funksiyalar ----------------------------
-def _sample_F(M_F, r, n):
-    """Cauchy(M_F, 0.1) dan F, F<=0 bo'lsa qayta tanlanadi, yuqoridan 1.0 bilan chegaralanadi."""
-    F = M_F[r] + 0.1 * np.random.standard_cauchy(n)
+def _sample_F(mu):
+    """Cauchy(mu, 0.1) dan F; F<=0 bo'lsa qayta tanlanadi, yuqoridan 1.0 bilan chegaralanadi.
+    mu - har bir individ uchun xotiradan olingan o'rtacha qiymatlar vektori."""
+    F = mu + 0.1 * np.random.standard_cauchy(len(mu))
     bad = F <= 0
     while np.any(bad):
-        F[bad] = M_F[r[bad]] + 0.1 * np.random.standard_cauchy(bad.sum())
+        F[bad] = mu[bad] + 0.1 * np.random.standard_cauchy(int(bad.sum()))
         bad = F <= 0
     return np.minimum(F, 1.0)
 
@@ -333,7 +334,7 @@ def _cma_core(obj_func, dim, bounds, fes, max_fes, xmean, sigma, restart="unifor
 def CBA_SHADE(obj_func, dim, bounds, max_fes, POP_FACTOR=6, N_MIN=4, H_SIZE=6,
               ARC_RATE=2.6, RSP=True, K_RSP=3.0, EIG=True, EIG_FREE=True,
               EIG_PRIOR=True, EIG_LR=0.2, P_MAX=0.25, P_MIN_RATE=0.125,
-              JSO_F=True, MEM_INIT="jso", TAIL="cma", TAIL_FRAC=0.05,
+              JSO_F=True, MEM_INIT="ensemble", TAIL="cma", TAIL_FRAC=0.05,
               TAIL_DIV=1e-3):
     """Covariance-Basis Adaptive SHADE.
 
@@ -356,17 +357,24 @@ def CBA_SHADE(obj_func, dim, bounds, max_fes, POP_FACTOR=6, N_MIN=4, H_SIZE=6,
     fitness = np.array([obj_func(ind) for ind in pop])
     fes = pop_size
 
-    # Xotira boshlang'ich holati: jSO (M_CR=0.8 + doimiy terminal katak) yuqori
-    # CR ga moyil - aylantirilgan masalalar uchun mos; L-SHADE (0.5/0.5, barcha
-    # kataklar yangilanadi) separabel masalalarda erkinroq.
-    if MEM_INIT == "lshade":
-        M_F, M_CR = np.full(H_SIZE, 0.5), np.full(H_SIZE, 0.5)
-        n_upd = H_SIZE
-    else:
-        M_F, M_CR = np.full(H_SIZE, 0.3), np.full(H_SIZE, 0.8)
-        M_F[-1], M_CR[-1] = 0.9, 0.9      # jSO: oxirgi xotira katagi doimiy
-        n_upd = H_SIZE - 1
-    k_mem = 0
+    # --- Ikki parametr rejimi (bank) ansambli --------------------------------
+    # 0-bank (jSO): M_F=0.3, M_CR=0.8, doimiy terminal katak, F cheklovlari va
+    #   Fw vazni - yuqori CR ga moyil, bog'langan/aylantirilgan relyef uchun mos.
+    # 1-bank (L-SHADE): M_F=M_CR=0.5, barcha kataklar yangilanadi, F cheklovsiz,
+    #   Fw = F - past CR ga yo'l ochadi, separabel relyef uchun mos.
+    # Ablatsiya (30D, 15 run) ikkalasining teskari bog'liqligini ko'rsatdi:
+    #   Schwefel   (separabel)  jSO 1.18e+02  |  L-SHADE 3.82e-04
+    #   RotEllipt. (aylantir.)  jSO 1.41e+02  |  L-SHADE 3.89e+03
+    # Shuning uchun rejim qat'iy tanlanmaydi: bank ehtimolligi p_eig bilan bir
+    # xil mexanizm orqali - yaxshilanish MIQDORI krediti va rho prior - moslashadi.
+    M_F = np.stack([np.full(H_SIZE, 0.3), np.full(H_SIZE, 0.5)])
+    M_CR = np.stack([np.full(H_SIZE, 0.8), np.full(H_SIZE, 0.5)])
+    M_F[0, -1], M_CR[0, -1] = 0.9, 0.9
+    n_upd = (H_SIZE - 1, H_SIZE)
+    k_mem = [0, 0]
+    p_bank = 0.5                           # 0-bank (jSO) dan foydalanish ehtimolligi
+    bank_credit = np.array([0.5, 0.5])
+    p_bank_fixed = {"jso": 1.0, "lshade": 0.0}.get(MEM_INIT)
     archive = np.empty((0, dim))
     p_eig = 0.5                            # eigen-bazisda crossover ehtimolligi
     eig_credit = np.array([0.5, 0.5])      # [koordinata bazisi, eigen bazisi]
@@ -395,13 +403,21 @@ def CBA_SHADE(obj_func, dim, bounds, max_fes, POP_FACTOR=6, N_MIN=4, H_SIZE=6,
                     rho = float(np.mean(off)) if off.size else 0.0
 
         # --- Parametrlar: success-history + jSO cheklovlari -------------------
+        pb = p_bank if p_bank_fixed is None else p_bank_fixed
+        if EIG_PRIOR and p_bank_fixed is None and t < 0.1:
+            pb = 0.5 * p_bank + 0.5 * min(1.0, 2.0 * rho)
+        bank = (np.random.rand(pop_size) >= pb).astype(int)   # 0 = jSO, 1 = L-SHADE
         r = np.random.randint(0, H_SIZE, pop_size)
-        CR = np.clip(np.random.normal(M_CR[r], 0.1), 0.0, 1.0)
-        CR[M_CR[r] < 0] = 0.0              # L-SHADE terminal qiymati
-        F = _sample_F(M_F, r, pop_size)
+        mu_CR, mu_F = M_CR[bank, r], M_F[bank, r]
+        CR = np.clip(np.random.normal(mu_CR, 0.1), 0.0, 1.0)
+        CR[mu_CR < 0] = 0.0                # L-SHADE terminal qiymati
+        F = _sample_F(mu_F)
+        jso = bank == 0
         if JSO_F and t < 0.6:
-            F = np.minimum(F, 0.7)
-        Fw = F * (0.7 if t < 0.2 else 0.8 if t < 0.4 else 1.2) if JSO_F else F
+            F[jso] = np.minimum(F[jso], 0.7)
+        Fw = F.copy()
+        if JSO_F:
+            Fw[jso] *= (0.7 if t < 0.2 else 0.8 if t < 0.4 else 1.2)
         Fc, Fwc = F[:, None], Fw[:, None]
 
         # --- Donorlar: pbest + rank asosidagi tanlov bosimi (RSP) ------------
@@ -446,29 +462,45 @@ def CBA_SHADE(obj_func, dim, bounds, max_fes, POP_FACTOR=6, N_MIN=4, H_SIZE=6,
         improved = fit_U < fitness
         accept = fit_U <= fitness
 
+        gain = np.where(improved, np.maximum(fitness - fit_U, 0.0), 0.0)
+        gain_total = gain.sum()
         if np.any(improved):
-            df = fitness[improved] - fit_U[improved]
-            w = df / df.sum()
             archive = _arch_push(archive, pop[improved], int(round(ARC_RATE * pop_size)))
-            mf = _lehmer(F[improved], w)
-            mcr = -1.0 if (M_CR[k_mem] == -1 or np.sum(w * CR[improved]) == 0) \
-                       else _lehmer(CR[improved], w)
-            if MEM_INIT == "lshade":       # L-SHADE: to'g'ridan-to'g'ri almashtirish
-                M_F[k_mem] = mf
-                M_CR[k_mem] = mcr
-            else:                          # jSO/iL-SHADE: avvalgisi bilan o'rtachalash
-                M_F[k_mem] = (M_F[k_mem] + mf) / 2.0
-                M_CR[k_mem] = -1.0 if mcr == -1 else (M_CR[k_mem] + mcr) / 2.0
-            k_mem = (k_mem + 1) % n_upd
+            for b in (0, 1):               # har bir bank o'z xotirasini yangilaydi
+                mb = improved & (bank == b)
+                if not np.any(mb):
+                    continue
+                df = fitness[mb] - fit_U[mb]
+                w = df / df.sum()
+                mf = _lehmer(F[mb], w)
+                mcr = -1.0 if (M_CR[b, k_mem[b]] == -1 or np.sum(w * CR[mb]) == 0) \
+                           else _lehmer(CR[mb], w)
+                if b == 1:                 # L-SHADE: to'g'ridan-to'g'ri almashtirish
+                    M_F[b, k_mem[b]] = mf
+                    M_CR[b, k_mem[b]] = mcr
+                else:                      # jSO/iL-SHADE: avvalgisi bilan o'rtachalash
+                    M_F[b, k_mem[b]] = (M_F[b, k_mem[b]] + mf) / 2.0
+                    M_CR[b, k_mem[b]] = -1.0 if mcr == -1 else (M_CR[b, k_mem[b]] + mcr) / 2.0
+                k_mem[b] = (k_mem[b] + 1) % n_upd[b]
+
+        # --- Bank tanlovini moslashtirish (bazis bilan bir xil kredit qoidasi) --
+        if p_bank_fixed is None:
+            for b in (0, 1):
+                mk = bank == b
+                share = mk.mean()
+                if share > 0:
+                    fir = (gain[mk].sum() / gain_total / share) if gain_total > 0 else 0.0
+                    bank_credit[b] = (1.0 - EIG_LR) * bank_credit[b] + EIG_LR * fir
+            s_bank = bank_credit.sum()
+            if s_bank > 0:
+                p_bank = float(np.clip(bank_credit[0] / s_bank, 0.02, 0.98))
 
         # --- Bazis moslashuvi: kredit = yaxshilanish MIQDORI (FIR krediti) ---
         if EIG:
-            gain = np.where(improved, np.maximum(fitness - fit_U, 0.0), 0.0)
-            total = gain.sum()
             for j, mk in enumerate([~use_eig, use_eig]):
                 share = mk.mean()
                 if share > 0:
-                    fir = (gain[mk].sum() / total / share) if total > 0 else 0.0
+                    fir = (gain[mk].sum() / gain_total / share) if gain_total > 0 else 0.0
                     eig_credit[j] = (1.0 - EIG_LR) * eig_credit[j] + EIG_LR * fir
             s_cred = eig_credit.sum()
             if s_cred > 0:
@@ -527,7 +559,7 @@ def baseline_SHADE(obj_func, dim, bounds, max_fes):
         r = np.random.randint(0, H, pop_size)
         CR = np.clip(np.random.normal(M_CR[r], 0.1), 0.0, 1.0)
         CR[M_CR[r] < 0] = 0.0
-        F = _sample_F(M_F, r, pop_size)
+        F = _sample_F(M_F[r])
         p_i = np.maximum(2, (np.random.uniform(2.0 / pop_size, p_rate, pop_size) * pop_size).astype(int))
         pbest = pop[(np.random.rand(pop_size) * p_i).astype(int)]
         union = np.vstack([pop, archive]) if len(archive) else pop
@@ -571,7 +603,7 @@ def baseline_LSHADE(obj_func, dim, bounds, max_fes):
         r = np.random.randint(0, H, pop_size)
         CR = np.clip(np.random.normal(M_CR[r], 0.1), 0.0, 1.0)
         CR[M_CR[r] < 0] = 0.0
-        F = _sample_F(M_F, r, pop_size)
+        F = _sample_F(M_F[r])
         p_num = max(2, int(round(p_rate * pop_size)))
         pbest = pop[np.random.randint(0, p_num, pop_size)]
         union = np.vstack([pop, archive]) if len(archive) else pop
@@ -628,7 +660,7 @@ def baseline_jSO(obj_func, dim, bounds, max_fes):
             CR = np.maximum(CR, 0.7)
         elif t < 0.5:
             CR = np.maximum(CR, 0.6)
-        F = _sample_F(M_F, r, pop_size)
+        F = _sample_F(M_F[r])
         if t < 0.6:
             F = np.minimum(F, 0.7)
         Fw = F * (0.7 if t < 0.2 else 0.8 if t < 0.4 else 1.2)
@@ -703,7 +735,7 @@ def baseline_LSHADE_cnEpSin(obj_func, dim, bounds, max_fes):
             F2 = 0.5 * (np.sin(2 * np.pi * freq_i * g) * g / G_max + 1.0)
             F = np.clip(np.where(cfg == 0, F1, F2), 0.05, 1.0)
         else:
-            F = _sample_F(M_F, r, pop_size)
+            F = _sample_F(M_F[r])
         p_num = max(2, int(round(p_rate * pop_size)))
         pbest = pop[np.random.randint(0, p_num, pop_size)]
         union = np.vstack([pop, archive]) if len(archive) else pop
