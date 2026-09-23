@@ -6,10 +6,10 @@ Holat faqat git'dan o'qiladi. To'liq ko'rsatma: `docs/AUTONOMOUS_PROMPT.md`.
 | Faza | Holat | Izoh |
 |---|---|---|
 | FAZA_A — parametrlarni muzlatish | **tugadi** | 5 bosqich sozlash; natijalar `results/tuning/` da |
-| FAZA_B — GitHub Actions to'liq eksperiment | **ishlayapti** | 30D va 50D tugadi; faqat 100D qoldi |
-| FAZA_C — `docs/RESULTS.md` yakuniy tahlil | qisman | protokol bo'limi yozildi; raqamlar kutilmoqda |
+| FAZA_B — GitHub Actions to'liq eksperiment | **tugadi** | 19:32 UTC da natijalar branchga yozildi |
+| FAZA_C — `docs/RESULTS.md` yakuniy tahlil | **tugadi** | 9 bo'lim, barcha raqamlar bilan |
 
-**Oxirgi tekshiruv:** 2026-09-23 19:06 UTC
+**Oxirgi tekshiruv:** 2026-09-23 20:10 UTC
 
 ## Muzlatilgan parametrlar
 
@@ -36,7 +36,16 @@ Holat faqat git'dan o'qiladi. To'liq ko'rsatma: `docs/AUTONOMOUS_PROMPT.md`.
   natija Holm p qiymati bilan aniqlanadi, o'rtachalar taqqoslanishi bilan
   emas - aks holda ahamiyatsiz farq g'alaba deb sanalardi.
 
-## Kutilayotgan zaif tomon
+## Asosiy natija
 
-`RotatedElliptic`: CBA-SHADE ~1440, LSHADE-cnEpSin ~0.359. Yakuniy
-hisobotda ochiq ko'rsatilishi shart, yashirilmasligi kerak.
+Friedman: chi2 = 122.90, p = 4.0e-24. CBA-SHADE eng yaxshi o'rtacha rank
+(2.50), lekin **post-hoc testda zamonaviy DE variantlarining hech biridan
+statistik jihatdan ustun emas** (Holm p = 0.305 barcha to'rttasi uchun).
+Ahamiyatli farq faqat DE va CMA-ES ga nisbatan.
+
+Eng yaxshi raqib bilan taqqoslaganda: 36 instansiyadan 8 tasida g'alaba,
+18 tasida teng, 10 tasida mag'lubiyat.
+
+Tizimli zaifliklar: shovqinli funksiyalar (uchala NoisySphere + 100D
+NoisyRastrigin), RotatedElliptic (30D va 50D), 100D da Levy va Zakharov.
+Batafsil: `docs/RESULTS.md` 8-bo'lim.
