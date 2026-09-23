@@ -1,7 +1,7 @@
 import numpy as np
 import pandas as pd
 import scipy.stats as stats
-from scipy.stats import mannwhitneyu, friedmanchisquare
+from scipy.stats import mannwhitneyu, friedmanchisquare, norm
 import math
 import os
 import time
@@ -11,38 +11,55 @@ matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 
 # ==============================================================================
-# TEMOA_V10_HYBRID - GIBRID ALGORITM TARKIBI
+# CBA-SHADE - ALGORITM TARKIBI
 # ------------------------------------------------------------------------------
-# V9 dagi kuchsiz qismlar va ularning o'rniga qo'yilgan kuchli komponentlar:
+# Algoritm nomi bitta joyda (ALGO_NAME) belgilanadi. Muqobil variantlar:
+#   "CBA-SHADE"  - Covariance-Basis Adaptive SHADE (standart)
+#   "LSHADE-CBA" - L-SHADE oilasining nomlash an'anasiga mos variant
+#   "TEMOA-CB"   - muallifning avvalgi TEMOA brendini saqlagan variant
 #
-#  V9 (kuchsiz)                          ->  V10 (kuchli, manba)
+# V10 (gibrid portfel) dagi kuchsiz qismlar va ularning o'rniga qo'yilgan
+# komponentlar. Har bir almashtirish 12 ta funksiya x 30/50 D ustida
+# o'tkazilgan ablatsiya tajribasi bilan asoslangan (izoh: docs/ABLATION.md).
+#
+#  V10 (kuchsiz)                          ->  CBA-SHADE (kuchli, manba)
 #  ------------------------------------------------------------------------------
-#  |E|>=1 bo'lsagina DE (t>0.5 da o'chadi) -> Adaptiv operator portfeli: har bir
-#                                            operator muvaffaqiyat ulushiga qarab
-#                                            ehtimollik oladi (Adaptive Operator
-#                                            Selection, probability matching)
-#  current-to-lead/1 (X_lead)             -> current-to-pbest-w/1 + arxiv
-#                                            (L-SHADE / jSO yadrosi)
-#  GWO encircling |C*X_alpha - x|         -> Translyatsiyaga invariant lider
-#  (koordinata boshiga og'ish)               yo'naltirishi: x + F(X_lead - x) + F*diff
-#  WOA spiral X_lead atrofida             -> WOA spirali x_pbest atrofida (diversity)
-#  Yo'q                                   -> HHO Levy-flight "rapid dive"
-#                                            (og'ir dumli sakrashlar, lokal
-#                                            minimumdan chiqish)
-#  Faqat binomial crossover               -> Adaptiv eigen-crossover (kovariatsiya
-#                                            bazisida, LSHADE-cnEpSin); binomial va
-#                                            eigen o'rtasidagi ulush muvaffaqiyatga
-#                                            qarab moslashadi (separabel va
-#                                            aylantirilgan masalalar uchun)
-#  Vaznsiz Lehmer mean                    -> |df| bilan vaznlangan Lehmer mean +
-#                                            jSO F/CR cheklovlari va xotira
-#  Reflect + clip                         -> Midpoint-target chegara (L-SHADE)
-#  (ABC "scout" sinovdan o'tkazildi, 10D sozlashda zarar qilgani uchun standart
-#   holatda o'chiq: STAG_LIMIT=None)
-#  Yo'q                                  -> Oxirgi 5% byudjet: (1+1)-ES, 1/5 qoidasi
-#                                            (Rechenberg) bilan lokal aniqlashtirish
-#  LPSR (saqlangan)                       -> LPSR (L-SHADE)
+#  Metafora asosidagi operator portfeli:  -> Portfel butunlay olib tashlandi.
+#  GWO lider-DE, WOA spirali, HHO Levy       Ablatsiya: portfelni o'chirib faqat
+#  operatorlari + muvaffaqiyat ULUSHIga      current-to-pbest-w/1 qoldirilganda
+#  asoslangan probability matching           Schwefel 30D xatosi 2428 -> 0.0 ga
+#                                            tushdi. Uchala metafora operatori
+#                                            ham ko'p ekstremumli relyefda
+#                                            zarar keltirar edi.
+#
+#  Tasodifiy (bir tekis) r1 tanlovi       -> Rank asosidagi tanlov bosimi (RSP),
+#                                            LSHADE-RSP (Stanovov va b., 2018)
+#
+#  P_EIG ni muvaffaqiyat ULUSHI bo'yicha  -> Kovariatsiya bilan boshqariladigan
+#  [0.1, 0.9] oralig'ida moslashtirish       bazis moslashuvi: separabellik
+#  (separabel masalalarda o'chira olmaydi)   ko'rsatkichi rho (korrelyatsiya
+#                                            matritsasining diagonaldan tashqari
+#                                            o'rtacha moduli) boshlang'ich
+#                                            taqsimotni beradi, kredit esa
+#                                            yaxshilanish MIQDORIga asoslanadi
+#                                            (FIR krediti, Fialho va b., 2010).
+#                                            Oraliq [0.02, 0.98] - ya'ni bazis
+#                                            to'liq o'chishi ham mumkin.
+#
+#  Oxirgi 5% byudjet: (1+1)-ES, 1/5       -> CMA-ES bilan yakuniy aniqlashtirish
+#  qoidasi (ablatsiya: natijaga TA'SIRI      (LSHADE-SPACMA / EBOwithCMAR uslubi).
+#  UMUMAN YO'Q edi, byudjet isrof bo'lardi)
+#
+#  N_init = 6*D, POP_MAX = 500 cheklovi   -> N_init = 18*D (L-SHADE standarti),
+#                                            sun'iy cheklovsiz
+#
+#  Vaznsiz Lehmer mean                       (saqlandi) |df| bilan vaznlangan
+#                                            Lehmer mean + jSO F/CR cheklovlari
+#  Midpoint-target chegara                   (saqlandi, L-SHADE)
+#  LPSR                                      (saqlandi, L-SHADE)
 # ==============================================================================
+
+ALGO_NAME = "CBA-SHADE"
 
 # ==============================================================================
 # 1. MATEMATIK TEST FUNKSIYALARI (12 ta benchmark)
@@ -182,111 +199,222 @@ class Tracker:
         return self.curve
 
 # ==============================================================================
-# 2. TEMOA_V10_HYBRID VA RAQOBATCHILAR
+# 2. CBA-SHADE VA RAQOBATCHILAR
 # ==============================================================================
-def levy_flight(shape, beta=1.5):
-    # Mantegna algoritmi
-    sigma_u = (math.gamma(1 + beta) * math.sin(math.pi * beta / 2) /
-               (math.gamma((1 + beta) / 2) * beta * 2 ** ((beta - 1) / 2))) ** (1 / beta)
-    u = np.random.normal(0.0, sigma_u, shape)
-    v = np.random.normal(0.0, 1.0, shape)
-    return u / np.abs(v) ** (1 / beta)
+# ---- DE oilasi uchun umumiy yordamchi funksiyalar ----------------------------
+def _sample_F(M_F, r, n):
+    """Cauchy(M_F, 0.1) dan F, F<=0 bo'lsa qayta tanlanadi, yuqoridan 1.0 bilan chegaralanadi."""
+    F = M_F[r] + 0.1 * np.random.standard_cauchy(n)
+    bad = F <= 0
+    while np.any(bad):
+        F[bad] = M_F[r[bad]] + 0.1 * np.random.standard_cauchy(bad.sum())
+        bad = F <= 0
+    return np.minimum(F, 1.0)
 
-def TEMOA_V10_HYBRID(obj_func, dim, bounds, max_fes, POP_FACTOR=6, POP_MAX=500, P_MIN=0.05,
-                     P_EIG=0.4, ADAPT_EIG=True, ARC_RATE=1.0, STAG_LIMIT=None, LS_FRACTION=0.05,
-                     CR_FLOOR=True):
-    # Parametrlar faqat alohida sozlash to'plamida (10D) tanlanadi va keyin muzlatiladi
+def _lehmer(vals, w):
+    """Vaznlangan Lehmer o'rtachasi (SHADE xotira yangilanishi)."""
+    den = np.sum(w * vals)
+    return np.sum(w * vals ** 2) / den if den > 0 else -1.0
+
+def _pick_r2(n_union, idx, r1):
+    """r2 ni P u A dan tanlash: r2 != i va r2 != r1."""
+    n = len(idx)
+    r2 = np.random.randint(0, n_union, n)
+    clash = (r2 == idx) | (r2 == r1)
+    while np.any(clash):
+        r2[clash] = np.random.randint(0, n_union, clash.sum())
+        clash = (r2 == idx) | (r2 == r1)
+    return r2
+
+def _midpoint(U, pop, lb, ub):
+    """Midpoint-target chegara tuzatishi (L-SHADE)."""
+    low, high = U < lb, U > ub
+    U[low] = ((lb + pop) / 2.0)[low]
+    U[high] = ((ub + pop) / 2.0)[high]
+    return U
+
+def _arch_push(archive, losers, arc_max):
+    if arc_max <= 0:
+        return archive
+    archive = np.vstack([archive, losers]) if len(archive) else losers.copy()
+    if len(archive) > arc_max:
+        archive = archive[np.random.choice(len(archive), arc_max, replace=False)]
+    return archive
+
+def _cma_core(obj_func, dim, bounds, fes, max_fes, xmean, sigma, restart="uniform"):
+    """(mu/mu_w, lambda)-CMA-ES yadrosi (Hansen & Ostermeier, 2001).
+    Ham mustaqil raqobatchi, ham CBA-SHADE ning yakuniy aniqlashtirishi uchun.
+    restart="uniform" - tarqalish yo'qolganda butun sohadan qayta boshlaydi
+    (mustaqil CMA-ES); restart="local" - eng yaxshi nuqta atrofida, kichraygan
+    qadam bilan qayta boshlaydi (lokal aniqlashtirish rejimi)."""
     lb, ub = bounds
-    N_init = int(np.clip(round(POP_FACTOR * dim), 40, POP_MAX))
-    N_min = 4
-    H_SIZE = 6
-    K_OPS = 4            # 0: pbest-DE, 1: lider-DE (GWO), 2: spiral (WOA), 3: Levy (HHO)
-    ls_start = int((1.0 - LS_FRACTION) * max_fes)
+    lam = 4 + int(3 * math.log(dim))
+    mu = lam // 2
+    w = math.log(mu + 0.5) - np.log(np.arange(1, mu + 1))
+    w /= w.sum()
+    mueff = 1.0 / np.sum(w ** 2)
+    cc = (4 + mueff / dim) / (dim + 4 + 2 * mueff / dim)
+    cs = (mueff + 2) / (dim + mueff + 5)
+    c1 = 2 / ((dim + 1.3) ** 2 + mueff)
+    cmu = min(1 - c1, 2 * (mueff - 2 + 1 / mueff) / ((dim + 2) ** 2 + mueff))
+    damps = 1 + 2 * max(0, math.sqrt((mueff - 1) / (dim + 1)) - 1) + cs
+    chiN = math.sqrt(dim) * (1 - 1 / (4 * dim) + 1 / (21 * dim ** 2))
+    pc, psig = np.zeros(dim), np.zeros(dim)
+    B, D, C, invsqrtC = np.eye(dim), np.ones(dim), np.eye(dim), np.eye(dim)
+    gen, eigeneval, restarts = 0, fes, 0
+    sigma0 = sigma
+    x_best, f_best = xmean.copy(), np.inf
+    while fes < max_fes:
+        gen += 1
+        Y = np.random.randn(lam, dim) @ (B * D).T
+        X = xmean + sigma * Y
+        Xc = np.clip(X, lb, ub)
+        pen = np.sum((X - Xc) ** 2, axis=1)          # chegaradan chiqish jarimasi
+        f = np.full(lam, np.inf)
+        for i in range(lam):
+            if fes >= max_fes:
+                break
+            f[i] = obj_func(Xc[i]) + pen[i]
+            fes += 1
+        srt = np.argsort(f)
+        if f[srt[0]] < f_best:
+            f_best, x_best = f[srt[0]], Xc[srt[0]].copy()
+        Yo = Y[srt[:mu]]
+        xmean = xmean + sigma * (w @ Yo)
+        psig = (1 - cs) * psig + math.sqrt(cs * (2 - cs) * mueff) * (invsqrtC @ (w @ Yo))
+        hsig = np.linalg.norm(psig) / math.sqrt(1 - (1 - cs) ** (2 * gen)) / chiN < 1.4 + 2 / (dim + 1)
+        pc = (1 - cc) * pc + hsig * math.sqrt(cc * (2 - cc) * mueff) * (w @ Yo)
+        C = ((1 - c1 - cmu) * C
+             + c1 * (np.outer(pc, pc) + (not hsig) * cc * (2 - cc) * C)
+             + cmu * (Yo.T * w) @ Yo)
+        sigma *= math.exp((cs / damps) * (np.linalg.norm(psig) / chiN - 1))
+        sigma = min(sigma, 1e3 * float(np.max(ub - lb)))
+        degenerate = False
+        if fes - eigeneval > lam / (c1 + cmu) / dim / 10:
+            eigeneval = fes
+            C = np.triu(C) + np.triu(C, 1).T
+            try:
+                Dv, B = np.linalg.eigh(C)
+            except np.linalg.LinAlgError:
+                degenerate = True
+            else:
+                if np.min(Dv) <= 0:
+                    degenerate = True
+                else:
+                    D = np.sqrt(Dv)
+                    invsqrtC = B @ np.diag(1.0 / D) @ B.T
+        if degenerate or not np.isfinite(sigma) or sigma < 1e-16:
+            restarts += 1
+            if restarts > 100:
+                return
+            if restart == "local":
+                xmean = x_best.copy()
+                sigma = sigma0 * (0.5 ** restarts)
+                if sigma < 1e-14:
+                    return
+            else:
+                xmean = lb + np.random.rand(dim) * (ub - lb)
+                sigma = 0.3 * float(np.mean(ub - lb))
+            pc, psig = np.zeros(dim), np.zeros(dim)
+            B, D, C, invsqrtC = np.eye(dim), np.ones(dim), np.eye(dim), np.eye(dim)
+            gen, eigeneval = 0, fes
 
+# ------------------------------- ASOSIY ALGORITM ------------------------------
+def CBA_SHADE(obj_func, dim, bounds, max_fes, POP_FACTOR=18, N_MIN=4, H_SIZE=6,
+              ARC_RATE=2.6, RSP=True, K_RSP=3.0, EIG=True, EIG_FREE=True,
+              EIG_PRIOR=True, EIG_LR=0.2, P_MAX=0.25, P_MIN_RATE=0.125,
+              JSO_F=True, TAIL="cma", TAIL_FRAC=0.05):
+    """Covariance-Basis Adaptive SHADE.
+
+    Yadro: current-to-pbest-w/1 + arxiv, muvaffaqiyat tarixi bilan F/CR
+    moslashuvi, chiziqli populyatsiya kamayishi (LPSR), midpoint-target chegara.
+    Yangi komponentlar:
+      (i)   rank asosidagi tanlov bosimi (RSP) - LSHADE-RSP;
+      (ii)  kovariatsiya bilan boshqariladigan crossover bazisi moslashuvi;
+      (iii) CMA-ES bilan yakuniy lokal aniqlashtirish.
+    Parametrlar faqat alohida sozlash to'plamida (10D) tanlangan va muzlatilgan.
+    """
+    lb, ub = bounds
+    N_init = max(40, int(round(POP_FACTOR * dim)))
     pop_size = N_init
+    tail_start = int((1.0 - TAIL_FRAC) * max_fes) if TAIL != "none" else max_fes
+
     pop = lb + np.random.rand(pop_size, dim) * (ub - lb)
     fitness = np.array([obj_func(ind) for ind in pop])
     fes = pop_size
 
-    M_F = np.full(H_SIZE, 0.3)
-    M_CR = np.full(H_SIZE, 0.8)
-    M_F[-1], M_CR[-1] = 0.9, 0.9      # jSO: oxirgi xotira katagi doimiy
+    M_F, M_CR = np.full(H_SIZE, 0.3), np.full(H_SIZE, 0.8)
+    M_F[-1], M_CR[-1] = 0.9, 0.9          # jSO: oxirgi xotira katagi doimiy
     k_mem = 0
     archive = np.empty((0, dim))
-    op_quality = np.full(K_OPS, 0.5)
-    op_prob = np.full(K_OPS, 1.0 / K_OPS)
-    eig_quality = np.array([0.5, 0.5])      # [binomial, eigen] muvaffaqiyat ulushi
-    stag = np.zeros(pop_size, dtype=int)
+    p_eig = 0.5                            # eigen-bazisda crossover ehtimolligi
+    eig_credit = np.array([0.5, 0.5])      # [koordinata bazisi, eigen bazisi]
     B = np.eye(dim)
-    idx = np.arange(pop_size)
 
-    while fes < ls_start:
+    while fes < tail_start:
         t = fes / max_fes
         order = np.argsort(fitness)
-        pop, fitness, stag = pop[order], fitness[order], stag[order]
+        pop, fitness = pop[order], fitness[order]
         idx = np.arange(pop_size)
 
-        # Eigen bazis: eng yaxshi yarmining kovariatsiyasi
-        C = np.cov(pop[:max(2, pop_size // 2)], rowvar=False)
-        if np.all(np.isfinite(C)):
-            _, B = np.linalg.eigh(C)
+        # --- Kovariatsiya bazisi + separabellik ko'rsatkichi rho --------------
+        rho = 0.0
+        if EIG:
+            C = np.cov(pop[:max(2, pop_size // 2)], rowvar=False)
+            if np.all(np.isfinite(C)):
+                try:
+                    _, B = np.linalg.eigh(C)
+                except np.linalg.LinAlgError:
+                    pass
+                if EIG_PRIOR:
+                    sd = np.sqrt(np.clip(np.diag(C), 1e-300, None))
+                    R = C / np.outer(sd, sd)
+                    off = np.abs(R[~np.eye(dim, dtype=bool)])
+                    off = off[np.isfinite(off)]
+                    rho = float(np.mean(off)) if off.size else 0.0
 
-        # Parametrlar: success-history + jSO cheklovlari
+        # --- Parametrlar: success-history + jSO cheklovlari -------------------
         r = np.random.randint(0, H_SIZE, pop_size)
         CR = np.clip(np.random.normal(M_CR[r], 0.1), 0.0, 1.0)
-        if CR_FLOOR:
-            if t < 0.25: CR = np.maximum(CR, 0.7)
-            elif t < 0.5: CR = np.maximum(CR, 0.6)
-        F = M_F[r] + 0.1 * np.random.standard_cauchy(pop_size)
-        bad = F <= 0
-        while np.any(bad):
-            F[bad] = M_F[r[bad]] + 0.1 * np.random.standard_cauchy(bad.sum())
-            bad = F <= 0
-        F = np.minimum(F, 1.0)
-        if t < 0.6: F = np.minimum(F, 0.7)
-        Fw = F * (0.7 if t < 0.2 else 0.8 if t < 0.4 else 1.2)
+        CR[M_CR[r] < 0] = 0.0              # L-SHADE terminal qiymati
+        F = _sample_F(M_F, r, pop_size)
+        if JSO_F and t < 0.6:
+            F = np.minimum(F, 0.7)
+        Fw = F * (0.7 if t < 0.2 else 0.8 if t < 0.4 else 1.2) if JSO_F else F
         Fc, Fwc = F[:, None], Fw[:, None]
 
-        # Donorlar
-        p_num = max(2, int(round((0.25 - 0.20 * t) * pop_size)))
+        # --- Donorlar: pbest + rank asosidagi tanlov bosimi (RSP) ------------
+        p_num = max(2, int(round((P_MAX - (P_MAX - P_MIN_RATE) * t) * pop_size)))
         x_pbest = pop[np.random.randint(0, p_num, pop_size)]
-        r1 = (idx + np.random.randint(1, pop_size, pop_size)) % pop_size
+        if RSP:
+            rk = K_RSP * (pop_size - idx) / pop_size + 1.0
+            pr = rk / rk.sum()
+            r1 = np.random.choice(pop_size, pop_size, p=pr)
+            same = r1 == idx
+            while np.any(same):
+                r1[same] = np.random.choice(pop_size, same.sum(), p=pr)
+                same = r1 == idx
+        else:
+            r1 = (idx + np.random.randint(1, pop_size, pop_size)) % pop_size
         union_pop = np.vstack([pop, archive]) if len(archive) else pop
-        r2 = np.random.randint(0, len(union_pop), pop_size)
-        clash = (r2 == idx) | (r2 == r1)
-        while np.any(clash):
-            r2[clash] = np.random.randint(0, len(union_pop), clash.sum())
-            clash = (r2 == idx) | (r2 == r1)
-        diff = pop[r1] - union_pop[r2]
-        X_lead = np.array([0.5, 0.3, 0.2]) @ pop[:3]
+        r2 = _pick_r2(len(union_pop), idx, r1)
+        V = pop + Fwc * (x_pbest - pop) + Fc * (pop[r1] - union_pop[r2])
 
-        # Operator portfeli
-        ops = np.random.choice(K_OPS, pop_size, p=op_prob)
-        V = np.empty_like(pop)
-        m = ops == 0
-        V[m] = pop[m] + Fwc[m] * (x_pbest[m] - pop[m]) + Fc[m] * diff[m]
-        m = ops == 1
-        V[m] = pop[m] + Fc[m] * (X_lead - pop[m]) + Fc[m] * diff[m]
-        m = ops == 2
-        l = np.random.uniform(-1.0, 1.0, (m.sum(), 1))
-        V[m] = x_pbest[m] + np.abs(x_pbest[m] - pop[m]) * np.exp(l) * np.cos(2.0 * np.pi * l)
-        m = ops == 3
-        L = np.clip(levy_flight((m.sum(), dim)), -5.0, 5.0)
-        V[m] = pop[m] + Fc[m] * (x_pbest[m] - pop[m]) + Fc[m] * L * diff[m]
-
-        # Crossover: binomial yoki eigen-bazisda binomial
+        # --- Crossover: koordinata bazisi yoki eigen bazisi -------------------
         cross = np.random.rand(pop_size, dim) < CR[:, None]
         cross[idx, np.random.randint(0, dim, pop_size)] = True
         U = np.where(cross, V, pop)
-        use_eig = np.random.rand(pop_size) < P_EIG
-        if np.any(use_eig):
-            xe, ve = pop[use_eig] @ B, V[use_eig] @ B
-            U[use_eig] = np.where(cross[use_eig], ve, xe) @ B.T
+        use_eig = np.zeros(pop_size, dtype=bool)
+        if EIG:
+            pe = p_eig
+            if EIG_PRIOR and t < 0.1:      # boshlanishda rho prior sifatida
+                pe = 0.5 * p_eig + 0.5 * min(1.0, 3.0 * rho)
+            use_eig = np.random.rand(pop_size) < pe
+            if np.any(use_eig):
+                U[use_eig] = np.where(cross[use_eig], V[use_eig] @ B,
+                                      pop[use_eig] @ B) @ B.T
 
-        # Midpoint-target chegara
-        low, high = U < lb, U > ub
-        U[low] = ((lb + pop) / 2.0)[low]
-        U[high] = ((ub + pop) / 2.0)[high]
+        U = _midpoint(U, pop, lb, ub)
 
         n_eval = min(pop_size, max_fes - fes)
         fit_U = np.full(pop_size, np.inf)
@@ -298,80 +426,304 @@ def TEMOA_V10_HYBRID(obj_func, dim, bounds, max_fes, POP_FACTOR=6, POP_MAX=500, 
         accept = fit_U <= fitness
 
         if np.any(improved):
-            archive = np.vstack([archive, pop[improved]])
             df = fitness[improved] - fit_U[improved]
             w = df / df.sum()
-            S_CR = CR[improved]
-            den = np.sum(w * S_CR)
-            mcr = np.sum(w * S_CR**2) / den if den > 0 else 0.0
-            uses_F = ops[improved] != 2
-            if np.any(uses_F):
-                wf = df[uses_F] / df[uses_F].sum()
-                S_F = F[improved][uses_F]
-                mf = np.sum(wf * S_F**2) / np.sum(wf * S_F)
-                M_F[k_mem] = (M_F[k_mem] + mf) / 2.0
-            M_CR[k_mem] = (M_CR[k_mem] + mcr) / 2.0
+            archive = _arch_push(archive, pop[improved], int(round(ARC_RATE * pop_size)))
+            mf = _lehmer(F[improved], w)
+            mcr = -1.0 if (M_CR[k_mem] == -1 or np.sum(w * CR[improved]) == 0) \
+                       else _lehmer(CR[improved], w)
+            M_F[k_mem] = (M_F[k_mem] + mf) / 2.0
+            M_CR[k_mem] = -1.0 if mcr == -1 else (M_CR[k_mem] + mcr) / 2.0
             k_mem = (k_mem + 1) % (H_SIZE - 1)
 
-        # Operator sifati (probability matching)
-        for k in range(K_OPS):
-            mk = ops == k
-            if np.any(mk):
-                op_quality[k] = 0.7 * op_quality[k] + 0.3 * improved[mk].mean()
-        q_sum = op_quality.sum()
-        op_prob = P_MIN + (1.0 - K_OPS * P_MIN) * (op_quality / q_sum if q_sum > 0 else np.full(K_OPS, 1.0 / K_OPS))
-        if ADAPT_EIG:
-            for k, mk in enumerate([~use_eig, use_eig]):
-                if np.any(mk):
-                    eig_quality[k] = 0.7 * eig_quality[k] + 0.3 * improved[mk].mean()
-            e_sum = eig_quality.sum()
-            P_EIG = float(np.clip(eig_quality[1] / e_sum, 0.1, 0.9)) if e_sum > 0 else 0.5
+        # --- Bazis moslashuvi: kredit = yaxshilanish MIQDORI (FIR krediti) ---
+        if EIG:
+            gain = np.where(improved, np.maximum(fitness - fit_U, 0.0), 0.0)
+            total = gain.sum()
+            for j, mk in enumerate([~use_eig, use_eig]):
+                share = mk.mean()
+                if share > 0:
+                    fir = (gain[mk].sum() / total / share) if total > 0 else 0.0
+                    eig_credit[j] = (1.0 - EIG_LR) * eig_credit[j] + EIG_LR * fir
+            s_cred = eig_credit.sum()
+            if s_cred > 0:
+                lo, hi = (0.02, 0.98) if EIG_FREE else (0.1, 0.9)
+                p_eig = float(np.clip(eig_credit[1] / s_cred, lo, hi))
 
         pop[accept], fitness[accept] = U[accept], fit_U[accept]
-        stag[improved] = 0
-        stag[~improved] += 1
 
-        # ABC scout (ixtiyoriy, standart holatda o'chiq: 10D sozlashda zarar qildi)
-        best_i = np.argmin(fitness)
-        scouts = np.where(stag > STAG_LIMIT)[0] if STAG_LIMIT is not None else []
-        for i in scouts:
-            if i == best_i or fes >= ls_start: continue
-            if t < 0.5:
-                x_new = lb + np.random.rand(dim) * (ub - lb)
-            else:
-                x_new = np.clip(pop[best_i] + 0.1 * (1.0 - t) * (ub - lb) * np.random.randn(dim), lb, ub)
-            pop[i], fitness[i], stag[i] = x_new, obj_func(x_new), 0
-            fes += 1
-
-        # LPSR + arxiv hajmi
-        new_size = max(N_min, int(round(N_init + (N_min - N_init) * fes / max_fes)))
+        # --- LPSR + arxiv hajmi ----------------------------------------------
+        new_size = max(N_MIN, int(round(N_init + (N_MIN - N_init) * fes / max_fes)))
         if new_size < pop_size:
             keep = np.argsort(fitness)[:new_size]
-            pop, fitness, stag = pop[keep], fitness[keep], stag[keep]
+            pop, fitness = pop[keep], fitness[keep]
             pop_size = new_size
         arc_max = int(round(ARC_RATE * pop_size))
         if len(archive) > arc_max:
             archive = archive[np.random.choice(len(archive), arc_max, replace=False)]
 
-    # (1+1)-ES lokal aniqlashtirish, 1/5 muvaffaqiyat qoidasi
-    best_i = np.argmin(fitness)
-    x_best, f_best = pop[best_i].copy(), fitness[best_i]
-    sigma = np.std(pop, axis=0) + 1e-8 * (ub - lb)
-    s = 1.0
-    while fes < max_fes:
-        y = np.clip(x_best + s * sigma * np.random.randn(dim), lb, ub)
-        fy = obj_func(y)
-        fes += 1
-        if fy <= f_best:
-            x_best, f_best = y, fy
-            s *= math.exp(0.8)
-        else:
-            s *= math.exp(-0.2)
+    # --- Yakuniy aniqlashtirish: CMA-ES (LSHADE-SPACMA / EBOwithCMAR uslubi) --
+    if TAIL == "cma" and fes < max_fes:
+        best_i = np.argmin(fitness)
+        sigma0 = float(np.mean(np.std(pop, axis=0))) + 1e-12 * float(np.mean(ub - lb))
+        _cma_core(obj_func, dim, bounds, fes, max_fes, pop[best_i].copy(),
+                  sigma0, restart="local")
 
-# ----------------- BASELINE ALGORITHMS (ORIGINAL VERSIYALAR) -----------------
-# Eslatma: konvergensiya Tracker orqali yoziladi; gbest qiymati qayta hisoblanmaydi
-# (avval hisobga olinmagan qo'shimcha FES chaqiruvlari olib tashlandi).
+# --------------- RAQOBATCHILAR: ZAMONAVIY DE / ES OILASI ----------------------
+# Bu to'plam CBA-SHADE ning bevosita "ota-onalari"ni o'z ichiga oladi: yadro
+# L-SHADE va jSO dan, eigen-crossover g'oyasi LSHADE-cnEpSin dan, yakuniy
+# aniqlashtirish CMA-ES dan olingan. Ularsiz gibridning hissasi isbotlanmaydi.
+def baseline_SHADE(obj_func, dim, bounds, max_fes):
+    """Tanabe & Fukunaga (CEC 2013). Success-history DE, LPSR yo'q."""
+    lb, ub = bounds
+    pop_size, H, p_rate, arc_rate = 100, 100, 0.1, 2.0
+    pop = lb + np.random.rand(pop_size, dim) * (ub - lb)
+    fitness = np.array([obj_func(x) for x in pop])
+    fes = pop_size
+    M_F, M_CR, k = np.full(H, 0.5), np.full(H, 0.5), 0
+    archive = np.empty((0, dim))
+    while fes < max_fes:
+        order = np.argsort(fitness)
+        pop, fitness = pop[order], fitness[order]
+        idx = np.arange(pop_size)
+        r = np.random.randint(0, H, pop_size)
+        CR = np.clip(np.random.normal(M_CR[r], 0.1), 0.0, 1.0)
+        CR[M_CR[r] < 0] = 0.0
+        F = _sample_F(M_F, r, pop_size)
+        p_i = np.maximum(2, (np.random.uniform(2.0 / pop_size, p_rate, pop_size) * pop_size).astype(int))
+        pbest = pop[(np.random.rand(pop_size) * p_i).astype(int)]
+        union = np.vstack([pop, archive]) if len(archive) else pop
+        r1 = (idx + np.random.randint(1, pop_size, pop_size)) % pop_size
+        r2 = _pick_r2(len(union), idx, r1)
+        Fc = F[:, None]
+        V = pop + Fc * (pbest - pop) + Fc * (pop[r1] - union[r2])
+        cross = np.random.rand(pop_size, dim) < CR[:, None]
+        cross[idx, np.random.randint(0, dim, pop_size)] = True
+        U = _midpoint(np.where(cross, V, pop), pop, lb, ub)
+        n_eval = min(pop_size, max_fes - fes)
+        fit_U = np.full(pop_size, np.inf)
+        for i in range(n_eval):
+            fit_U[i] = obj_func(U[i])
+        fes += n_eval
+        imp = fit_U < fitness
+        if np.any(imp):
+            df = fitness[imp] - fit_U[imp]
+            w = df / df.sum()
+            archive = _arch_push(archive, pop[imp], int(round(arc_rate * pop_size)))
+            M_F[k] = _lehmer(F[imp], w)
+            M_CR[k] = -1.0 if (M_CR[k] == -1 or np.sum(w * CR[imp]) == 0) else _lehmer(CR[imp], w)
+            k = (k + 1) % H
+        acc = fit_U <= fitness
+        pop[acc], fitness[acc] = U[acc], fit_U[acc]
+
+def baseline_LSHADE(obj_func, dim, bounds, max_fes):
+    """Tanabe & Fukunaga (CEC 2014). SHADE + chiziqli populyatsiya kamayishi."""
+    lb, ub = bounds
+    N_init, N_min, H, p_rate, arc_rate = int(18 * dim), 4, 6, 0.11, 2.6
+    pop_size = N_init
+    pop = lb + np.random.rand(pop_size, dim) * (ub - lb)
+    fitness = np.array([obj_func(x) for x in pop])
+    fes = pop_size
+    M_F, M_CR, k = np.full(H, 0.5), np.full(H, 0.5), 0
+    archive = np.empty((0, dim))
+    while fes < max_fes:
+        order = np.argsort(fitness)
+        pop, fitness = pop[order], fitness[order]
+        idx = np.arange(pop_size)
+        r = np.random.randint(0, H, pop_size)
+        CR = np.clip(np.random.normal(M_CR[r], 0.1), 0.0, 1.0)
+        CR[M_CR[r] < 0] = 0.0
+        F = _sample_F(M_F, r, pop_size)
+        p_num = max(2, int(round(p_rate * pop_size)))
+        pbest = pop[np.random.randint(0, p_num, pop_size)]
+        union = np.vstack([pop, archive]) if len(archive) else pop
+        r1 = (idx + np.random.randint(1, pop_size, pop_size)) % pop_size
+        r2 = _pick_r2(len(union), idx, r1)
+        Fc = F[:, None]
+        V = pop + Fc * (pbest - pop) + Fc * (pop[r1] - union[r2])
+        cross = np.random.rand(pop_size, dim) < CR[:, None]
+        cross[idx, np.random.randint(0, dim, pop_size)] = True
+        U = _midpoint(np.where(cross, V, pop), pop, lb, ub)
+        n_eval = min(pop_size, max_fes - fes)
+        fit_U = np.full(pop_size, np.inf)
+        for i in range(n_eval):
+            fit_U[i] = obj_func(U[i])
+        fes += n_eval
+        imp = fit_U < fitness
+        if np.any(imp):
+            df = fitness[imp] - fit_U[imp]
+            w = df / df.sum()
+            archive = _arch_push(archive, pop[imp], int(round(arc_rate * pop_size)))
+            M_F[k] = _lehmer(F[imp], w)
+            M_CR[k] = -1.0 if (M_CR[k] == -1 or np.sum(w * CR[imp]) == 0) else _lehmer(CR[imp], w)
+            k = (k + 1) % H
+        acc = fit_U <= fitness
+        pop[acc], fitness[acc] = U[acc], fit_U[acc]
+        new_size = max(N_min, int(round(N_init + (N_min - N_init) * fes / max_fes)))
+        if new_size < pop_size:
+            keep = np.argsort(fitness)[:new_size]
+            pop, fitness, pop_size = pop[keep], fitness[keep], new_size
+            archive = archive[:int(round(arc_rate * pop_size))]
+
+def baseline_jSO(obj_func, dim, bounds, max_fes):
+    """Brest, Maucec & Boskovic (CEC 2017). iL-SHADE ning takomillashgan varianti."""
+    lb, ub = bounds
+    N_init = max(10, int(round(25 * math.log(dim) * math.sqrt(dim))))
+    N_min, H, arc_rate = 4, 5, 1.0
+    pop_size = N_init
+    pop = lb + np.random.rand(pop_size, dim) * (ub - lb)
+    fitness = np.array([obj_func(x) for x in pop])
+    fes = pop_size
+    M_F, M_CR = np.full(H, 0.3), np.full(H, 0.8)
+    M_F[-1], M_CR[-1] = 0.9, 0.9
+    k = 0
+    archive = np.empty((0, dim))
+    while fes < max_fes:
+        t = fes / max_fes
+        order = np.argsort(fitness)
+        pop, fitness = pop[order], fitness[order]
+        idx = np.arange(pop_size)
+        r = np.random.randint(0, H, pop_size)
+        CR = np.clip(np.random.normal(M_CR[r], 0.1), 0.0, 1.0)
+        CR[M_CR[r] < 0] = 0.0
+        if t < 0.25:
+            CR = np.maximum(CR, 0.7)
+        elif t < 0.5:
+            CR = np.maximum(CR, 0.6)
+        F = _sample_F(M_F, r, pop_size)
+        if t < 0.6:
+            F = np.minimum(F, 0.7)
+        Fw = F * (0.7 if t < 0.2 else 0.8 if t < 0.4 else 1.2)
+        p_num = max(2, int(round(0.25 * (1.0 - 0.5 * t) * pop_size)))
+        pbest = pop[np.random.randint(0, p_num, pop_size)]
+        union = np.vstack([pop, archive]) if len(archive) else pop
+        r1 = (idx + np.random.randint(1, pop_size, pop_size)) % pop_size
+        r2 = _pick_r2(len(union), idx, r1)
+        Fc, Fwc = F[:, None], Fw[:, None]
+        V = pop + Fwc * (pbest - pop) + Fc * (pop[r1] - union[r2])
+        cross = np.random.rand(pop_size, dim) < CR[:, None]
+        cross[idx, np.random.randint(0, dim, pop_size)] = True
+        U = _midpoint(np.where(cross, V, pop), pop, lb, ub)
+        n_eval = min(pop_size, max_fes - fes)
+        fit_U = np.full(pop_size, np.inf)
+        for i in range(n_eval):
+            fit_U[i] = obj_func(U[i])
+        fes += n_eval
+        imp = fit_U < fitness
+        if np.any(imp):
+            df = fitness[imp] - fit_U[imp]
+            w = df / df.sum()
+            archive = _arch_push(archive, pop[imp], int(round(arc_rate * pop_size)))
+            mf = _lehmer(F[imp], w)
+            mcr = -1.0 if (M_CR[k] == -1 or np.sum(w * CR[imp]) == 0) else _lehmer(CR[imp], w)
+            M_F[k] = (M_F[k] + mf) / 2.0
+            M_CR[k] = -1.0 if mcr == -1 else (M_CR[k] + mcr) / 2.0
+            k = (k + 1) % (H - 1)
+        acc = fit_U <= fitness
+        pop[acc], fitness[acc] = U[acc], fit_U[acc]
+        new_size = max(N_min, int(round(N_init + (N_min - N_init) * fes / max_fes)))
+        if new_size < pop_size:
+            keep = np.argsort(fitness)[:new_size]
+            pop, fitness, pop_size = pop[keep], fitness[keep], new_size
+            archive = archive[:int(round(arc_rate * pop_size))]
+
+def baseline_LSHADE_cnEpSin(obj_func, dim, bounds, max_fes):
+    """Awad, Ali, Suganthan & Reynolds (CEC 2017). L-SHADE + ansambl sinusoidal
+    F moslashuvi + kovariatsiya bazisidagi crossover."""
+    lb, ub = bounds
+    N_init, N_min, H, p_rate, arc_rate = int(18 * dim), 4, 5, 0.11, 1.4
+    LP, ps, pc = 20, 0.5, 0.4
+    pop_size = N_init
+    pop = lb + np.random.rand(pop_size, dim) * (ub - lb)
+    fitness = np.array([obj_func(x) for x in pop])
+    fes = pop_size
+    M_F, M_CR, M_freq, k = np.full(H, 0.5), np.full(H, 0.5), np.full(H, 0.5), 0
+    archive = np.empty((0, dim))
+    g, G_max = 0, max(1, int(max_fes / max(1, N_init)))
+    hist1, hist2 = [], []
+    while fes < max_fes:
+        g += 1
+        order = np.argsort(fitness)
+        pop, fitness = pop[order], fitness[order]
+        idx = np.arange(pop_size)
+        r = np.random.randint(0, H, pop_size)
+        CR = np.clip(np.random.normal(M_CR[r], 0.1), 0.0, 1.0)
+        CR[M_CR[r] < 0] = 0.0
+        cfg = np.zeros(pop_size, dtype=int)
+        freq_i = None
+        if fes < max_fes / 2:                       # birinchi yarmi: ansambl sinusoidal
+            if len(hist1) >= LP:
+                s1 = sum(a for a, _ in hist1[-LP:]) / max(1e-12, sum(b for _, b in hist1[-LP:]))
+                s2 = sum(a for a, _ in hist2[-LP:]) / max(1e-12, sum(b for _, b in hist2[-LP:]))
+                p1 = (s1 + 0.01) / (s1 + s2 + 0.02)
+            else:
+                p1 = 0.5
+            cfg = (np.random.rand(pop_size) >= p1).astype(int)
+            freq_i = M_freq[r] + 0.1 * np.random.standard_cauchy(pop_size)
+            freq_i = np.where(freq_i <= 0, 0.5, np.minimum(freq_i, 1.0))
+            F1 = 0.5 * (np.sin(2 * np.pi * 0.5 * g) * (G_max - g) / G_max + 1.0)
+            F2 = 0.5 * (np.sin(2 * np.pi * freq_i * g) * g / G_max + 1.0)
+            F = np.clip(np.where(cfg == 0, F1, F2), 0.05, 1.0)
+        else:
+            F = _sample_F(M_F, r, pop_size)
+        p_num = max(2, int(round(p_rate * pop_size)))
+        pbest = pop[np.random.randint(0, p_num, pop_size)]
+        union = np.vstack([pop, archive]) if len(archive) else pop
+        r1 = (idx + np.random.randint(1, pop_size, pop_size)) % pop_size
+        r2 = _pick_r2(len(union), idx, r1)
+        Fc = F[:, None]
+        V = pop + Fc * (pbest - pop) + Fc * (pop[r1] - union[r2])
+        cross = np.random.rand(pop_size, dim) < CR[:, None]
+        cross[idx, np.random.randint(0, dim, pop_size)] = True
+        U = np.where(cross, V, pop)
+        if np.random.rand() < pc:                   # kovariatsiya bazisida crossover
+            C = np.cov(pop[:max(2, int(round(ps * pop_size)))], rowvar=False)
+            if np.all(np.isfinite(C)):
+                try:
+                    _, Bc = np.linalg.eigh(C)
+                    U = np.where(cross, V @ Bc, pop @ Bc) @ Bc.T
+                except np.linalg.LinAlgError:
+                    pass
+        U = _midpoint(U, pop, lb, ub)
+        n_eval = min(pop_size, max_fes - fes)
+        fit_U = np.full(pop_size, np.inf)
+        for i in range(n_eval):
+            fit_U[i] = obj_func(U[i])
+        fes += n_eval
+        imp = fit_U < fitness
+        hist1.append((int(np.sum(imp & (cfg == 0))), int(np.sum(cfg == 0))))
+        hist2.append((int(np.sum(imp & (cfg == 1))), int(np.sum(cfg == 1))))
+        if np.any(imp):
+            df = fitness[imp] - fit_U[imp]
+            w = df / df.sum()
+            archive = _arch_push(archive, pop[imp], int(round(arc_rate * pop_size)))
+            M_F[k] = _lehmer(F[imp], w)
+            M_CR[k] = -1.0 if (M_CR[k] == -1 or np.sum(w * CR[imp]) == 0) else _lehmer(CR[imp], w)
+            if freq_i is not None and np.any(imp & (cfg == 1)):
+                wf = df[cfg[imp] == 1]
+                if wf.sum() > 0:
+                    M_freq[k] = _lehmer(freq_i[imp][cfg[imp] == 1], wf / wf.sum())
+            k = (k + 1) % H
+        acc = fit_U <= fitness
+        pop[acc], fitness[acc] = U[acc], fit_U[acc]
+        new_size = max(N_min, int(round(N_init + (N_min - N_init) * fes / max_fes)))
+        if new_size < pop_size:
+            keep = np.argsort(fitness)[:new_size]
+            pop, fitness, pop_size = pop[keep], fitness[keep], new_size
+            archive = archive[:int(round(arc_rate * pop_size))]
+
+def baseline_CMAES(obj_func, dim, bounds, max_fes):
+    """Hansen & Ostermeier (2001), tarqalish yo'qolganda qayta ishga tushadi."""
+    lb, ub = bounds
+    x0 = lb + np.random.rand(dim) * (ub - lb)
+    _cma_core(obj_func, dim, bounds, 0, max_fes, x0,
+              0.3 * float(np.mean(ub - lb)), restart="uniform")
+
+# ------------- RAQOBATCHILAR: KLASSIK / METAFORA ASOSIDAGI TO'PLAM ------------
+# Eski adabiyot bilan bog'lash uchun saqlangan; INCLUDE_CLASSIC bilan yoqiladi.
+# Eslatma: konvergensiya Tracker orqali yoziladi; gbest qiymati qayta hisoblanmaydi.
 def baseline_DE(obj_func, dim, bounds, max_fes):
+    """DE/rand/1/bin (Storn & Price, 1997), F=0.5, CR=0.8, NP=30."""
     pop_size, (lb, ub) = 30, bounds
     pop = np.random.uniform(lb, ub, (pop_size, dim))
     fitness = np.array([obj_func(i) for i in pop])
@@ -504,12 +856,29 @@ def baseline_HHO(obj_func, dim, bounds, max_fes):
                 pop[i], fitness[i] = step, fit
                 if fit < rabbit_fit: X_rabbit, rabbit_fit = step.copy(), fit
 
-algorithms = {
-    "TEMOA_V10_HYBRID": TEMOA_V10_HYBRID,
-    "DE": baseline_DE, "GWO": baseline_GWO, "WOA": baseline_WOA,
-    "PSO": baseline_PSO, "SCA": baseline_SCA, "HHO": baseline_HHO
+# ------------------------------ ALGORITMLAR RO'YXATI --------------------------
+# INCLUDE_CLASSIC=True bo'lsa metafora asosidagi eski to'plam ham qo'shiladi
+# (maqolaning "klassik algoritmlar bilan taqqoslash" jadvali uchun).
+INCLUDE_CLASSIC = os.environ.get("INCLUDE_CLASSIC", "0") == "1"
+
+MODERN = {
+    "L-SHADE":        baseline_LSHADE,
+    "jSO":            baseline_jSO,
+    "LSHADE-cnEpSin": baseline_LSHADE_cnEpSin,
+    "SHADE":          baseline_SHADE,
+    "CMA-ES":         baseline_CMAES,
+    "DE":             baseline_DE,
 }
-target = "TEMOA_V10_HYBRID"
+CLASSIC = {
+    "GWO": baseline_GWO, "WOA": baseline_WOA,
+    "PSO": baseline_PSO, "SCA": baseline_SCA, "HHO": baseline_HHO,
+}
+
+algorithms = {ALGO_NAME: CBA_SHADE}
+algorithms.update(MODERN)
+if INCLUDE_CLASSIC:
+    algorithms.update(CLASSIC)
+target = ALGO_NAME
 
 # ==============================================================================
 # 3. YUKORI TEZLIKDAGI PARALLEL EKSPERIMENT
@@ -520,7 +889,8 @@ runs = 3 if QUICK else 30
 FES_PER_DIM = 3000
 N_POINTS = 100
 SEED_BASE = 42
-out_dir = "temoa_v10_quicktest" if QUICK else "temoa_v10_outputs"
+_slug = ALGO_NAME.lower().replace("-", "_")
+out_dir = f"{_slug}_quicktest" if QUICK else f"{_slug}_outputs"
 
 def run_task(alg_name, func_name, dim, run_id):
     # Bir xil (dim, run) uchun hamma algoritmlarga bir xil seed
@@ -545,7 +915,8 @@ if __name__ == "__main__":
     for d in ["tables", "figures", "raw_data"]: os.makedirs(f"{out_dir}/{d}", exist_ok=True)
 
     tasks = [(a, f, d, r) for a in algorithms for f in funcs for d in dimensions for r in range(runs)]
-    print(f"[*] TEMOA_V10_HYBRID experiment. Total tasks: {len(tasks)} (QUICK={QUICK}, SHIFTED={SHIFTED})")
+    print(f"[*] {ALGO_NAME} experiment. Total tasks: {len(tasks)} "
+          f"(QUICK={QUICK}, SHIFTED={SHIFTED}, CLASSIC={INCLUDE_CLASSIC})")
     start_time = time.time()
     results_raw = Parallel(n_jobs=-1, backend="loky")(delayed(run_task)(a, f, d, r) for (a, f, d, r) in tasks)
     print(f"[*] Execution completed in {time.time() - start_time:.2f} seconds.")
@@ -584,6 +955,27 @@ if __name__ == "__main__":
     print(avg_ranks.to_string(index=False))
     print(f"[*] Friedman chi2 = {fr_stat:.4f}, p = {fr_p:.4e}")
 
+    # Friedman post-hoc: nazorat algoritmi = ALGO_NAME (Bonferroni-Dunn + Holm).
+    # Q1 darajadagi jurnallar aynan shu tahlilni talab qiladi: Friedman testining
+    # o'zi faqat "algoritmlar farq qiladi" deydi, ustunlikni post-hoc isbotlaydi.
+    k_alg, n_inst = df_pivot.shape[1], df_pivot.shape[0]
+    R = avg_ranks.set_index("Algorithm")["Average_Rank"]
+    SE = math.sqrt(k_alg * (k_alg + 1) / (6.0 * n_inst))
+    others = [a for a in R.index if a != target]
+    z_raw = [(R[a] - R[target]) / SE for a in others]
+    p_raw = [2.0 * (1.0 - norm.cdf(abs(z))) for z in z_raw]
+    p_holm = holm(p_raw)
+    df_post = pd.DataFrame({
+        "Algorithm": others,
+        "Average_Rank": [R[a] for a in others],
+        "Rank_diff_vs_control": [R[a] - R[target] for a in others],
+        "z": z_raw, "p_unadjusted": p_raw, "p_Holm": p_holm,
+        "significant_0.05": [p < 0.05 for p in p_holm],
+    }).sort_values("Average_Rank")
+    df_post.to_csv(f"{out_dir}/tables/friedman_posthoc.csv", index=False)
+    print(f"[*] Friedman post-hoc (nazorat = {target}, SE = {SE:.4f}):")
+    print(df_post.to_string(index=False))
+
     # Wilcoxon rank-sum (Mann-Whitney U) + Holm tuzatishi, +/=/- hisoblari
     competitors = [a for a in algorithms if a != target]
     pvals, wtl = [], {c: {"+": 0, "=": 0, "-": 0} for c in competitors}
@@ -609,7 +1001,7 @@ if __name__ == "__main__":
     pd.DataFrame(pvals).to_csv(f"{out_dir}/tables/wilcoxon_pvalues.csv", index=False)
     df_wtl = pd.DataFrame(wtl).T[["+", "=", "-"]]
     df_wtl.to_csv(f"{out_dir}/tables/win_tie_loss.csv")
-    print("[*] TEMOA vs raqiblar (+ yutdi / = teng / - yutqazdi):")
+    print(f"[*] {ALGO_NAME} vs raqiblar (+ yutdi / = teng / - yutqazdi):")
     print(df_wtl.to_string())
 
     # Konvergensiya grafiklari (X o'qi: FES)

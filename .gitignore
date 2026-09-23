@@ -216,3 +216,7 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# Eksperiment chiqishlari (skript tomonidan generatsiya qilinadi)
+*_outputs/
+*_quicktest/
