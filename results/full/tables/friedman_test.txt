@@ -1,0 +1,9 @@
+Friedman chi2 = 122.9012, p = 4.0039e-24
+     Algorithm  Average_Rank
+     CBA-SHADE      2.500000
+         SHADE      3.138889
+           jSO      3.277778
+       L-SHADE      3.375000
+LSHADE-cnEpSin      3.402778
+            DE      5.708333
+        CMA-ES      6.597222

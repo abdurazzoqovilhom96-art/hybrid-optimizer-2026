@@ -1,0 +1,13 @@
+Function,Dimension,L-SHADE,jSO,LSHADE-cnEpSin,SHADE,CMA-ES,DE
+Ackley,10,1.0,1.0,1.0,1.0,1.0,1.0
+BentCigar,10,1.0,1.0,1.0,1.0,1.0,1.0
+Composition,10,1.0,1.0,1.0,1.0,1.0,1.0
+DynamicSphere,10,1.0,1.0,1.0,1.0,1.0,1.0
+Griewank,10,1.0,1.0,1.0,1.0,1.0,1.0
+Levy,10,1.0,1.0,1.0,1.0,1.0,1.0
+NoisyRastrigin,10,1.0,1.0,1.0,1.0,1.0,1.0
+NoisySphere,10,1.0,1.0,1.0,1.0,1.0,1.0
+Rosenbrock,10,1.0,1.0,1.0,1.0,1.0,1.0
+RotatedElliptic,10,1.0,1.0,1.0,1.0,1.0,1.0
+Schwefel,10,1.0,1.0,1.0,1.0,1.0,1.0
+Zakharov,10,1.0,1.0,1.0,1.0,1.0,1.0
