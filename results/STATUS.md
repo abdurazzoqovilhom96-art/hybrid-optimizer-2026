@@ -6,10 +6,10 @@ Holat faqat git'dan o'qiladi. To'liq ko'rsatma: `docs/AUTONOMOUS_PROMPT.md`.
 | Faza | Holat | Izoh |
 |---|---|---|
 | FAZA_A — parametrlarni muzlatish | **tugadi** | 5 bosqich sozlash; natijalar `results/tuning/` da |
-| FAZA_B — GitHub Actions to'liq eksperiment | **ishlayapti** | 50D tugadi (40 daq); 30D va 100D davom etmoqda |
-| FAZA_C — `docs/RESULTS.md` yakuniy tahlil | boshlanmagan | FAZA_B tugagach |
+| FAZA_B — GitHub Actions to'liq eksperiment | **ishlayapti** | 30D va 50D tugadi; faqat 100D qoldi |
+| FAZA_C — `docs/RESULTS.md` yakuniy tahlil | qisman | protokol bo'limi yozildi; raqamlar kutilmoqda |
 
-**Oxirgi tekshiruv:** 2026-09-23 17:05 UTC
+**Oxirgi tekshiruv:** 2026-09-23 18:05 UTC
 
 ## Muzlatilgan parametrlar
 
@@ -25,8 +25,11 @@ Holat faqat git'dan o'qiladi. To'liq ko'rsatma: `docs/AUTONOMOUS_PROMPT.md`.
   commit qilish ham tasdiqlandi (`github-actions[bot]` commiti).
 - Sozlash xom ma'lumotlari `results/tuning/` da saqlandi.
 - FAZA_B ishga tushirildi (run 35887728952).
-- 17:05 UTC: 50D bo'lagi `success` (40.6 daqiqa). 30D va 100D hali ishlamoqda.
-  100D uchun taxminiy tugash ~19:00 UTC; ish chegarasi 350 daqiqa.
+- 17:05 UTC: 50D bo'lagi `success` (40.6 daqiqa).
+- 17:08 UTC: 30D bo'lagi `success` (50.3 daqiqa).
+- 18:05 UTC: 100D 106 daqiqadan beri ishlamoqda; chegara 350 daqiqa
+  (~22:08 UTC gacha), shuning uchun zaxira yetarli.
+- `docs/RESULTS.md` ning protokol bo'limi yozildi (raqamlarga bog'liq emas).
 
 ## Kutilayotgan zaif tomon
 
