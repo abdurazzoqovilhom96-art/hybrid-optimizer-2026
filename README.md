@@ -66,6 +66,7 @@ statistika va grafiklarni beradi.
 | `OUT_DIR=nom` | chiqish papkasi |
 | `MERGE=d1,d2` | avvalgi bo'laklarni qo'shib tahlil qilish |
 | `INCLUDE_CLASSIC=1` | klassik/metafora algoritmlarni ham qo'shish |
+| `COMPLEXITY=1` | CEC uslubidagi hisoblash murakkabligi jadvali (T0/T1/T2) |
 
 Algoritm nomi skriptning boshidagi bitta `ALGO_NAME` doimiysi bilan
 belgilanadi; standart chiqish papkasi nomi ham shundan olinadi.

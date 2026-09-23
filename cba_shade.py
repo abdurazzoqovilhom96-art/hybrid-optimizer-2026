@@ -946,6 +946,43 @@ def run_task(alg_name, func_name, dim, run_id):
     final = true_obj(tracker.best_x) if true_obj is not None else tracker.best_f
     return alg_name, func_name, dim, run_id, curve, final
 
+def complexity_analysis(dims, func_name="Rosenbrock", n_fes=200000, reps=5):
+    """CEC uslubidagi hisoblash murakkabligi jadvali (T0/T1/T2).
+
+    T0 - standart arifmetik siklning vaqti (mashinaga bog'liq mos yozuvlar);
+    T1 - n_fes ta funksiya chaqiruvining vaqti;
+    T2 - algoritmning o'sha byudjetdagi o'rtacha vaqti (reps ta takror).
+    (T2 - T1) / T0 - algoritmning o'zi qo'shadigan, mashinadan mustaqil yuk.
+    """
+    t0_start = time.time()
+    x = 0.55
+    for _ in range(1000000):
+        x = x + x; x = x / 2.0; x = x * x; x = math.sqrt(x)
+        x = math.log(x) if x > 0 else 0.55
+        x = math.exp(x); x = x / (x + 2.0)
+    T0 = time.time() - t0_start
+
+    rows = []
+    for d in dims:
+        obj, _, lb, ub = make_problem(func_name, d)
+        probe = lb + np.random.rand(n_fes, d) * (ub - lb)
+        t1 = time.time()
+        for i in range(n_fes):
+            obj(probe[i])
+        T1 = time.time() - t1
+
+        t2 = []
+        for rep in range(reps):
+            np.random.seed(SEED_BASE + rep)
+            tracker = Tracker(make_problem(func_name, d)[0], n_fes, 2)
+            start = time.time()
+            algorithms[target](tracker, d, (lb, ub), n_fes)
+            t2.append(time.time() - start)
+        T2 = float(np.mean(t2))
+        rows.append({"Dimension": d, "T0": T0, "T1": T1, "T2_hat": T2,
+                     "(T2_hat-T1)/T0": (T2 - T1) / T0})
+    return pd.DataFrame(rows)
+
 def holm(pvals):
     p = np.asarray(pvals, dtype=float)
     adj, running = np.empty_like(p), 0.0
@@ -1096,5 +1133,12 @@ if __name__ == "__main__":
             plt.tight_layout()
             plt.savefig(f"{out_dir}/figures/Conv_{f}_{d}D.png", dpi=300)
             plt.close()
+
+    # CEC uslubidagi hisoblash murakkabligi jadvali (COMPLEXITY=1 bilan yoqiladi)
+    if os.environ.get("COMPLEXITY") == "1":
+        print("[*] Hisoblash murakkabligi o'lchanmoqda (T0/T1/T2)...")
+        df_cx = complexity_analysis(dimensions)
+        df_cx.to_csv(f"{out_dir}/tables/complexity.csv", index=False)
+        print(df_cx.to_string(index=False))
 
     print(f"[*] RESULTS EXPORTED to {out_dir}/")
