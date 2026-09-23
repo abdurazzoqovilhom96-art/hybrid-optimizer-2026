@@ -1,9 +1,11 @@
 name: Smoke test
 
 # Butun quvurni (bo'lak -> artefakt -> birlashtirish -> tahlil) tez tekshiradi.
-# Ishga tushirish:  git tag smoke-1 && git push origin smoke-1
+# Ishga tushirish:  date -u > .github/RUN_SMOKE && git commit -am "smoke" && git push
 on:
   push:
+    branches: ["claude/**"]
+    paths: [".github/RUN_SMOKE"]
     tags:
       - "smoke*"
   workflow_dispatch:

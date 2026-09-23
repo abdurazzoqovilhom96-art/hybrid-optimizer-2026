@@ -1,10 +1,16 @@
 name: CBA-SHADE full experiment
 
-# workflow_dispatch faqat fayl default branchda (main) bo'lsagina ishlaydi.
-# Shu sababli teg orqali ishga tushirish ham qo'shilgan - u ish branchidan
-# to'g'ridan-to'g'ri ishlaydi:  git tag run-experiment-1 && git push origin run-experiment-1
+# workflow_dispatch faqat fayl default branchda (main) bo'lsagina ishlaydi,
+# ish esa feature branchda. Shuning uchun ishga tushirishning ikki yo'li bor:
+#   1) marker faylni yangilab push qilish:
+#        date -u > .github/RUN_EXPERIMENT && git commit -am "run" && git push
+#   2) teg qo'yish:  git tag run-experiment-1 && git push origin run-experiment-1
+# Branch main ga birlashtirilgandan keyin Actions sahifasidagi "Run workflow"
+# tugmasi ham ishlaydi.
 on:
   push:
+    branches: ["claude/**"]
+    paths: [".github/RUN_EXPERIMENT"]
     tags:
       - "run-experiment*"
   workflow_dispatch:
