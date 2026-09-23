@@ -25,6 +25,9 @@ yoki yordamchi modul talab qilinmaydi.
 ## Ishga tushirish
 
 ```bash
+git clone -b claude/youthful-pascal-sjxqnn \
+    https://github.com/abdurazzoqovilhom96-art/hybrid-optimizer-2026.git
+cd hybrid-optimizer-2026
 pip install numpy pandas scipy joblib matplotlib
 python cba_shade.py              # to'liq protokol: 12 funksiya x {30,50,100}D x 30 run
 QUICK=1 python cba_shade.py      # tezkor smoke-test: 10D x 3 run (~1 daqiqa)
@@ -37,8 +40,12 @@ qolishi mumkin. Shuning uchun tajribani o'lchamlar bo'yicha bo'laklab ishlating,
 keyin `MERGE` bilan birlashtiring — natija bitta sessiyada ishlatilgan bilan
 bir xil bo'ladi.
 
+> Skript `claude/youthful-pascal-sjxqnn` branchida. `git clone` sukut bo'yicha
+> `main` ni oladi, shuning uchun branchni aniq ko'rsatish kerak (`-b`).
+
 ```python
-!git clone https://github.com/abdurazzoqovilhom96-art/hybrid-optimizer-2026.git
+!git clone -b claude/youthful-pascal-sjxqnn \
+    https://github.com/abdurazzoqovilhom96-art/hybrid-optimizer-2026.git
 %cd hybrid-optimizer-2026
 
 # Natijalar Drive'da saqlansin (sessiya uzilsa ham yo'qolmaydi)
