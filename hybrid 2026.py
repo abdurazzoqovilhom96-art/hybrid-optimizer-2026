@@ -264,21 +264,31 @@ def _cma_core(obj_func, dim, bounds, fes, max_fes, xmean, sigma, restart="unifor
     gen, eigeneval, restarts = 0, fes, 0
     sigma0 = sigma
     x_best, f_best = xmean.copy(), np.inf
+    f_scale = 1.0                                    # jarima miqyosi (moslashuvchan)
     while fes < max_fes:
         gen += 1
         Y = np.random.randn(lam, dim) @ (B * D).T
         X = xmean + sigma * Y
         Xc = np.clip(X, lb, ub)
-        pen = np.sum((X - Xc) ** 2, axis=1)          # chegaradan chiqish jarimasi
-        f = np.full(lam, np.inf)
+        # Chegaradan chiqish jarimasi: masofa qidiruv oralig'iga normallashtiriladi
+        # va joriy avlodning fitness tarqalishiga (IQR) moslanadi, aks holda
+        # jarima funksiya miqyosiga bog'liq holda yo juda kuchli, yo ta'sirsiz bo'ladi.
+        pen = np.sum(((X - Xc) / (ub - lb)) ** 2, axis=1)
+        f_raw = np.full(lam, np.inf)
         for i in range(lam):
             if fes >= max_fes:
                 break
-            f[i] = obj_func(Xc[i]) + pen[i]
+            f_raw[i] = obj_func(Xc[i])
             fes += 1
+        f = f_raw + f_scale * pen
+        ok = f_raw[np.isfinite(f_raw)]
+        if ok.size >= 2:
+            iqr = float(np.percentile(ok, 75) - np.percentile(ok, 25))
+            if iqr > 0:
+                f_scale = 0.5 * f_scale + 0.5 * iqr
         srt = np.argsort(f)
-        if f[srt[0]] < f_best:
-            f_best, x_best = f[srt[0]], Xc[srt[0]].copy()
+        if f_raw[srt[0]] < f_best:
+            f_best, x_best = f_raw[srt[0]], Xc[srt[0]].copy()
         Yo = Y[srt[:mu]]
         xmean = xmean + sigma * (w @ Yo)
         psig = (1 - cs) * psig + math.sqrt(cs * (2 - cs) * mueff) * (invsqrtC @ (w @ Yo))
