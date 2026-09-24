@@ -1,0 +1,12 @@
+Friedman chi2 = 51.6882, p = 6.7258e-09
+instansiyalar = 24, algoritmlar = 8
+
+Algorithm
+jSO               3.541667
+LSHADE-RSP        3.645833
+NL-SHADE-RSP      3.833333
+L-SHADE           4.187500
+LSHADE-SPACMA     4.375000
+LSHADE-cnEpSin    4.583333
+ACE-SHADE         4.708333
+CMA-ES            7.125000

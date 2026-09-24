@@ -1,0 +1,42 @@
+{
+  "R_N": 18.0,
+  "ETA": 0.1,
+  "selected_config": "rn18_eta0.1",
+  "average_rank": 4.175,
+  "grid_R_N": [
+    6.0,
+    8.0,
+    10.0,
+    12.0,
+    14.0,
+    18.0
+  ],
+  "grid_ETA": [
+    0.1,
+    0.2
+  ],
+  "tuning_suite": "CEC-2017",
+  "tuning_funcs": [
+    "F1",
+    "F3",
+    "F4",
+    "F5",
+    "F6",
+    "F7",
+    "F9",
+    "F10",
+    "F11",
+    "F15"
+  ],
+  "tuning_dims": [
+    10,
+    30
+  ],
+  "tuning_runs": 10,
+  "budget_regime": {
+    "10": 200000,
+    "20": 1000000
+  },
+  "frozen_at": "2026-09-24T19:16:58Z",
+  "r_n_at_grid_edge": true
+}
