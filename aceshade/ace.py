@@ -44,8 +44,13 @@ def _credit(groups, gain, gain_total, cred, eta, n):
 def ace_shade(obj_func, dim, bounds, max_fes,
               R_N=6.0, ETA=0.2, N_MIN=4, H_SIZE=6, ARC_RATE=2.6,
               K_RSP=3.0, P_MAX=0.25, P_MIN_RATE=0.125,
-              USE_COV=True, USE_ENSEMBLE=True, CMU_SOURCE="accepted"):
-    """ACE-SHADE. `USE_COV`/`USE_ENSEMBLE` ablatsiya uchun (B4)."""
+              USE_COV=True, USE_ENSEMBLE=True, CMU_SOURCE="accepted",
+              on_generation=None):
+    """ACE-SHADE. `USE_COV`/`USE_ENSEMBLE` ablatsiya uchun (B4).
+
+    `on_generation(state)` - ixtiyoriy kuzatuv nuqtasi (diagnostika va
+    testlar uchun). Algoritm xulqiga ta'sir qilmaydi.
+    """
     lb, ub = bounds
     span = float(np.mean(ub - lb))
     N_init = max(40, int(round(R_N * dim)))
@@ -219,3 +224,8 @@ def ace_shade(obj_func, dim, bounds, max_fes,
         arc_max = int(round(ARC_RATE * pop_size))
         if len(archive) > arc_max:
             archive = archive[np.random.choice(len(archive), arc_max, replace=False)]
+
+        if on_generation is not None:
+            on_generation({"fes": fes, "pop_size": pop_size, "sigma": sigma,
+                           "p_bank": p_bank, "p_eig": p_eig, "p_cma": p_cma,
+                           "best": float(fitness.min())})
