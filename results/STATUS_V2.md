@@ -1,45 +1,43 @@
 # ACE-SHADE — holat
 
-Ko'rsatma: `docs/ACE_SHADE_PROMPT.md`. Asos: `docs/REDESIGN_PLAN.md`.
-Holat faqat git'dan o'qiladi.
+Ko'rsatma: `docs/ACE_SHADE_PROMPT.md` (yakuniy, o'zgarmaydi).
 
-| Bosqich | Holat | Izoh |
+| Bosqich | Holat | Actions daq |
 |---|---|---|
-| B0 — kod + 9 birlik testi | boshlanmagan | `ace_shade.py` |
-| B1 — sozlash (CEC-2017 + sintetik shovqin) | boshlanmagan | |
-| B2 — parametrlarni muzlatish | boshlanmagan | |
-| B3 — **asosiy**: bbob-noisy | boshlanmagan | 30 F x 3 D x 15 inst x 10 alg |
-| B4 — ablatsiya N1/N2/N3 | boshlanmagan | |
-| B5 — Koshi shovqini tekshiruvi | boshlanmagan | |
-| B6 — ikkilamchi: CEC-2022 | boshlanmagan | 12 F x 2 D x 30 run x 10 alg |
-| B7 — `docs/RESULTS_V2.md` + kategoriya tahlili | boshlanmagan | |
+| B0 — kod + 8 birlik testi | boshlanmagan | — |
+| B1 — CEC-2017 da sozlash (`r_N`, `eta`) | boshlanmagan | 43 |
+| B2 — parametrlarni muzlatish | boshlanmagan | — |
+| B3 — CEC-2022 (12F x 2D x 30run x 8alg) | boshlanmagan | 823 |
+| B4 — ablatsiya (4 variant) | boshlanmagan | 411 |
+| B5 — `docs/RESULTS_V2.md` + kategoriya tahlili | boshlanmagan | — |
 
 **Oxirgi tekshiruv:** 2026-09-24
 
-## Qарорlar
+## Yopilgan ko'lam
 
-**Asosiy maydon almashtirildi:** statik CEC o'rniga **shovqinli
-optimallashtirish** (`bbob-noisy`, 30 funksiya). Sabab: o'lchangan
-kuchimiz (`NoisyRastrigin` 19.5x, `DynamicSphere` 70x) noaniq relyefga
-tegishli; statik CEC da esa 2014–2017 bazaviy usullaridan ajralib
-chiqa olmadik (Holm p = 0.305). N3 endi markaziy hissa.
+Maydon: **CEC-2022** (12 F, D = 10/20, 30 run). Boshqa benchmark yo'q.
+Komponentlar: **N1** (to'plamli kovariatsiya) va **N2** (parametr
+rejimi ansambli). N3 (shovqin damping) **olib tashlandi** — CEC-2022 da
+shovqinli funksiya yo'q, ablatsiya bilan asoslab bo'lmaydi.
+Raqobatchilar (7): NL-SHADE-RSP, LSHADE-SPACMA, LSHADE-cnEpSin,
+LSHADE-RSP, jSO, L-SHADE, CMA-ES.
 
-CEC-2022 ikkilamchi maydon sifatida saqlanadi.
+Tashqarida: bbob-noisy, RL ilovasi, AGSK, UH-CMA-ES, DE.
 
-Sozlash: CEC-2017 (umumiy parametrlar) + o'z sintetik shovqinli
-to'plamimiz (shovqin parametrlari). Uchala to'plam kesishmaydi.
+## Muvaffaqiyat mezoni (oldindan belgilangan)
 
-Raqobatchilar: **UH-CMA-ES** (majburiy), NL-SHADE-RSP, AGSK,
-LSHADE-SPACMA, LSHADE-cnEpSin, LSHADE-RSP, jSO, L-SHADE, CMA-ES, DE.
+- S1: CEC-2022 da eng yaxshi o'rtacha rank
+- S2: Holm post-hoc `p < 0.05` — L-SHADE, jSO, LSHADE-cnEpSin ga nisbatan
+- S3: ablatsiyada N1 va N2 ning har biri hissa qo'shadi
 
-## Tekshirilgan faktlar
+NL-SHADE-RSP ga nisbatan S2 bajarilmasa — muvaffaqiyatsizlik emas,
+shunday yoziladi.
 
-- `opfunu`: CEC-2022 (12 F) va CEC-2017 (29 F) — optimumda rasmiy bias
-- `coco-experiment`: bbob 2160, bbob-noisy 2700 masala; shovqin ishlaydi
-- COCO natijalar arxivi (`numbbo.github.io`) muhit siyosati bilan
-  bloklangan (403) — ruxsat berilsa muallif natijalari bilan
-  taqqoslash ochiladi
+## To'xtash sharti
+
+B3 tugagach natija qanday bo'lsa shunday yoziladi. Qayta sozlash,
+maydon almashtirish, komponent qo'shish yo'q.
 
 ## Jurnal
 
-- Maydon almashtirildi, promt v2 yozildi. Kod hali boshlanmagan.
+- Ko'lam yopildi; promt yakuniy. Kod hali boshlanmagan.
