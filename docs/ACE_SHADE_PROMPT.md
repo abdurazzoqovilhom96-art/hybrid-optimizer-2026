@@ -198,18 +198,44 @@ farq bilan (raqam), va qaysi komponent sabab bo'lgani haqida taxmin.
 
 ## 6. Bosqichlar va narx (o'lchangan o'tkazuvchanlik: 17 500 FES/yadro-sek)
 
+**Narx o'lchandi, taxmin qilinmadi.** `opfunu` baholash vaqti funksiyaga
+qarab 11 us dan 270 us gacha o'zgaradi (kompozitsiya funksiyalari eng
+qimmat), shuning uchun narx funksiya bo'yicha hisoblanadi.
+
 | Bosqich | Mazmun | Actions daq |
 |---|---|---|
-| **B0** | `ace_shade.py`: ACE-SHADE + 7 raqobatchi + CEC-2017/2022 yuklagichlari + jadval generatorlari + 8 birlik testi | — |
-| **B1** | CEC-2017 da `r_N`, `eta` sozlash (10 F, D=10, 15 run) | 43 |
+| **B0** | `ace_shade.py`: ACE-SHADE + 7 raqobatchi + CEC-2017/2022 yuklagichlari + jadval generatorlari + birlik testlari | — |
+| **B1** | CEC-2017 da `r_N`, `eta` sozlash (10 F, D=10, 15 run) | ~60 |
 | **B2** | Parametrlarni muzlatish va e'lon qilish | — |
-| **B3** | CEC-2022: 12 F x 2 D x 30 run x 8 alg (12 shard, eng uzuni 69 daq) | 823 |
-| **B4** | Ablatsiya: to'liq / N1 o'chiq / N2 o'chiq / faqat-CMA-tarmoq | 411 |
+| **B3** | CEC-2022: 12 F x 2 D x 30 run x 8 alg | ~1 410 |
+| **B4** | Ablatsiya: to'liq / N1 o'chiq / N2 o'chiq / faqat-CMA-tarmoq | ~700 |
 | **B5** | `docs/RESULTS_V2.md` + kategoriya tahlili | — |
-| | **JAMI** | **~1 280** |
+| | **JAMI** | **~2 200** |
 
-Devor vaqti: eng uzun shard 69 daqiqa; parallel bajarilganda butun
-hisoblash **~2 soat** ichida tugaydi.
+**Shardlash:** (funksiya x o'lcham x algoritm-guruh) = 48 shard. Eng
+qimmat bo'lak (F12, D=20) shu bo'linishda ~120–160 daqiqa, ya'ni
+Actions'ning 6 soatlik chegarasidan xavfsiz uzoqlikda. Faqat funksiya
+bo'yicha bo'linganda eng uzun shard 295 daqiqa bo'lardi - chegaraga
+juda yaqin.
+
+Devor vaqti: **~4–5 soat** (parallellik va navbat hisobga olinganda).
+
+### B0 dagi tezlashtirish (bajarildi)
+
+`opfunu.utils.operator.katsuura_func` Python sikli bilan yozilgan va har
+qadamda 32 ta skalyar uchun `np.sum` chaqiradi: D=20 da **2235 us**. U
+F7, F8, F11, F12 ichida ishlatiladi va butun byudjetni belgilagan edi.
+`aceshade/fastops.py` uni vektorlashtirilgan variant bilan almashtiradi
+(**33 us**, 66x), `tests/test_fastops.py` esa 2000 tasodifiy nuqtada
+aynan bir xil qiymat berishini tasdiqlaydi (farq 1.6e-15) va 12 ta
+CEC-2022 funksiyasining qiymatlari patchdan keyin **o'zgarmasligini**
+ko'rsatadi (farq 0.0).
+
+Natija: 201 -> 94 yadro-soat.
+
+`schaffer_f7_func` ham siklga ega, lekin atigi 23 us va uni
+vektorlashtirish yig'indi tartibi tufayli 2.6e-12 chetlanish beradi -
+tejash kichik, shuning uchun u o'zgartirilmaydi.
 
 ### B0 birlik testlari (o'tmasa keyingi bosqichga o'tilmaydi)
 
