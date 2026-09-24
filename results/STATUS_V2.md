@@ -4,14 +4,14 @@ Ko'rsatma: `docs/ACE_SHADE_PROMPT.md` (yakuniy, o'zgarmaydi).
 
 | Bosqich | Holat | Actions daq |
 |---|---|---|
-| B0 — kod + 8 birlik testi | boshlanmagan | — |
+| B0 — kod + 8 birlik testi | **tugadi** | 8/8 o'tdi |
 | B1 — CEC-2017 da sozlash (`r_N`, `eta`) | boshlanmagan | 43 |
 | B2 — parametrlarni muzlatish | boshlanmagan | — |
 | B3 — CEC-2022 (12F x 2D x 30run x 8alg) | boshlanmagan | 823 |
 | B4 — ablatsiya (4 variant) | boshlanmagan | 411 |
 | B5 — `docs/RESULTS_V2.md` + kategoriya tahlili | boshlanmagan | — |
 
-**Oxirgi tekshiruv:** 2026-09-24
+**Oxirgi tekshiruv:** 2026-09-24 (B0 tugadi)
 
 ## Yopilgan ko'lam
 
@@ -38,6 +38,24 @@ shunday yoziladi.
 B3 tugagach natija qanday bo'lsa shunday yoziladi. Qayta sozlash,
 maydon almashtirish, komponent qo'shish yo'q.
 
+## B0 natijasi
+
+Paket: `aceshade/` (core, benchmarks, fastops, ace, baselines, rivals_new,
+registry, analysis), ishga tushirgich `ace_shade.py`, oqim
+`.github/workflows/v2_cec2022.yml` (48 shard).
+
+Algoritmlar (8): ACE-SHADE + NL-SHADE-RSP, LSHADE-SPACMA, LSHADE-cnEpSin,
+LSHADE-RSP, jSO, L-SHADE, CMA-ES. Ablatsiya (4): to'liq, N1 o'chiq,
+N2 o'chiq, cmu manbai populyatsiya.
+
+Birlik testlari: 8/8 o'tdi (kovariatsiya musbat yarim aniq, byudjet
+oshmaydi, chegara saqlanadi, seed takrorlanadi, optimumda xato 0,
+midpoint tuzatadi, LPSR monoton va N_min da to'xtaydi, ablatsiya
+variantlari farq qiladi).
+
+Tezlashtirish: `katsuura_func` 2235 -> 33 us (66x), qiymat farqi 1.6e-15.
+
 ## Jurnal
 
-- Ko'lam yopildi; promt yakuniy. Kod hali boshlanmagan.
+- Ko'lam yopildi; promt yakuniy.
+- B0 tugadi: kod, testlar, oqim tayyor. B1 (sozlash) kutilmoqda.

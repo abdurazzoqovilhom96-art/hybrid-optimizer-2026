@@ -1,0 +1,100 @@
+name: ACE-SHADE CEC-2022
+
+# Teg push qilish bu sessiyada 403 bilan rad etiladi va workflow_dispatch
+# fayl default branchda bo'lishini talab qiladi, shuning uchun ishga
+# tushirish marker fayl orqali: .github/RUN_V2 ni yangilab push qilish.
+on:
+  push:
+    paths: ['.github/RUN_V2']
+  workflow_dispatch:
+    inputs:
+      runs:
+        description: 'Har bir instansiya uchun run soni'
+        default: '30'
+
+permissions:
+  contents: write
+
+env:
+  RUNS: ${{ inputs.runs || '30' }}
+
+jobs:
+  gate:
+    name: B0 testlari
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.11'}
+      - run: pip install --quiet -r requirements.txt
+      - name: Birlik testlari (o'tmasa eksperiment boshlanmaydi)
+        run: |
+          python3 tests/test_fastops.py
+          python3 tests/test_b0.py
+
+  chunk:
+    name: ${{ matrix.func }} D${{ matrix.dim }} ${{ matrix.grp }}
+    needs: gate
+    runs-on: ubuntu-latest
+    timeout-minutes: 330
+    strategy:
+      fail-fast: false
+      max-parallel: 20
+      matrix:
+        include: [{"func": "F1", "dim": 10, "grp": "A", "algs": "ACE-SHADE,NL-SHADE-RSP,LSHADE-SPACMA,LSHADE-cnEpSin"}, {"func": "F1", "dim": 10, "grp": "B", "algs": "LSHADE-RSP,jSO,L-SHADE,CMA-ES"}, {"func": "F1", "dim": 20, "grp": "A", "algs": "ACE-SHADE,NL-SHADE-RSP,LSHADE-SPACMA,LSHADE-cnEpSin"}, {"func": "F1", "dim": 20, "grp": "B", "algs": "LSHADE-RSP,jSO,L-SHADE,CMA-ES"}, {"func": "F2", "dim": 10, "grp": "A", "algs": "ACE-SHADE,NL-SHADE-RSP,LSHADE-SPACMA,LSHADE-cnEpSin"}, {"func": "F2", "dim": 10, "grp": "B", "algs": "LSHADE-RSP,jSO,L-SHADE,CMA-ES"}, {"func": "F2", "dim": 20, "grp": "A", "algs": "ACE-SHADE,NL-SHADE-RSP,LSHADE-SPACMA,LSHADE-cnEpSin"}, {"func": "F2", "dim": 20, "grp": "B", "algs": "LSHADE-RSP,jSO,L-SHADE,CMA-ES"}, {"func": "F3", "dim": 10, "grp": "A", "algs": "ACE-SHADE,NL-SHADE-RSP,LSHADE-SPACMA,LSHADE-cnEpSin"}, {"func": "F3", "dim": 10, "grp": "B", "algs": "LSHADE-RSP,jSO,L-SHADE,CMA-ES"}, {"func": "F3", "dim": 20, "grp": "A", "algs": "ACE-SHADE,NL-SHADE-RSP,LSHADE-SPACMA,LSHADE-cnEpSin"}, {"func": "F3", "dim": 20, "grp": "B", "algs": "LSHADE-RSP,jSO,L-SHADE,CMA-ES"}, {"func": "F4", "dim": 10, "grp": "A", "algs": "ACE-SHADE,NL-SHADE-RSP,LSHADE-SPACMA,LSHADE-cnEpSin"}, {"func": "F4", "dim": 10, "grp": "B", "algs": "LSHADE-RSP,jSO,L-SHADE,CMA-ES"}, {"func": "F4", "dim": 20, "grp": "A", "algs": "ACE-SHADE,NL-SHADE-RSP,LSHADE-SPACMA,LSHADE-cnEpSin"}, {"func": "F4", "dim": 20, "grp": "B", "algs": "LSHADE-RSP,jSO,L-SHADE,CMA-ES"}, {"func": "F5", "dim": 10, "grp": "A", "algs": "ACE-SHADE,NL-SHADE-RSP,LSHADE-SPACMA,LSHADE-cnEpSin"}, {"func": "F5", "dim": 10, "grp": "B", "algs": "LSHADE-RSP,jSO,L-SHADE,CMA-ES"}, {"func": "F5", "dim": 20, "grp": "A", "algs": "ACE-SHADE,NL-SHADE-RSP,LSHADE-SPACMA,LSHADE-cnEpSin"}, {"func": "F5", "dim": 20, "grp": "B", "algs": "LSHADE-RSP,jSO,L-SHADE,CMA-ES"}, {"func": "F6", "dim": 10, "grp": "A", "algs": "ACE-SHADE,NL-SHADE-RSP,LSHADE-SPACMA,LSHADE-cnEpSin"}, {"func": "F6", "dim": 10, "grp": "B", "algs": "LSHADE-RSP,jSO,L-SHADE,CMA-ES"}, {"func": "F6", "dim": 20, "grp": "A", "algs": "ACE-SHADE,NL-SHADE-RSP,LSHADE-SPACMA,LSHADE-cnEpSin"}, {"func": "F6", "dim": 20, "grp": "B", "algs": "LSHADE-RSP,jSO,L-SHADE,CMA-ES"}, {"func": "F7", "dim": 10, "grp": "A", "algs": "ACE-SHADE,NL-SHADE-RSP,LSHADE-SPACMA,LSHADE-cnEpSin"}, {"func": "F7", "dim": 10, "grp": "B", "algs": "LSHADE-RSP,jSO,L-SHADE,CMA-ES"}, {"func": "F7", "dim": 20, "grp": "A", "algs": "ACE-SHADE,NL-SHADE-RSP,LSHADE-SPACMA,LSHADE-cnEpSin"}, {"func": "F7", "dim": 20, "grp": "B", "algs": "LSHADE-RSP,jSO,L-SHADE,CMA-ES"}, {"func": "F8", "dim": 10, "grp": "A", "algs": "ACE-SHADE,NL-SHADE-RSP,LSHADE-SPACMA,LSHADE-cnEpSin"}, {"func": "F8", "dim": 10, "grp": "B", "algs": "LSHADE-RSP,jSO,L-SHADE,CMA-ES"}, {"func": "F8", "dim": 20, "grp": "A", "algs": "ACE-SHADE,NL-SHADE-RSP,LSHADE-SPACMA,LSHADE-cnEpSin"}, {"func": "F8", "dim": 20, "grp": "B", "algs": "LSHADE-RSP,jSO,L-SHADE,CMA-ES"}, {"func": "F9", "dim": 10, "grp": "A", "algs": "ACE-SHADE,NL-SHADE-RSP,LSHADE-SPACMA,LSHADE-cnEpSin"}, {"func": "F9", "dim": 10, "grp": "B", "algs": "LSHADE-RSP,jSO,L-SHADE,CMA-ES"}, {"func": "F9", "dim": 20, "grp": "A", "algs": "ACE-SHADE,NL-SHADE-RSP,LSHADE-SPACMA,LSHADE-cnEpSin"}, {"func": "F9", "dim": 20, "grp": "B", "algs": "LSHADE-RSP,jSO,L-SHADE,CMA-ES"}, {"func": "F10", "dim": 10, "grp": "A", "algs": "ACE-SHADE,NL-SHADE-RSP,LSHADE-SPACMA,LSHADE-cnEpSin"}, {"func": "F10", "dim": 10, "grp": "B", "algs": "LSHADE-RSP,jSO,L-SHADE,CMA-ES"}, {"func": "F10", "dim": 20, "grp": "A", "algs": "ACE-SHADE,NL-SHADE-RSP,LSHADE-SPACMA,LSHADE-cnEpSin"}, {"func": "F10", "dim": 20, "grp": "B", "algs": "LSHADE-RSP,jSO,L-SHADE,CMA-ES"}, {"func": "F11", "dim": 10, "grp": "A", "algs": "ACE-SHADE,NL-SHADE-RSP,LSHADE-SPACMA,LSHADE-cnEpSin"}, {"func": "F11", "dim": 10, "grp": "B", "algs": "LSHADE-RSP,jSO,L-SHADE,CMA-ES"}, {"func": "F11", "dim": 20, "grp": "A", "algs": "ACE-SHADE,NL-SHADE-RSP,LSHADE-SPACMA,LSHADE-cnEpSin"}, {"func": "F11", "dim": 20, "grp": "B", "algs": "LSHADE-RSP,jSO,L-SHADE,CMA-ES"}, {"func": "F12", "dim": 10, "grp": "A", "algs": "ACE-SHADE,NL-SHADE-RSP,LSHADE-SPACMA,LSHADE-cnEpSin"}, {"func": "F12", "dim": 10, "grp": "B", "algs": "LSHADE-RSP,jSO,L-SHADE,CMA-ES"}, {"func": "F12", "dim": 20, "grp": "A", "algs": "ACE-SHADE,NL-SHADE-RSP,LSHADE-SPACMA,LSHADE-cnEpSin"}, {"func": "F12", "dim": 20, "grp": "B", "algs": "LSHADE-RSP,jSO,L-SHADE,CMA-ES"}]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.11'}
+      - run: pip install --quiet -r requirements.txt
+      - name: Bo'lakni hisoblash
+        env:
+          FUNCS: ${{ matrix.func }}
+          DIMS: ${{ matrix.dim }}
+          ALGS: ${{ matrix.algs }}
+          OUT_DIR: chunk
+        run: python3 ace_shade.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: chunk-${{ matrix.func }}-${{ matrix.dim }}-${{ matrix.grp }}
+          path: chunk/
+          retention-days: 14
+
+  analyse:
+    name: Birlashtirish va tahlil
+    needs: chunk
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.11'}
+      - run: pip install --quiet -r requirements.txt
+      - uses: actions/download-artifact@v4
+        with: {pattern: 'chunk-*', path: chunks}
+      - name: Barcha bo'laklarni birlashtirish
+        run: |
+          DIRS=$(ls -d chunks/chunk-* | paste -sd, -)
+          echo "bo'laklar: $DIRS"
+          MERGE="$DIRS" OUT_DIR=results/v2 python3 ace_shade.py
+      - name: Asosiy jadvallarni jurnalga chop etish
+        run: |
+          for f in overall_average_ranks.csv friedman_posthoc.csv win_tie_loss.csv category_ranks.csv; do
+            echo "===== $f ====="; cat "results/v2/tables/$f"; echo
+          done
+          echo "===== friedman_test.txt ====="; cat results/v2/tables/friedman_test.txt
+          echo "===== category_summary.md ====="; cat results/v2/tables/category_summary.md
+      - uses: actions/upload-artifact@v4
+        with: {name: v2-analysis, path: results/v2/, retention-days: 90}
+      - name: Natijalarni branchga yozish
+        env:
+          TARGET: claude/youthful-pascal-sjxqnn
+        run: |
+          set -e
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -f results/v2
+          if git diff --cached --quiet; then echo "o'zgarish yo'q"; else
+            git commit -m "Add ACE-SHADE CEC-2022 results from run ${{ github.run_number }}"
+            git pull --rebase origin "$TARGET"
+            git push origin HEAD:"$TARGET"
+          fi
