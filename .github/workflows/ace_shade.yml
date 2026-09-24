@@ -1,8 +1,6 @@
 name: ACE-SHADE to'liq quvur
 
 # Ishga tushirish: .github/RUN ni yangilab push qilish.
-# Teg push qilish bu sessiyada 403 bilan rad etiladi, workflow_dispatch esa
-# fayl default branchda bo'lishini talab qiladi, shuning uchun marker fayl.
 on:
   push:
     paths: ['.github/RUN']
@@ -13,7 +11,6 @@ permissions:
 
 jobs:
 
-  # 1. Darvoza: birlik testlari o'tmasa eksperiment umuman boshlanmaydi.
   selftest:
     runs-on: ubuntu-latest
     steps:
@@ -23,11 +20,10 @@ jobs:
       - run: pip install --quiet -r requirements.txt
       - run: SELFTEST=1 python3 ace_shade.py
 
-  # 2. Sozlash: CEC-2017, baholash byudjetida, konfiguratsiya bo'yicha shard.
   tune:
     needs: selftest
     runs-on: ubuntu-latest
-    timeout-minutes: 300
+    timeout-minutes: 330
     strategy: {fail-fast: false, max-parallel: 12, matrix: {cfg: ["rn6_eta0.1", "rn6_eta0.2", "rn8_eta0.1", "rn8_eta0.2", "rn10_eta0.1", "rn10_eta0.2", "rn12_eta0.1", "rn12_eta0.2", "rn14_eta0.1", "rn14_eta0.2", "rn18_eta0.1", "rn18_eta0.2"]}}
     steps:
       - uses: actions/checkout@v4
@@ -39,7 +35,6 @@ jobs:
       - uses: actions/upload-artifact@v4
         with: {name: 'tune-${{ matrix.cfg }}', path: tune/, retention-days: 30}
 
-  # 3. Muzlatish: eng yaxshi konfiguratsiya tanlanadi va QOTIRILADI.
   freeze:
     needs: tune
     runs-on: ubuntu-latest
@@ -63,12 +58,11 @@ jobs:
             results/tuning_v2/
           retention-days: 90
 
-  # 4. Baholash: CEC-2022, (funksiya x o'lcham x algoritm guruhi) = 48 shard.
   run:
     needs: freeze
     runs-on: ubuntu-latest
     timeout-minutes: 330
-    strategy: {fail-fast: false, max-parallel: 20, matrix: {include: [{"func": "F1", "dim": 10, "grp": "A", "algs": "ACE-SHADE,NL-SHADE-RSP,LSHADE-SPACMA,LSHADE-cnEpSin"}, {"func": "F1", "dim": 10, "grp": "B", "algs": "LSHADE-RSP,jSO,L-SHADE,CMA-ES"}, {"func": "F1", "dim": 20, "grp": "A", "algs": "ACE-SHADE,NL-SHADE-RSP,LSHADE-SPACMA,LSHADE-cnEpSin"}, {"func": "F1", "dim": 20, "grp": "B", "algs": "LSHADE-RSP,jSO,L-SHADE,CMA-ES"}, {"func": "F2", "dim": 10, "grp": "A", "algs": "ACE-SHADE,NL-SHADE-RSP,LSHADE-SPACMA,LSHADE-cnEpSin"}, {"func": "F2", "dim": 10, "grp": "B", "algs": "LSHADE-RSP,jSO,L-SHADE,CMA-ES"}, {"func": "F2", "dim": 20, "grp": "A", "algs": "ACE-SHADE,NL-SHADE-RSP,LSHADE-SPACMA,LSHADE-cnEpSin"}, {"func": "F2", "dim": 20, "grp": "B", "algs": "LSHADE-RSP,jSO,L-SHADE,CMA-ES"}, {"func": "F3", "dim": 10, "grp": "A", "algs": "ACE-SHADE,NL-SHADE-RSP,LSHADE-SPACMA,LSHADE-cnEpSin"}, {"func": "F3", "dim": 10, "grp": "B", "algs": "LSHADE-RSP,jSO,L-SHADE,CMA-ES"}, {"func": "F3", "dim": 20, "grp": "A", "algs": "ACE-SHADE,NL-SHADE-RSP,LSHADE-SPACMA,LSHADE-cnEpSin"}, {"func": "F3", "dim": 20, "grp": "B", "algs": "LSHADE-RSP,jSO,L-SHADE,CMA-ES"}, {"func": "F4", "dim": 10, "grp": "A", "algs": "ACE-SHADE,NL-SHADE-RSP,LSHADE-SPACMA,LSHADE-cnEpSin"}, {"func": "F4", "dim": 10, "grp": "B", "algs": "LSHADE-RSP,jSO,L-SHADE,CMA-ES"}, {"func": "F4", "dim": 20, "grp": "A", "algs": "ACE-SHADE,NL-SHADE-RSP,LSHADE-SPACMA,LSHADE-cnEpSin"}, {"func": "F4", "dim": 20, "grp": "B", "algs": "LSHADE-RSP,jSO,L-SHADE,CMA-ES"}, {"func": "F5", "dim": 10, "grp": "A", "algs": "ACE-SHADE,NL-SHADE-RSP,LSHADE-SPACMA,LSHADE-cnEpSin"}, {"func": "F5", "dim": 10, "grp": "B", "algs": "LSHADE-RSP,jSO,L-SHADE,CMA-ES"}, {"func": "F5", "dim": 20, "grp": "A", "algs": "ACE-SHADE,NL-SHADE-RSP,LSHADE-SPACMA,LSHADE-cnEpSin"}, {"func": "F5", "dim": 20, "grp": "B", "algs": "LSHADE-RSP,jSO,L-SHADE,CMA-ES"}, {"func": "F6", "dim": 10, "grp": "A", "algs": "ACE-SHADE,NL-SHADE-RSP,LSHADE-SPACMA,LSHADE-cnEpSin"}, {"func": "F6", "dim": 10, "grp": "B", "algs": "LSHADE-RSP,jSO,L-SHADE,CMA-ES"}, {"func": "F6", "dim": 20, "grp": "A", "algs": "ACE-SHADE,NL-SHADE-RSP,LSHADE-SPACMA,LSHADE-cnEpSin"}, {"func": "F6", "dim": 20, "grp": "B", "algs": "LSHADE-RSP,jSO,L-SHADE,CMA-ES"}, {"func": "F7", "dim": 10, "grp": "A", "algs": "ACE-SHADE,NL-SHADE-RSP,LSHADE-SPACMA,LSHADE-cnEpSin"}, {"func": "F7", "dim": 10, "grp": "B", "algs": "LSHADE-RSP,jSO,L-SHADE,CMA-ES"}, {"func": "F7", "dim": 20, "grp": "A", "algs": "ACE-SHADE,NL-SHADE-RSP,LSHADE-SPACMA,LSHADE-cnEpSin"}, {"func": "F7", "dim": 20, "grp": "B", "algs": "LSHADE-RSP,jSO,L-SHADE,CMA-ES"}, {"func": "F8", "dim": 10, "grp": "A", "algs": "ACE-SHADE,NL-SHADE-RSP,LSHADE-SPACMA,LSHADE-cnEpSin"}, {"func": "F8", "dim": 10, "grp": "B", "algs": "LSHADE-RSP,jSO,L-SHADE,CMA-ES"}, {"func": "F8", "dim": 20, "grp": "A", "algs": "ACE-SHADE,NL-SHADE-RSP,LSHADE-SPACMA,LSHADE-cnEpSin"}, {"func": "F8", "dim": 20, "grp": "B", "algs": "LSHADE-RSP,jSO,L-SHADE,CMA-ES"}, {"func": "F9", "dim": 10, "grp": "A", "algs": "ACE-SHADE,NL-SHADE-RSP,LSHADE-SPACMA,LSHADE-cnEpSin"}, {"func": "F9", "dim": 10, "grp": "B", "algs": "LSHADE-RSP,jSO,L-SHADE,CMA-ES"}, {"func": "F9", "dim": 20, "grp": "A", "algs": "ACE-SHADE,NL-SHADE-RSP,LSHADE-SPACMA,LSHADE-cnEpSin"}, {"func": "F9", "dim": 20, "grp": "B", "algs": "LSHADE-RSP,jSO,L-SHADE,CMA-ES"}, {"func": "F10", "dim": 10, "grp": "A", "algs": "ACE-SHADE,NL-SHADE-RSP,LSHADE-SPACMA,LSHADE-cnEpSin"}, {"func": "F10", "dim": 10, "grp": "B", "algs": "LSHADE-RSP,jSO,L-SHADE,CMA-ES"}, {"func": "F10", "dim": 20, "grp": "A", "algs": "ACE-SHADE,NL-SHADE-RSP,LSHADE-SPACMA,LSHADE-cnEpSin"}, {"func": "F10", "dim": 20, "grp": "B", "algs": "LSHADE-RSP,jSO,L-SHADE,CMA-ES"}, {"func": "F11", "dim": 10, "grp": "A", "algs": "ACE-SHADE,NL-SHADE-RSP,LSHADE-SPACMA,LSHADE-cnEpSin"}, {"func": "F11", "dim": 10, "grp": "B", "algs": "LSHADE-RSP,jSO,L-SHADE,CMA-ES"}, {"func": "F11", "dim": 20, "grp": "A", "algs": "ACE-SHADE,NL-SHADE-RSP,LSHADE-SPACMA,LSHADE-cnEpSin"}, {"func": "F11", "dim": 20, "grp": "B", "algs": "LSHADE-RSP,jSO,L-SHADE,CMA-ES"}, {"func": "F12", "dim": 10, "grp": "A", "algs": "ACE-SHADE,NL-SHADE-RSP,LSHADE-SPACMA,LSHADE-cnEpSin"}, {"func": "F12", "dim": 10, "grp": "B", "algs": "LSHADE-RSP,jSO,L-SHADE,CMA-ES"}, {"func": "F12", "dim": 20, "grp": "A", "algs": "ACE-SHADE,NL-SHADE-RSP,LSHADE-SPACMA,LSHADE-cnEpSin"}, {"func": "F12", "dim": 20, "grp": "B", "algs": "LSHADE-RSP,jSO,L-SHADE,CMA-ES"}]}}
+    strategy: {fail-fast: false, max-parallel: 20, matrix: {include: [{"func": "F1", "dim": 10, "tag": "A", "algs": "ACE-SHADE,NL-SHADE-RSP,LSHADE-SPACMA,LSHADE-cnEpSin"}, {"func": "F1", "dim": 10, "tag": "B", "algs": "LSHADE-RSP,jSO,L-SHADE,CMA-ES"}, {"func": "F2", "dim": 10, "tag": "A", "algs": "ACE-SHADE,NL-SHADE-RSP,LSHADE-SPACMA,LSHADE-cnEpSin"}, {"func": "F2", "dim": 10, "tag": "B", "algs": "LSHADE-RSP,jSO,L-SHADE,CMA-ES"}, {"func": "F3", "dim": 10, "tag": "A", "algs": "ACE-SHADE,NL-SHADE-RSP,LSHADE-SPACMA,LSHADE-cnEpSin"}, {"func": "F3", "dim": 10, "tag": "B", "algs": "LSHADE-RSP,jSO,L-SHADE,CMA-ES"}, {"func": "F4", "dim": 10, "tag": "A", "algs": "ACE-SHADE,NL-SHADE-RSP,LSHADE-SPACMA,LSHADE-cnEpSin"}, {"func": "F4", "dim": 10, "tag": "B", "algs": "LSHADE-RSP,jSO,L-SHADE,CMA-ES"}, {"func": "F5", "dim": 10, "tag": "A", "algs": "ACE-SHADE,NL-SHADE-RSP,LSHADE-SPACMA,LSHADE-cnEpSin"}, {"func": "F5", "dim": 10, "tag": "B", "algs": "LSHADE-RSP,jSO,L-SHADE,CMA-ES"}, {"func": "F6", "dim": 10, "tag": "A", "algs": "ACE-SHADE,NL-SHADE-RSP,LSHADE-SPACMA,LSHADE-cnEpSin"}, {"func": "F6", "dim": 10, "tag": "B", "algs": "LSHADE-RSP,jSO,L-SHADE,CMA-ES"}, {"func": "F7", "dim": 10, "tag": "A", "algs": "ACE-SHADE,NL-SHADE-RSP,LSHADE-SPACMA,LSHADE-cnEpSin"}, {"func": "F7", "dim": 10, "tag": "B", "algs": "LSHADE-RSP,jSO,L-SHADE,CMA-ES"}, {"func": "F8", "dim": 10, "tag": "A", "algs": "ACE-SHADE,NL-SHADE-RSP,LSHADE-SPACMA,LSHADE-cnEpSin"}, {"func": "F8", "dim": 10, "tag": "B", "algs": "LSHADE-RSP,jSO,L-SHADE,CMA-ES"}, {"func": "F9", "dim": 10, "tag": "A", "algs": "ACE-SHADE,NL-SHADE-RSP,LSHADE-SPACMA,LSHADE-cnEpSin"}, {"func": "F9", "dim": 10, "tag": "B", "algs": "LSHADE-RSP,jSO,L-SHADE,CMA-ES"}, {"func": "F10", "dim": 10, "tag": "A", "algs": "ACE-SHADE,NL-SHADE-RSP,LSHADE-SPACMA,LSHADE-cnEpSin"}, {"func": "F10", "dim": 10, "tag": "B", "algs": "LSHADE-RSP,jSO,L-SHADE,CMA-ES"}, {"func": "F11", "dim": 10, "tag": "A", "algs": "ACE-SHADE,NL-SHADE-RSP,LSHADE-SPACMA,LSHADE-cnEpSin"}, {"func": "F11", "dim": 10, "tag": "B", "algs": "LSHADE-RSP,jSO,L-SHADE,CMA-ES"}, {"func": "F12", "dim": 10, "tag": "A", "algs": "ACE-SHADE,NL-SHADE-RSP,LSHADE-SPACMA,LSHADE-cnEpSin"}, {"func": "F12", "dim": 10, "tag": "B", "algs": "LSHADE-RSP,jSO,L-SHADE,CMA-ES"}, {"func": "F1", "dim": 20, "tag": "ACE_SHADE", "algs": "ACE-SHADE"}, {"func": "F1", "dim": 20, "tag": "NL_SHADE_RSP", "algs": "NL-SHADE-RSP"}, {"func": "F1", "dim": 20, "tag": "LSHADE_SPACMA", "algs": "LSHADE-SPACMA"}, {"func": "F1", "dim": 20, "tag": "LSHADE_cnEpSin", "algs": "LSHADE-cnEpSin"}, {"func": "F1", "dim": 20, "tag": "LSHADE_RSP", "algs": "LSHADE-RSP"}, {"func": "F1", "dim": 20, "tag": "jSO", "algs": "jSO"}, {"func": "F1", "dim": 20, "tag": "L_SHADE", "algs": "L-SHADE"}, {"func": "F1", "dim": 20, "tag": "CMA_ES", "algs": "CMA-ES"}, {"func": "F2", "dim": 20, "tag": "ACE_SHADE", "algs": "ACE-SHADE"}, {"func": "F2", "dim": 20, "tag": "NL_SHADE_RSP", "algs": "NL-SHADE-RSP"}, {"func": "F2", "dim": 20, "tag": "LSHADE_SPACMA", "algs": "LSHADE-SPACMA"}, {"func": "F2", "dim": 20, "tag": "LSHADE_cnEpSin", "algs": "LSHADE-cnEpSin"}, {"func": "F2", "dim": 20, "tag": "LSHADE_RSP", "algs": "LSHADE-RSP"}, {"func": "F2", "dim": 20, "tag": "jSO", "algs": "jSO"}, {"func": "F2", "dim": 20, "tag": "L_SHADE", "algs": "L-SHADE"}, {"func": "F2", "dim": 20, "tag": "CMA_ES", "algs": "CMA-ES"}, {"func": "F3", "dim": 20, "tag": "ACE_SHADE", "algs": "ACE-SHADE"}, {"func": "F3", "dim": 20, "tag": "NL_SHADE_RSP", "algs": "NL-SHADE-RSP"}, {"func": "F3", "dim": 20, "tag": "LSHADE_SPACMA", "algs": "LSHADE-SPACMA"}, {"func": "F3", "dim": 20, "tag": "LSHADE_cnEpSin", "algs": "LSHADE-cnEpSin"}, {"func": "F3", "dim": 20, "tag": "LSHADE_RSP", "algs": "LSHADE-RSP"}, {"func": "F3", "dim": 20, "tag": "jSO", "algs": "jSO"}, {"func": "F3", "dim": 20, "tag": "L_SHADE", "algs": "L-SHADE"}, {"func": "F3", "dim": 20, "tag": "CMA_ES", "algs": "CMA-ES"}, {"func": "F4", "dim": 20, "tag": "ACE_SHADE", "algs": "ACE-SHADE"}, {"func": "F4", "dim": 20, "tag": "NL_SHADE_RSP", "algs": "NL-SHADE-RSP"}, {"func": "F4", "dim": 20, "tag": "LSHADE_SPACMA", "algs": "LSHADE-SPACMA"}, {"func": "F4", "dim": 20, "tag": "LSHADE_cnEpSin", "algs": "LSHADE-cnEpSin"}, {"func": "F4", "dim": 20, "tag": "LSHADE_RSP", "algs": "LSHADE-RSP"}, {"func": "F4", "dim": 20, "tag": "jSO", "algs": "jSO"}, {"func": "F4", "dim": 20, "tag": "L_SHADE", "algs": "L-SHADE"}, {"func": "F4", "dim": 20, "tag": "CMA_ES", "algs": "CMA-ES"}, {"func": "F5", "dim": 20, "tag": "ACE_SHADE", "algs": "ACE-SHADE"}, {"func": "F5", "dim": 20, "tag": "NL_SHADE_RSP", "algs": "NL-SHADE-RSP"}, {"func": "F5", "dim": 20, "tag": "LSHADE_SPACMA", "algs": "LSHADE-SPACMA"}, {"func": "F5", "dim": 20, "tag": "LSHADE_cnEpSin", "algs": "LSHADE-cnEpSin"}, {"func": "F5", "dim": 20, "tag": "LSHADE_RSP", "algs": "LSHADE-RSP"}, {"func": "F5", "dim": 20, "tag": "jSO", "algs": "jSO"}, {"func": "F5", "dim": 20, "tag": "L_SHADE", "algs": "L-SHADE"}, {"func": "F5", "dim": 20, "tag": "CMA_ES", "algs": "CMA-ES"}, {"func": "F6", "dim": 20, "tag": "ACE_SHADE", "algs": "ACE-SHADE"}, {"func": "F6", "dim": 20, "tag": "NL_SHADE_RSP", "algs": "NL-SHADE-RSP"}, {"func": "F6", "dim": 20, "tag": "LSHADE_SPACMA", "algs": "LSHADE-SPACMA"}, {"func": "F6", "dim": 20, "tag": "LSHADE_cnEpSin", "algs": "LSHADE-cnEpSin"}, {"func": "F6", "dim": 20, "tag": "LSHADE_RSP", "algs": "LSHADE-RSP"}, {"func": "F6", "dim": 20, "tag": "jSO", "algs": "jSO"}, {"func": "F6", "dim": 20, "tag": "L_SHADE", "algs": "L-SHADE"}, {"func": "F6", "dim": 20, "tag": "CMA_ES", "algs": "CMA-ES"}, {"func": "F7", "dim": 20, "tag": "ACE_SHADE", "algs": "ACE-SHADE"}, {"func": "F7", "dim": 20, "tag": "NL_SHADE_RSP", "algs": "NL-SHADE-RSP"}, {"func": "F7", "dim": 20, "tag": "LSHADE_SPACMA", "algs": "LSHADE-SPACMA"}, {"func": "F7", "dim": 20, "tag": "LSHADE_cnEpSin", "algs": "LSHADE-cnEpSin"}, {"func": "F7", "dim": 20, "tag": "LSHADE_RSP", "algs": "LSHADE-RSP"}, {"func": "F7", "dim": 20, "tag": "jSO", "algs": "jSO"}, {"func": "F7", "dim": 20, "tag": "L_SHADE", "algs": "L-SHADE"}, {"func": "F7", "dim": 20, "tag": "CMA_ES", "algs": "CMA-ES"}, {"func": "F8", "dim": 20, "tag": "ACE_SHADE", "algs": "ACE-SHADE"}, {"func": "F8", "dim": 20, "tag": "NL_SHADE_RSP", "algs": "NL-SHADE-RSP"}, {"func": "F8", "dim": 20, "tag": "LSHADE_SPACMA", "algs": "LSHADE-SPACMA"}, {"func": "F8", "dim": 20, "tag": "LSHADE_cnEpSin", "algs": "LSHADE-cnEpSin"}, {"func": "F8", "dim": 20, "tag": "LSHADE_RSP", "algs": "LSHADE-RSP"}, {"func": "F8", "dim": 20, "tag": "jSO", "algs": "jSO"}, {"func": "F8", "dim": 20, "tag": "L_SHADE", "algs": "L-SHADE"}, {"func": "F8", "dim": 20, "tag": "CMA_ES", "algs": "CMA-ES"}, {"func": "F9", "dim": 20, "tag": "ACE_SHADE", "algs": "ACE-SHADE"}, {"func": "F9", "dim": 20, "tag": "NL_SHADE_RSP", "algs": "NL-SHADE-RSP"}, {"func": "F9", "dim": 20, "tag": "LSHADE_SPACMA", "algs": "LSHADE-SPACMA"}, {"func": "F9", "dim": 20, "tag": "LSHADE_cnEpSin", "algs": "LSHADE-cnEpSin"}, {"func": "F9", "dim": 20, "tag": "LSHADE_RSP", "algs": "LSHADE-RSP"}, {"func": "F9", "dim": 20, "tag": "jSO", "algs": "jSO"}, {"func": "F9", "dim": 20, "tag": "L_SHADE", "algs": "L-SHADE"}, {"func": "F9", "dim": 20, "tag": "CMA_ES", "algs": "CMA-ES"}, {"func": "F10", "dim": 20, "tag": "ACE_SHADE", "algs": "ACE-SHADE"}, {"func": "F10", "dim": 20, "tag": "NL_SHADE_RSP", "algs": "NL-SHADE-RSP"}, {"func": "F10", "dim": 20, "tag": "LSHADE_SPACMA", "algs": "LSHADE-SPACMA"}, {"func": "F10", "dim": 20, "tag": "LSHADE_cnEpSin", "algs": "LSHADE-cnEpSin"}, {"func": "F10", "dim": 20, "tag": "LSHADE_RSP", "algs": "LSHADE-RSP"}, {"func": "F10", "dim": 20, "tag": "jSO", "algs": "jSO"}, {"func": "F10", "dim": 20, "tag": "L_SHADE", "algs": "L-SHADE"}, {"func": "F10", "dim": 20, "tag": "CMA_ES", "algs": "CMA-ES"}, {"func": "F11", "dim": 20, "tag": "ACE_SHADE", "algs": "ACE-SHADE"}, {"func": "F11", "dim": 20, "tag": "NL_SHADE_RSP", "algs": "NL-SHADE-RSP"}, {"func": "F11", "dim": 20, "tag": "LSHADE_SPACMA", "algs": "LSHADE-SPACMA"}, {"func": "F11", "dim": 20, "tag": "LSHADE_cnEpSin", "algs": "LSHADE-cnEpSin"}, {"func": "F11", "dim": 20, "tag": "LSHADE_RSP", "algs": "LSHADE-RSP"}, {"func": "F11", "dim": 20, "tag": "jSO", "algs": "jSO"}, {"func": "F11", "dim": 20, "tag": "L_SHADE", "algs": "L-SHADE"}, {"func": "F11", "dim": 20, "tag": "CMA_ES", "algs": "CMA-ES"}, {"func": "F12", "dim": 20, "tag": "ACE_SHADE", "algs": "ACE-SHADE"}, {"func": "F12", "dim": 20, "tag": "NL_SHADE_RSP", "algs": "NL-SHADE-RSP"}, {"func": "F12", "dim": 20, "tag": "LSHADE_SPACMA", "algs": "LSHADE-SPACMA"}, {"func": "F12", "dim": 20, "tag": "LSHADE_cnEpSin", "algs": "LSHADE-cnEpSin"}, {"func": "F12", "dim": 20, "tag": "LSHADE_RSP", "algs": "LSHADE-RSP"}, {"func": "F12", "dim": 20, "tag": "jSO", "algs": "jSO"}, {"func": "F12", "dim": 20, "tag": "L_SHADE", "algs": "L-SHADE"}, {"func": "F12", "dim": 20, "tag": "CMA_ES", "algs": "CMA-ES"}]}}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -85,16 +79,15 @@ jobs:
         run: python3 ace_shade.py
       - uses: actions/upload-artifact@v4
         with:
-          name: 'chunk-${{ matrix.func }}-${{ matrix.dim }}-${{ matrix.grp }}'
+          name: 'chunk-${{ matrix.func }}-${{ matrix.dim }}-${{ matrix.tag }}'
           path: chunk/
           retention-days: 14
 
-  # 5. Ablatsiya: N1 va N2 ning har biri alohida o'chirilgan holda.
   ablate:
     needs: freeze
     runs-on: ubuntu-latest
     timeout-minutes: 330
-    strategy: {fail-fast: false, max-parallel: 20, matrix: {include: [{"func": "F1", "dim": 10}, {"func": "F1", "dim": 20}, {"func": "F2", "dim": 10}, {"func": "F2", "dim": 20}, {"func": "F3", "dim": 10}, {"func": "F3", "dim": 20}, {"func": "F4", "dim": 10}, {"func": "F4", "dim": 20}, {"func": "F5", "dim": 10}, {"func": "F5", "dim": 20}, {"func": "F6", "dim": 10}, {"func": "F6", "dim": 20}, {"func": "F7", "dim": 10}, {"func": "F7", "dim": 20}, {"func": "F8", "dim": 10}, {"func": "F8", "dim": 20}, {"func": "F9", "dim": 10}, {"func": "F9", "dim": 20}, {"func": "F10", "dim": 10}, {"func": "F10", "dim": 20}, {"func": "F11", "dim": 10}, {"func": "F11", "dim": 20}, {"func": "F12", "dim": 10}, {"func": "F12", "dim": 20}]}}
+    strategy: {fail-fast: false, max-parallel: 20, matrix: {include: [{"func": "F1", "dim": 10, "tag": "all", "algs": "ACE-SHADE,N1-off,N2-off,cmu-population"}, {"func": "F2", "dim": 10, "tag": "all", "algs": "ACE-SHADE,N1-off,N2-off,cmu-population"}, {"func": "F3", "dim": 10, "tag": "all", "algs": "ACE-SHADE,N1-off,N2-off,cmu-population"}, {"func": "F4", "dim": 10, "tag": "all", "algs": "ACE-SHADE,N1-off,N2-off,cmu-population"}, {"func": "F5", "dim": 10, "tag": "all", "algs": "ACE-SHADE,N1-off,N2-off,cmu-population"}, {"func": "F6", "dim": 10, "tag": "all", "algs": "ACE-SHADE,N1-off,N2-off,cmu-population"}, {"func": "F7", "dim": 10, "tag": "all", "algs": "ACE-SHADE,N1-off,N2-off,cmu-population"}, {"func": "F8", "dim": 10, "tag": "all", "algs": "ACE-SHADE,N1-off,N2-off,cmu-population"}, {"func": "F9", "dim": 10, "tag": "all", "algs": "ACE-SHADE,N1-off,N2-off,cmu-population"}, {"func": "F10", "dim": 10, "tag": "all", "algs": "ACE-SHADE,N1-off,N2-off,cmu-population"}, {"func": "F11", "dim": 10, "tag": "all", "algs": "ACE-SHADE,N1-off,N2-off,cmu-population"}, {"func": "F12", "dim": 10, "tag": "all", "algs": "ACE-SHADE,N1-off,N2-off,cmu-population"}, {"func": "F1", "dim": 20, "tag": "ACE_SHADE", "algs": "ACE-SHADE"}, {"func": "F1", "dim": 20, "tag": "N1_off", "algs": "N1-off"}, {"func": "F1", "dim": 20, "tag": "N2_off", "algs": "N2-off"}, {"func": "F1", "dim": 20, "tag": "cmu_population", "algs": "cmu-population"}, {"func": "F2", "dim": 20, "tag": "ACE_SHADE", "algs": "ACE-SHADE"}, {"func": "F2", "dim": 20, "tag": "N1_off", "algs": "N1-off"}, {"func": "F2", "dim": 20, "tag": "N2_off", "algs": "N2-off"}, {"func": "F2", "dim": 20, "tag": "cmu_population", "algs": "cmu-population"}, {"func": "F3", "dim": 20, "tag": "ACE_SHADE", "algs": "ACE-SHADE"}, {"func": "F3", "dim": 20, "tag": "N1_off", "algs": "N1-off"}, {"func": "F3", "dim": 20, "tag": "N2_off", "algs": "N2-off"}, {"func": "F3", "dim": 20, "tag": "cmu_population", "algs": "cmu-population"}, {"func": "F4", "dim": 20, "tag": "ACE_SHADE", "algs": "ACE-SHADE"}, {"func": "F4", "dim": 20, "tag": "N1_off", "algs": "N1-off"}, {"func": "F4", "dim": 20, "tag": "N2_off", "algs": "N2-off"}, {"func": "F4", "dim": 20, "tag": "cmu_population", "algs": "cmu-population"}, {"func": "F5", "dim": 20, "tag": "ACE_SHADE", "algs": "ACE-SHADE"}, {"func": "F5", "dim": 20, "tag": "N1_off", "algs": "N1-off"}, {"func": "F5", "dim": 20, "tag": "N2_off", "algs": "N2-off"}, {"func": "F5", "dim": 20, "tag": "cmu_population", "algs": "cmu-population"}, {"func": "F6", "dim": 20, "tag": "ACE_SHADE", "algs": "ACE-SHADE"}, {"func": "F6", "dim": 20, "tag": "N1_off", "algs": "N1-off"}, {"func": "F6", "dim": 20, "tag": "N2_off", "algs": "N2-off"}, {"func": "F6", "dim": 20, "tag": "cmu_population", "algs": "cmu-population"}, {"func": "F7", "dim": 20, "tag": "ACE_SHADE", "algs": "ACE-SHADE"}, {"func": "F7", "dim": 20, "tag": "N1_off", "algs": "N1-off"}, {"func": "F7", "dim": 20, "tag": "N2_off", "algs": "N2-off"}, {"func": "F7", "dim": 20, "tag": "cmu_population", "algs": "cmu-population"}, {"func": "F8", "dim": 20, "tag": "ACE_SHADE", "algs": "ACE-SHADE"}, {"func": "F8", "dim": 20, "tag": "N1_off", "algs": "N1-off"}, {"func": "F8", "dim": 20, "tag": "N2_off", "algs": "N2-off"}, {"func": "F8", "dim": 20, "tag": "cmu_population", "algs": "cmu-population"}, {"func": "F9", "dim": 20, "tag": "ACE_SHADE", "algs": "ACE-SHADE"}, {"func": "F9", "dim": 20, "tag": "N1_off", "algs": "N1-off"}, {"func": "F9", "dim": 20, "tag": "N2_off", "algs": "N2-off"}, {"func": "F9", "dim": 20, "tag": "cmu_population", "algs": "cmu-population"}, {"func": "F10", "dim": 20, "tag": "ACE_SHADE", "algs": "ACE-SHADE"}, {"func": "F10", "dim": 20, "tag": "N1_off", "algs": "N1-off"}, {"func": "F10", "dim": 20, "tag": "N2_off", "algs": "N2-off"}, {"func": "F10", "dim": 20, "tag": "cmu_population", "algs": "cmu-population"}, {"func": "F11", "dim": 20, "tag": "ACE_SHADE", "algs": "ACE-SHADE"}, {"func": "F11", "dim": 20, "tag": "N1_off", "algs": "N1-off"}, {"func": "F11", "dim": 20, "tag": "N2_off", "algs": "N2-off"}, {"func": "F11", "dim": 20, "tag": "cmu_population", "algs": "cmu-population"}, {"func": "F12", "dim": 20, "tag": "ACE_SHADE", "algs": "ACE-SHADE"}, {"func": "F12", "dim": 20, "tag": "N1_off", "algs": "N1-off"}, {"func": "F12", "dim": 20, "tag": "N2_off", "algs": "N2-off"}, {"func": "F12", "dim": 20, "tag": "cmu_population", "algs": "cmu-population"}]}}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -106,17 +99,23 @@ jobs:
           STAGE: ablate
           FUNCS: '${{ matrix.func }}'
           DIMS: '${{ matrix.dim }}'
+          ALGS: '${{ matrix.algs }}'
           OUT_DIR: abl
         run: python3 ace_shade.py
       - uses: actions/upload-artifact@v4
         with:
-          name: 'abl-${{ matrix.func }}-${{ matrix.dim }}'
+          name: 'abl-${{ matrix.func }}-${{ matrix.dim }}-${{ matrix.tag }}'
           path: abl/
           retention-days: 14
 
-  # 6. Tahlil va hisobot: barcha bo'laklar birlashtiriladi.
+  # Hisobot HAR QANDAY holatda ishlaydi. Oldingi urinishda 48 sharddan
+  # 44 tasi va 24 ablatsiyadan 23 tasi muvaffaqiyatli tugagan, lekin
+  # `needs` tufayli hisobot o'tkazib yuborilgan va sakkiz soatlik hisob
+  # behuda ketgan. Endi mavjud bo'lgan hamma narsa tahlil qilinadi va
+  # yetishmayotgani hisobotda ochiq ko'rsatiladi.
   report:
-    needs: [run, ablate]
+    needs: [freeze, run, ablate]
+    if: always() && needs.freeze.result == 'success'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -132,7 +131,7 @@ jobs:
       - name: Ablatsiya bo'laklarini birlashtirish
         run: |
           python3 - <<'EOF'
-          import glob, pandas as pd, numpy as np, os
+          import glob, os, pandas as pd
           fr = [pd.read_csv(p) for p in glob.glob("abls/abl-*/raw_data/full_raw_results.csv")]
           os.makedirs("results/ablation_v2/raw_data", exist_ok=True)
           if fr:
@@ -143,6 +142,7 @@ jobs:
       - name: Tahlil va hisobot
         run: |
           DIRS=$(ls -d chunks/chunk-* | paste -sd, -)
+          echo "bo'laklar soni: $(ls -d chunks/chunk-* | wc -l)"
           MERGE="$DIRS" OUT_DIR=results/v2 python3 ace_shade.py
       - name: Asosiy natijalarni jurnalga chop etish
         run: |

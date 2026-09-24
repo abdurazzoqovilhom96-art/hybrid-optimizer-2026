@@ -71,6 +71,19 @@ import sys
 import time
 from functools import partial
 
+# BLAS oqimlarini numpy importidan OLDIN bittaga qotiramiz.
+#
+# joblib har bir yadro uchun alohida jarayon ochadi va ularning har biri
+# BLAS ni o'z navbatida ko'p oqimda ishlatadi. To'rt yadroda bu 4x4 = 16
+# oqimni anglatadi va ular bir-birini bloklaydi (oversubscription).
+# Kuzatilgan ta'sir: GitHub runnerida F7 va F8 shardlari mahalliy
+# o'lchovdan olti barobar sekin ishladi va 330 daqiqalik chegaraga urildi,
+# holbuki mahalliy o'lchovda ular F12 dan ARZONROQ edi. Bitta oqim
+# har bir jarayonga - joblib bilan standart amaliyot.
+for _v in ("OMP_NUM_THREADS", "OPENBLAS_NUM_THREADS", "MKL_NUM_THREADS",
+           "NUMEXPR_NUM_THREADS", "VECLIB_MAXIMUM_THREADS"):
+    os.environ.setdefault(_v, "1")
+
 import numpy as np
 import pandas as pd
 from joblib import Parallel, delayed
@@ -104,7 +117,16 @@ _KATSUURA_ORIGINAL = None
 
 
 def _patch_opfunu():
-    """Almashtirishni o'rnatadi. Bir necha marta chaqirilishi xavfsiz."""
+    """Almashtirishni o'rnatadi. Bir necha marta chaqirilishi xavfsiz.
+
+    MUHIM: bu funksiyani HAR BIR VAZIFA boshida chaqirish kerak, faqat
+    modul darajasida emas. joblib ning loky ishchilari asosiy modulni
+    qayta bajarmaydi, shuning uchun modul darajasidagi almashtirish
+    ularga yetib bormaydi. O'lchangan ta'siri: ishchi ichida
+    `katsuura_func` 1608 us (almashtirilmagan) va 18 us (almashtirilgan) -
+    89 barobar. Butun hisob ishchilarda bajarilgani uchun bu F7, F8, F11
+    va F12 shardlarini 330 daqiqalik chegaraga urib yubordi.
+    """
     global _KATSUURA_ORIGINAL
     from opfunu.utils import operator
     if _KATSUURA_ORIGINAL is None:
@@ -1207,6 +1229,7 @@ def cfg_name(r_n, eta):
 
 
 def _tune_one(r_n, eta, func, dim, run_id, budget):
+    _patch_opfunu()          # joblib ishchisida ham kerak - pastdagi izohga qarang
     np.random.seed(SEED_BASE + 1000 * dim + run_id)
     obj, lb, ub, _ = make_problem(func, dim, 2017)
     tr = Tracker(obj, budget, 2)
@@ -1299,6 +1322,7 @@ def freeze_from_tuning(df, out_dir):
 # ==============================================================================
 
 def _run_one(alg_name, alg, func, dim, run_id, budget):
+    _patch_opfunu()          # joblib ishchisida ham kerak - pastdagi izohga qarang
     # Bir xil (o'lcham, run) uchun barcha algoritmlarga bir xil seed:
     # taqqoslash juftlashtirilgan bo'ladi va boshlang'ich holat farqi
     # natijaga ta'sir qilmaydi.
@@ -1843,7 +1867,19 @@ def selftest():
     check("qo'riqchi yomon juftlikni rad etadi", caught,
           "F10 D=20 (CEC-2017 da mavjud emas)")
 
-    # 11. Muzlatilgan parametrlar faqat ACE-SHADE ga uzatiladi
+    # 11. Patch joblib ISHCHISI ichida ham faolmi.
+    #     Modul darajasidagi almashtirish ishchilarga yetib bormaydi va bu
+    #     hisobni 89 barobar sekinlashtiradi. Asosiy jarayonda tekshirish
+    #     yetarli emas - aynan ishchi ichida tekshiriladi.
+    def _probe(_):
+        from opfunu.utils import operator
+        _patch_opfunu()
+        return operator.katsuura_func.__name__
+    names = Parallel(n_jobs=2)(delayed(_probe)(i) for i in range(2))
+    check("patch joblib ishchisida faol", all(n == "_katsuura_fast" for n in names),
+          f"ishchilar: {set(names)}")
+
+    # 12. Muzlatilgan parametrlar faqat ACE-SHADE ga uzatiladi
     b_ace = bind(ace_shade, {"R_N": 12.0, "ETA": 0.2})
     b_jso = bind(baseline_jSO, {"R_N": 12.0, "ETA": 0.2})
     check("parametrlar to'g'ri biriktiriladi",
