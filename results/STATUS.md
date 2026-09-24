@@ -46,6 +46,11 @@ Ahamiyatli farq faqat DE va CMA-ES ga nisbatan.
 Eng yaxshi raqib bilan taqqoslaganda: 36 instansiyadan 8 tasida g'alaba,
 18 tasida teng, 10 tasida mag'lubiyat.
 
-Tizimli zaifliklar: shovqinli funksiyalar (uchala NoisySphere + 100D
-NoisyRastrigin), RotatedElliptic (30D va 50D), 100D da Levy va Zakharov.
-Batafsil: `docs/RESULTS.md` 8-bo'lim.
+Tizimli zaiflik: shovqin ostidagi BIR EKSTREMUMLI masalalar (NoisySphere
+uchala o'lchamda). Ko'p ekstremumli shovqinli masalada aksincha kuchli
+(NoisyRastrigin 30D da 8.2x, 50D da 19.5x ustun). Yana: RotatedElliptic
+(30D, 50D) va 100D da Levy, Zakharov.
+
+Oltita zaif instansiya eng yaxshi raqib darajasiga tenglashtirilsa
+post-hoc barcha to'rtta zamonaviy raqib uchun ahamiyatli bo'lardi
+(Holm p = 0.024-0.029). Batafsil: `docs/RESULTS.md` 8.3-bo'lim.

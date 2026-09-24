@@ -286,14 +286,29 @@ Bu instansiyalarda farq Holm tuzatishidan keyin ahamiyatli emas (`p >= 0.05`), y
 
 Mag'lubiyatlar tasodifiy emas, uchta aniq guruhga bo'linadi:
 
-**(a) Shovqinli funksiyalar — eng jiddiy muammo.** `NoisySphere` uchala
-o'lchamda ham yutqazdi (1.5x, 1.8x, 2.2x), `NoisyRastrigin` esa 100D da
-3.1x. Bu tasodif emas: CMA quyrug'i shovqinli baholashlar asosida
-kovariatsiya modelini quradi, shovqin esa bu modelni buzadi. Sozlash
-bosqichida quyruq byudjetini 5% dan 15% ga oshirish `Rosenbrock` va
-`DynamicSphere` da katta yutuq bergan edi, lekin ayni o'zgarish shovqinli
-masalalarda zararni kuchaytirgan ko'rinadi. Bu almashuv sozlash paytida
-to'liq baholanmagan.
+**(a) Shovqin ostidagi BIR EKSTREMUMLI masalalar.** Dastlab bu zaiflik
+"shovqinli funksiyalar" deb umumlashtirilgan edi; batafsil tekshiruv bu
+tavsifni rad etadi. Haqiqiy manzara ancha aniqroq:
+
+| Funksiya | 30D | 50D | 100D |
+|---|---|---|---|
+| `NoisySphere` (bir ekstremumli) | yutqazdi 1.5x | yutqazdi 1.8x | yutqazdi 2.2x |
+| `NoisyRastrigin` (ko'p ekstremumli) | **yutdi 8.2x** | **yutdi 19.5x** | yutqazdi 3.1x |
+
+Ya'ni muammo shovqinning o'zida emas. Ko'p ekstremumli shovqinli masalada
+CBA-SHADE raqiblardan bir necha barobar ustun — populyatsiyaga asoslangan
+qidiruv shovqinni tabiiy ravishda o'rtachalaydi. Bir ekstremumli shovqinli
+masalada esa aksincha: CMA quyrug'i shovqindan kovariatsiya modelini
+quradi va shovqinni signal deb qabul qiladi, holbuki bu yerda modelning
+foydasi eng kam (Sphere uchun kovariatsiyani o'rganish keraksiz).
+
+Shu sababli tuzatish yo'nalishi ham torroq va aniqroq: quyruqni butunlay
+qayta ishlash emas, balki shovqin aniqlanganda va masala bir ekstremumli
+ko'ringanda uni o'chirish yoki baholashlarni qayta o'rtachalash kifoya.
+
+Sozlash bosqichida quyruq byudjetini 5% dan 15% ga oshirish `Rosenbrock` va
+`DynamicSphere` da katta yutuq bergan edi; ayni o'zgarish `NoisySphere` da
+zarar keltirgan ko'rinadi, lekin bu almashuv sozlash paytida o'lchanmagan.
 
 **(b) `RotatedElliptic` — ma'lum va tasdiqlangan zaiflik.** 30D da 949x,
 50D da 3.6x farq bilan LSHADE-cnEpSin dan yutqazadi (100D da teng chiqadi).
@@ -306,7 +321,48 @@ aniq yechimni topadi (`0`), CBA-SHADE esa `1.0e-01` va `5.0e-02` da
 to'xtaydi. Bu yuqori o'lchamda yaqinlashish tezligining yetishmasligini
 ko'rsatadi.
 
-### 8.2 SHADE bilan taqqoslash alohida e'tiborni talab qiladi
+### 8.2 G'alaba va mag'lubiyatlarning kattaligi
+
+Mag'lubiyatlar sonini sanash yetarli emas — ularning kattaligi ham muhim.
+Taqsimot sezilarli darajada nosimmetrik:
+
+| Eng katta g'alabalar | | Eng katta mag'lubiyatlar | |
+|---|---|---|---|
+| `Schwefel` 50D | **75 060x** | `RotatedElliptic` 30D | 949x |
+| `Schwefel` 30D | **380x** | `RotatedElliptic` 50D | 3.6x |
+| `DynamicSphere` 50D | **70x** | `NoisyRastrigin` 100D | 3.1x |
+| `NoisyRastrigin` 50D | **19.5x** | `NoisySphere` 100D | 2.2x |
+| `DynamicSphere` 100D | **10x** | `NoisySphere` 50D | 1.8x |
+
+`RotatedElliptic` dan tashqari barcha mag'lubiyatlar 1.5–3.1 barobar
+oralig'ida, g'alabalar esa 1.7 barobardan 75 000 barobargacha. Boshqacha
+aytganda, usul yutqazganda kam yutqazadi, yutganda ko'p yutadi. Bu
+o'rtacha rank ko'rsatkichida ko'rinmaydi, chunki rank kattalikni hisobga
+olmaydi.
+
+### 8.3 Ahamiyatlilikka qancha qolgan?
+
+Quyidagi hisob 8.1 da aniqlangan oltita zaif instansiya (`NoisySphere`
+uchala o'lchamda, `NoisyRastrigin` 100D, `RotatedElliptic` 30D va 50D)
+eng yaxshi raqib darajasiga **tenglashtirilsa** post-hoc natijasi qanday
+bo'lishini ko'rsatadi. Bu haqiqiy natija emas, balki mavjud imkoniyatni
+baholash uchun sezgirlik tahlili:
+
+| Raqib | Joriy Holm p | Faraziy Holm p |
+|---|---|---|
+| LSHADE-cnEpSin | 0.305 | **0.024** |
+| L-SHADE | 0.305 | **0.024** |
+| jSO | 0.305 | **0.026** |
+| SHADE | 0.305 | **0.029** |
+
+Oltita instansiyani tenglashtirish barcha to'rtta taqqoslashni
+ahamiyatlilik chegarasidan o'tkazadi. Demak joriy natijaning
+ahamiyatsizligi umumiy zaiflikdan emas, aniq va lokal muammolardan kelib
+chiqadi. Bu tuzatishlar amalga oshsa, ustunlik da'vosi statistik
+jihatdan asoslangan bo'lishi mumkin — lekin bu **kafolat emas**, chunki
+hisob tenglashtirish muvaffaqiyatli bo'lishini faraz qiladi.
+
+### 8.4 SHADE bilan taqqoslash alohida e'tiborni talab qiladi
 
 SHADE — taqqoslanayotgan zamonaviy usullarning eng soddasi — umumiy rankda
 ikkinchi o'rinda (3.14) va CBA-SHADE ni **4 ta instansiyada** yengadi
@@ -319,7 +375,7 @@ oqlayotganiga shubha tug'diradi. Maqolada bu savol ochiq qo'yilishi va
 ablatsiya natijalari (`docs/ABLATION.md`) bilan birga muhokama qilinishi
 kerak.
 
-### 8.3 Eksperimental cheklovlar
+### 8.5 Eksperimental cheklovlar
 
 1. **Test to'plami standart emas.** 12 funksiya qo'lda tanlangan; CEC-2017
    yoki CEC-2022 kabi tan olingan to'plam ishlatilmagan, shuning uchun
@@ -344,10 +400,12 @@ qo'llab-quvvatlanmagan. Quyidagi qadamlar zarur:
 1. **CEC-2017 yoki CEC-2022 to'plamiga o'tish**, `10000*D` byudjet va 51 run
    bilan. Bu uch cheklovni bir vaqtda hal qiladi va natijalarni adabiyot
    bilan taqqoslanadigan qiladi.
-2. **Shovqinga chidamlilikni tuzatish.** Quyruq bosqichini shovqin
-   darajasiga qarab moslashtirish (masalan, baholashlarni qayta
-   o'rtachalash yoki shovqin aniqlanganda quyruqni o'chirish) — bu eng
-   aniq va eng samarali yaxshilanish yo'nalishi.
+2. **Bir ekstremumli shovqinli masalalarda quyruqni o'chirish.** 8.1(a)
+   ko'rsatganidek, muammo shovqinda emas, shovqin ostida kovariatsiya
+   modelini qurishda. Eng arzon yechim: quyruq bosqichiga o'tishdan oldin
+   eng yaxshi nuqtani ikki marta baholab shovqin darajasini o'lchash va
+   shovqin sezilarli bo'lsa quyruqni o'tkazib yuborish. Bu 8.4-bo'limdagi
+   hisobga ko'ra eng yuqori foyda beradigan o'zgarish.
 3. **`RotatedElliptic` uchun kovariatsiyani asosiy bosqichga chiqarish**,
    cnEpSin uslubida. Sozlash ko'rsatdiki, populyatsiyani `8*D` ga oshirish
    bu funksiyada 2686 → 305 yaxshilanish beradi, lekin boshqa joyda
