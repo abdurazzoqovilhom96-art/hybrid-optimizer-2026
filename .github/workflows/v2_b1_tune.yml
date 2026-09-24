@@ -18,7 +18,7 @@ jobs:
       fail-fast: false
       max-parallel: 12
       matrix:
-        cfg: ["rn4_eta0.1", "rn4_eta0.2", "rn4_eta0.4", "rn6_eta0.1", "rn6_eta0.2", "rn6_eta0.4", "rn8_eta0.1", "rn8_eta0.2", "rn8_eta0.4", "rn10_eta0.1", "rn10_eta0.2", "rn10_eta0.4"]
+        cfg: ["rn6_eta0.1", "rn6_eta0.2", "rn8_eta0.1", "rn8_eta0.2", "rn10_eta0.1", "rn10_eta0.2", "rn12_eta0.1", "rn12_eta0.2", "rn14_eta0.1", "rn14_eta0.2", "rn18_eta0.1", "rn18_eta0.2"]
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5

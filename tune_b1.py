@@ -1,8 +1,17 @@
 #!/usr/bin/env python3
 """B1: ACE-SHADE parametrlarini CEC-2017 da sozlash.
 
-Sozlash to'plami baholash to'plamidan (CEC-2022) BUTUNLAY ajratilgan.
-Byudjet CEC-2017 ning o'z protokoli bo'yicha `10000 * D`.
+Sozlash to'plami baholash to'plamidan (CEC-2022) BUTUNLAY ajratilgan,
+lekin BYUDJET REJIMI aynan bir xil.
+
+Birinchi urinishda byudjet CEC-2017 ning o'z protokoli (`10000 * D`)
+bo'yicha olingan edi. Bu xato: baholash CEC-2022 da `20000 * D` (D=10)
+va `50000 * D` (D=20) bilan o'tadi, katta byudjet esa kattaroq
+populyatsiyani afzal qiladi. Natijada `r_N` sistematik past baholangan
+va g'olib qiymat panjara CHEKKASIDA chiqqan (`r_N = 10`, maksimum).
+
+Shuning uchun: byudjet baholash bilan bir xil, panjara yuqoriga
+kengaytirilgan (L-SHADE `18*D` ishlatadi, demak 18 gacha mantiqiy).
 
 Ikkita parametr sozlanadi:
     r_N   populyatsiya koeffitsienti, N_init = r_N * D
@@ -30,10 +39,11 @@ from aceshade.benchmarks import make_problem, CEC2017_TUNING_FUNCS
 from aceshade.ace import ace_shade
 
 SEED_BASE = 42
-R_N_GRID = (4.0, 6.0, 8.0, 10.0)
-ETA_GRID = (0.1, 0.2, 0.4)
-DIMS = (10, 30)
-FES_PER_DIM = 10_000                      # CEC-2017 rasmiy protokoli
+R_N_GRID = (6.0, 8.0, 10.0, 12.0, 14.0, 18.0)
+ETA_GRID = (0.1, 0.2)
+DIMS = (10, 20)
+# Baholash bilan aynan bir xil byudjet (CEC-2022 protokoli)
+BUDGET = {10: 200_000, 20: 1_000_000}
 PRECISION_FLOOR = 1e-8
 
 
@@ -106,7 +116,7 @@ def main():
     for r_n, eta in grid:
         for func in funcs:
             for dim in dims:
-                budget = FES_PER_DIM * dim // (20 if quick else 1)
+                budget = BUDGET[dim] // (20 if quick else 1)
                 for r in range(runs):
                     tasks.append((r_n, eta, func, dim, r, budget))
     print(f"[*] {len(tasks)} vazifa | {len(grid)} konfiguratsiya | "
