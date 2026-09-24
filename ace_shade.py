@@ -164,6 +164,60 @@ def make_problem(name, dim, year):
     return obj, lb, ub, bias
 
 
+def validate_instances(funcs, dims, year):
+    """Har bir (funksiya, o'lcham) juftligini OLDINDAN tekshiradi.
+
+    Benchmark to'plamlari barcha o'lchamlarni qo'llab-quvvatlamaydi:
+    CEC-2017 ning F10, F11, F15 uchun faqat [10, 30, 50, 100] mavjud.
+
+    Tekshiruv ikki bosqichli, va bu ataylab:
+
+      1. Avval `dim_supported` XAVFSIZ o'lchamda (D=10, barcha
+         funksiyalarda bor) o'qiladi va so'ralgan o'lcham shu ro'yxatda
+         borligi tasdiqlanadi. Sabab: qo'llab-quvvatlanmaydigan
+         o'lchamda opfunu ba'zi funksiyalar uchun (masalan F11)
+         konstruktor ichida jarayonni O'LDIRADI - `try/except` uni
+         ushlay olmaydi, shuning uchun u yo'lga umuman kirmaymiz.
+
+      2. So'ng qo'llab-quvvatlanadigan juftlik haqiqatan baholanadi va
+         natija chekli ekani tekshiriladi. F10 kabi holatlarda xato
+         qurishda emas, aynan baholashda chiqadi.
+
+    Bu tekshiruv sozlash bosqichi o'ttiz daqiqa ishlagandan keyin hech
+    qanday tushunarli xabarsiz yiqilganidan keyin qo'shildi.
+    """
+    SAFE_DIM = 10
+    bad = []
+    for f in funcs:
+        try:
+            if year == 2022:
+                from opfunu.cec_based import cec2022 as mod
+            else:
+                from opfunu.cec_based import cec2017 as mod
+            probe = getattr(mod, f"{f}{year}")(ndim=SAFE_DIM)
+            supported = set(getattr(probe, "dim_supported", None) or [])
+        except Exception as exc:
+            bad.append(f"{f}: xavfsiz o'lchamda ham qurilmadi "
+                       f"({type(exc).__name__}: {str(exc)[:60]})")
+            continue
+        for d in dims:
+            if supported and d not in supported:
+                bad.append(f"{f} D={d}: qo'llab-quvvatlanmaydi "
+                           f"(mavjud: {sorted(supported)})")
+                continue
+            try:
+                obj, lb, ub, _ = make_problem(f, d, year)
+                v = obj(np.zeros(d))
+                if not np.isfinite(v):
+                    bad.append(f"{f} D={d}: baholash chekli emas ({v})")
+            except Exception as exc:
+                bad.append(f"{f} D={d}: {type(exc).__name__}: {str(exc)[:70]}")
+    if bad:
+        sys.exit(f"[!] CEC-{year} instansiyalari tekshiruvdan o'tmadi:\n  "
+                 + "\n  ".join(bad))
+    print(f"[*] {len(funcs) * len(dims)} ta CEC-{year} instansiyasi tekshirildi")
+
+
 def category_of(func_name):
     for cat, members in CEC2022_CATEGORIES.items():
         if func_name in members:
@@ -1133,7 +1187,18 @@ def bind(alg, params):
 
 R_N_GRID = (6.0, 8.0, 10.0, 12.0, 14.0, 18.0)
 ETA_GRID = (0.1, 0.2)
-TUNE_DIMS = (10, 20)
+
+# CEC-2017 ning F10, F11, F15 funksiyalari D=20 ni QO'LLAB-QUVVATLAMAYDI
+# (faqat 10, 30, 50, 100). Shuning uchun sozlash D = 10 va 30 da o'tadi -
+# bu ikkalasi tanlangan o'nta funksiyaning hammasida mavjud.
+#
+# Byudjet baholashning IKKALA rejimini qamrab oladi:
+#   D=10  -> 200 000  = 20 000 * D   (CEC-2022 D=10 bilan aynan bir xil)
+#   D=30  -> 1 500 000 = 50 000 * D  (CEC-2022 D=20 nisbati bilan bir xil)
+# Shu bilan populyatsiya koeffitsienti ikkala byudjet rejimida ham
+# sinaladi; faqat bittasida sozlash uni sistematik siljitardi.
+TUNE_DIMS = (10, 30)
+TUNE_BUDGET = {10: 200_000, 30: 1_500_000}
 TUNE_RUNS = int(os.environ.get("TUNE_RUNS", "10"))
 
 
@@ -1165,7 +1230,8 @@ def stage_tune(out_dir, only_cfg="", quick=False):
     dims = (10,) if quick else TUNE_DIMS
     runs = 2 if quick else TUNE_RUNS
 
-    tasks = [(r, e, f, d, i, CEC2022_BUDGET[d] // (50 if quick else 1))
+    validate_instances(funcs, dims, 2017)
+    tasks = [(r, e, f, d, i, TUNE_BUDGET[d] // (50 if quick else 1))
              for r, e in grid for f in funcs for d in dims for i in range(runs)]
     print(f"[*] SOZLASH: {len(tasks)} vazifa | {len(grid)} konfiguratsiya "
           f"| {len(funcs)} funksiya | o'lchamlar {dims} | {runs} run")
@@ -1250,6 +1316,7 @@ def _run_one(alg_name, alg, func, dim, run_id, budget):
 
 
 def stage_run(out_dir, registry, params, funcs, dims, algs, runs, quick=False):
+    validate_instances(funcs, dims, 2022)
     tasks = []
     for func in funcs:
         for dim in dims:
@@ -1750,7 +1817,33 @@ def selftest():
     check("ablatsiya variantlari farq qiladi", len(set(outs.values())) > 1,
           ", ".join(f"{k}={v:.1e}" for k, v in outs.items()))
 
-    # 9. Muzlatilgan parametrlar faqat ACE-SHADE ga uzatiladi
+    # 9. Har bir sozlash va baholash instansiyasi qurila oladi.
+    #    Bu tekshiruv aynan shu xato butun sozlash bosqichini yiqitganidan
+    #    keyin qo'shildi: CEC-2017 F10/F11/F15 D=20 ni qo'llab-quvvatlamaydi.
+    missing = []
+    for fn, dd, yr in ([(f, d, 2017) for f in CEC2017_TUNING_FUNCS for d in TUNE_DIMS]
+                       + [(f, d, 2022) for f in CEC2022_FUNCS for d in CEC2022_DIMS]):
+        try:
+            make_problem(fn, dd, yr)
+        except Exception as exc:
+            missing.append(f"CEC-{yr} {fn} D={dd}: {type(exc).__name__}")
+    check("barcha instansiyalar qurila oladi", not missing,
+          "; ".join(missing[:3]) if missing
+          else f"{len(CEC2017_TUNING_FUNCS) * len(TUNE_DIMS)} sozlash + "
+               f"{len(CEC2022_FUNCS) * len(CEC2022_DIMS)} baholash")
+
+    # 10. Qo'riqchining O'ZI ishlayotganini tekshirish (salbiy test).
+    #     Qo'riqchi bo'sh o'tib ketsa, u himoya qilmaydi va buni hech kim
+    #     sezmaydi - shuning uchun ma'lum yomon juftlik bilan sinaladi.
+    caught = False
+    try:
+        validate_instances(("F1", "F10"), (10, 20), 2017)
+    except SystemExit as exc:
+        caught = "F10 D=20" in str(exc)
+    check("qo'riqchi yomon juftlikni rad etadi", caught,
+          "F10 D=20 (CEC-2017 da mavjud emas)")
+
+    # 11. Muzlatilgan parametrlar faqat ACE-SHADE ga uzatiladi
     b_ace = bind(ace_shade, {"R_N": 12.0, "ETA": 0.2})
     b_jso = bind(baseline_jSO, {"R_N": 12.0, "ETA": 0.2})
     check("parametrlar to'g'ri biriktiriladi",
