@@ -52,6 +52,11 @@ WHAT V11 CHANGES
   d. ``P_MIN = 0.02``        -- a dominated operator can actually be switched off
                                 (V10's 0.05 floor guarantees every operator 5% of
                                 every generation for the whole run).
+  f. ``p`` schedule corrected to jSO's published 0.25 -> 0.125. V10 uses
+     0.25 -> 0.05, which shrinks the pbest pool to almost nothing late in the
+     run and adds greed on top of an already greedy portfolio. This one change
+     was **not ablated individually**, so it is flagged here rather than
+     claimed as a contribution.
   e. **diversity guard**     -- when the normalised population diversity falls
      below ``DIV_THRESH`` and the budget is not yet spent, the operator
      distribution is overridden in favour of the Levy operator until diversity
@@ -169,9 +174,11 @@ def TEMOA_V11(obj_func, dim, bounds, max_fes, rng,
         probs = op_prob
         if DIV_GUARD and LEVY_SLOT is not None:
             guard_active = diversity < DIV_THRESH and t < 0.95
-            if guard_active:
-                probs = np.full(K_OPS, (1.0 - DIV_BOOST) / max(1, K_OPS - 1))
+            if guard_active and K_OPS > 1:
+                probs = np.full(K_OPS, (1.0 - DIV_BOOST) / (K_OPS - 1))
                 probs[LEVY_SLOT] = DIV_BOOST
+            else:
+                guard_active = False
 
         ops = np.asarray(OPS)[rng.choice(K_OPS, pop_size, p=probs)]
         V = np.empty_like(pop)

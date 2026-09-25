@@ -242,6 +242,7 @@ Ya'ni: farq populyatsiya hajmidan emas. Va e'tibor bering — TEMOA Zakharov va
 | c | eigen-crossover `n_samples > dim` sharti bilan | §2.7: 100D da 90% byudjetda bazis 25 nuqtadan quriladi |
 | d | `P_MIN = 0.02` (0.05 o'rniga) | 0.05 floor har bir operatorga butun yurish davomida 5% kafolatlaydi — dominatsiya qilingan operatorni o'chirib bo'lmaydi |
 | e | **diversity guard**: normallashgan diversity `DIV_THRESH` dan pastga tushsa, operator taqsimoti Levy foydasiga majburan o'zgaradi | §3.3: kredit populyatsiya qulashini ko'ra olmaydi; bu ko'radi |
+| f | `p` jadvali jSO ning nashr etilgan 0.25→0.125 shakliga keltirildi | V10 da 0.25→0.05, ya'ni pbest hovuzi yurish oxirida deyarli yo'qoladi. **Bu o'zgarish alohida ablatsiya qilinmagan** — shuning uchun uni hissa sifatida da'vo qilmayman, faqat qayd etaman |
 
 **Sinab ko'rilgan va tashlab yuborilgan:** ΔF-ga asoslangan kredit (§3.3 — u
 zararli operatorni ko'proq mukofotlagan bo'lardi) va `CR_FLOOR` ni o'chirish

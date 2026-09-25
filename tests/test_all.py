@@ -171,6 +171,44 @@ def test_v10_default_ops_reproduce_the_original_portfolio():
     assert scores[0] == scores[1], scores
 
 
+# ----------------------------------------------------------- reproducibility
+def test_same_seed_gives_bit_identical_results():
+    """Every algorithm must be a pure function of its injected RNG."""
+    from temoa.registry import ALL_ALGORITHMS
+    for name, alg in ALL_ALGORITHMS.items():
+        scores = []
+        for _ in range(2):
+            pr = make_problem("Ackley", 8, suite="rotated",
+                              noise_rng=np.random.default_rng([99, 8, 0]))
+            tr = Tracker(pr, 3000, 10)
+            alg(tr, 8, (pr.lb, pr.ub), 3000, np.random.default_rng([42, 8, 0, 1]))
+            scores.append(tr.finalize()[1])
+        assert scores[0] == scores[1], f"{name} is not reproducible: {scores}"
+
+
+def test_raw_csv_round_trips_float64_exactly():
+    """analyze.py compares algorithms that reach 1e-20; the default CSV parser
+    is off by up to one ULP, which would silently reorder them."""
+    import io
+    vals = np.array([4.689743049827384e-08, 1.2345678901234567e-20,
+                     7.105427357601002e-15, 3.141592653589793, 0.0])
+    buf = io.StringIO()
+    pd.DataFrame({"Error": vals}).to_csv(buf, index=False)
+    default = pd.read_csv(io.StringIO(buf.getvalue()))["Error"].to_numpy()
+    exact = pd.read_csv(io.StringIO(buf.getvalue()),
+                        float_precision="round_trip")["Error"].to_numpy()
+    assert np.array_equal(exact, vals), "round_trip parsing must be exact"
+    if not np.array_equal(default, vals):
+        # documents why analyze.py must pass float_precision explicitly
+        assert np.max(np.abs((default - vals)[vals != 0] / vals[vals != 0])) < 1e-15
+
+
+def test_analyze_uses_round_trip_parsing():
+    src = (Path(__file__).resolve().parents[1] / "analyze.py").read_text(encoding="utf-8")
+    assert 'float_precision="round_trip"' in src, \
+        "analyze.py must read raw results with exact float parsing"
+
+
 if __name__ == "__main__":
     fns = [(n, f) for n, f in sorted(globals().items()) if n.startswith("test_")]
     failed = 0

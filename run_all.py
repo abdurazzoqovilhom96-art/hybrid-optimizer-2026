@@ -105,7 +105,7 @@ def main(argv=None):
 
     done = set()
     if args.resume and raw_csv.exists():
-        prev = pd.read_csv(raw_csv)
+        prev = pd.read_csv(raw_csv, float_precision="round_trip")
         done = set(map(tuple, prev[["Algorithm", "Function", "Dimension", "Run"]].to_numpy()))
         print(f"[resume] {len(done)} runs already recorded in {raw_csv}")
     elif raw_csv.exists():

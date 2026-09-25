@@ -25,7 +25,9 @@ ALPHA = 0.05
 
 
 def load(out: Path) -> pd.DataFrame:
-    df = pd.read_csv(out / "raw" / "results.csv")
+    # float_precision="round_trip" is required: the default CSV parser is off by
+    # up to one ULP, which matters when algorithms are separated at 1e-20.
+    df = pd.read_csv(out / "raw" / "results.csv", float_precision="round_trip")
     # a resumed run can append a duplicate block; keep the last of each key
     return df.drop_duplicates(subset=["Algorithm", "Function", "Dimension", "Run"], keep="last")
 
@@ -48,7 +50,8 @@ def median_pivot(df, dim):
 def stats_per_dimension(df, tdir, control, algos):
     lines, cd_data = [], {}
     for dim in sorted(df["Dimension"].unique()):
-        piv = median_pivot(df, dim)[algos].dropna()
+        present = [a for a in algos if a in median_pivot(df, dim).columns]
+        piv = median_pivot(df, dim)[present].dropna()
         if piv.empty:
             continue
         fr = friedman(piv)
@@ -138,10 +141,19 @@ def runtime_table(df, tdir):
     return rt
 
 
+def fes_per_dim(out: Path, default: int = 3000) -> int:
+    mf = out / "manifest.json"
+    if mf.exists():
+        import json
+        return int(json.loads(mf.read_text(encoding="utf-8")).get("fes_per_dim", default))
+    return default
+
+
 def figures(df, out, algos, control):
     fdir = out / "figures"
     fdir.mkdir(parents=True, exist_ok=True)
     cdir = out / "curves"
+    budget_per_dim = fes_per_dim(out)
 
     for dim in sorted(df["Dimension"].unique()):
         path = cdir / f"curves_{dim}D.npz"
@@ -159,7 +171,8 @@ def figures(df, out, algos, control):
                 arr = np.vstack([data[k] for k in keys])
                 med = np.median(arr, axis=0)         # median, not mean: robust to outlier runs
                 if fes_axis is None or len(fes_axis) != len(med):
-                    fes_axis = np.linspace(dim * 3000 / len(med), dim * 3000, len(med))
+                    total = dim * budget_per_dim
+                    fes_axis = np.linspace(total / len(med), total, len(med))
                 plt.plot(fes_axis, np.maximum(med, 1e-300), label=a,
                          linewidth=2.5 if a == control else 1.2)
                 plotted = True
