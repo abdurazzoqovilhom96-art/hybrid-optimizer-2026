@@ -1,0 +1,28 @@
+=== 10D  (29 functions, 10 algorithms) ===
+Friedman chi2 = 65.7611, p = 1.0257e-10
+Iman-Davenport F = 9.4311, p = 2.3331e-12
+Nemenyi critical difference (alpha=0.05) = 2.5157
+Average ranks (1 = best):
+Algorithm
+L-SHADE-DGR    3.482759
+jSO            4.224138
+TEMOA_V12      4.310345
+TEMOA_V11      4.551724
+LSHADE         5.000000
+BIPOP_CMAES    5.362069
+IPOP_CMAES     5.603448
+CMAES          7.155172
+TEMOA_V10      7.172414
+sepCMAES       8.137931
+
+Holm post-hoc, control = L-SHADE-DGR:
+                comparison  rank_diff         z        p_raw       p_holm
+   L-SHADE-DGR vs sepCMAES  -4.655172 -5.854827 4.775074e-09 4.297566e-08
+      L-SHADE-DGR vs CMAES  -3.672414 -4.618808 3.859511e-06 2.780640e-05
+  L-SHADE-DGR vs TEMOA_V10  -3.689655 -4.640492 3.475800e-06 2.780640e-05
+ L-SHADE-DGR vs IPOP_CMAES  -2.120690 -2.667199 7.648640e-03 4.589184e-02
+L-SHADE-DGR vs BIPOP_CMAES  -1.879310 -2.363615 1.809760e-02 9.048798e-02
+     L-SHADE-DGR vs LSHADE  -1.517241 -1.908240 5.636022e-02 2.254409e-01
+  L-SHADE-DGR vs TEMOA_V11  -1.068966 -1.344442 1.788056e-01 5.364168e-01
+        L-SHADE-DGR vs jSO  -0.741379 -0.932435 3.511116e-01 5.958828e-01
+  L-SHADE-DGR vs TEMOA_V12  -0.827586 -1.040858 2.979414e-01 5.958828e-01

@@ -1,0 +1,92 @@
+{
+  "started": "2026-09-25 14:41:50",
+  "python": "3.11.16",
+  "platform": "Linux-6.17.0-1022-azure-x86_64-with-glibc2.39",
+  "processor": "x86_64",
+  "cpu_count": 4,
+  "numpy": "2.4.6",
+  "pandas": "3.0.6",
+  "suite": "cec2017",
+  "suite_protocol_verified": true,
+  "suite_note": "CEC'2017 bound-constrained: 51 runs, MaxFES = 10000*D, D in {10,30,50,100}, errors below 1e-8 reported as 0. F2 excluded (withdrawn as unstable), leaving F1 and F3..F30.",
+  "protocol_overrides": {
+    "dims": [
+      10
+    ],
+    "runs": 51
+  },
+  "dims": [
+    10
+  ],
+  "runs": 51,
+  "max_fes_per_dim": {
+    "10": 100000
+  },
+  "algorithms": [
+    "L-SHADE-DGR",
+    "TEMOA_V10",
+    "TEMOA_V11",
+    "TEMOA_V12",
+    "LSHADE",
+    "jSO",
+    "BIPOP_CMAES",
+    "IPOP_CMAES",
+    "CMAES",
+    "sepCMAES"
+  ],
+  "functions": [
+    "F1"
+  ],
+  "legacy_track": null,
+  "seed_base": 42,
+  "noise_seed": 99,
+  "seed_scheme_version": 2,
+  "seed_scheme": "algorithm rng = default_rng([SEED_BASE, dim, run, algorithm_seed(name)]), algorithm_seed = blake2b-8(name) mod (2**31-1); noise rng = default_rng([NOISE_SEED, dim, run]) (matched across algorithms). Version 1 used the algorithm's index in sorted(ALL_ALGORITHMS), which re-seeded every algorithm whenever the line-up changed; results recorded under version 1 are NOT resumable here.",
+  "algorithm_seeds": {
+    "L-SHADE-DGR": 1311180535,
+    "TEMOA_V10": 1963213242,
+    "TEMOA_V11": 329255234,
+    "TEMOA_V12": 1826345859,
+    "LSHADE": 1230746920,
+    "jSO": 1666937469,
+    "BIPOP_CMAES": 167067236,
+    "IPOP_CMAES": 624805395,
+    "CMAES": 1234773454,
+    "sepCMAES": 1523297831
+  },
+  "sharded": {
+    "n_shards": 29,
+    "note": "run split across CI jobs by function; seeds contain no function or shard term, so this is identical to a single-process run",
+    "functions": [
+      "F1",
+      "F10",
+      "F11",
+      "F12",
+      "F13",
+      "F14",
+      "F15",
+      "F16",
+      "F17",
+      "F18",
+      "F19",
+      "F20",
+      "F21",
+      "F22",
+      "F23",
+      "F24",
+      "F25",
+      "F26",
+      "F27",
+      "F28",
+      "F29",
+      "F3",
+      "F30",
+      "F4",
+      "F5",
+      "F6",
+      "F7",
+      "F8",
+      "F9"
+    ]
+  }
+}
