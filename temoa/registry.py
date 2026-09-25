@@ -34,13 +34,15 @@ from .algorithms.modern import (BIPOP_CMAES, CMAES, IPOP_CMAES, LSHADE,
                                 sepCMAES, jSO)
 from .algorithms.temoa_v10 import TEMOA_V10_HYBRID
 from .algorithms.temoa_v11 import TEMOA_V11
+from .algorithms.temoa_v12 import TEMOA_V12
 
-TARGET = "TEMOA_V11"
+TARGET = "TEMOA_V12"
 
 #: Tier 1 -- the comparison a Q1 submission is judged on.
 MODERN = {
     "TEMOA_V10":   TEMOA_V10_HYBRID,   # the algorithm under study, unchanged
     "TEMOA_V11":   TEMOA_V11,          # the repaired variant
+    "TEMOA_V12":   TEMOA_V12,          # + noise-robust credit, + restart
     "jSO":         jSO,                # TEMOA's own core (CEC'2017 entrant)
     "LSHADE":      LSHADE,             # the other named source of that core
     "BIPOP_CMAES": BIPOP_CMAES,        # strongest general-purpose baseline
