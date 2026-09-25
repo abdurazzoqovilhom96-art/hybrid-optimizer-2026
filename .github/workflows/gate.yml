@@ -74,7 +74,14 @@ jobs:
   gate:
     needs: tests
     runs-on: ubuntu-latest
-    timeout-minutes: 300
+    # Measured: a function takes 22-59 minutes on these runners, and F26 timed at
+    # 34-55 s per run locally, so no function is intrinsically an outlier. The
+    # first run had one job sit in its experiment step for 244 minutes and then
+    # fail with the runner lost -- with a 300-minute limit nothing stopped it,
+    # and the whole run was held up by an infrastructure fault. 90 minutes is
+    # comfortably above the slowest real job and turns that into a fast failure
+    # that can simply be re-run.
+    timeout-minutes: 90
     strategy:
       fail-fast: false
       max-parallel: 20
