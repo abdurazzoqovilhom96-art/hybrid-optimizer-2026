@@ -216,3 +216,10 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# Experiment output (regenerate with run_all.py / analyze.py)
+results/
+results_smoke/
+results_prelim/
+temoa_v10_outputs/
+temoa_v10_quicktest/
