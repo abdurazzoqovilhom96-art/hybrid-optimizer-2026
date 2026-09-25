@@ -64,6 +64,7 @@ Reference timing: the full 30D/50D/100D protocol takes roughly **2 hours** on a
 | `run_all.py` / `analyze.py` | experiment driver / reporting |
 | `tests/test_port_fidelity.py` | proves the ported V10 matches `hybrid 2026.py` |
 | `reports/TAHLIL_UZ.md` | **the analysis — start here** |
+| `reports/QAMROV_UZ.md` | experimental scope: 11 rivals, 8 categories, 12 functions, design counts |
 
 ## Protocol
 

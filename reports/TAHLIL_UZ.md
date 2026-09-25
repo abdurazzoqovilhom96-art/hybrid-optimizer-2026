@@ -438,6 +438,10 @@ masalalar uchun, dinamik va deceptive-multimodal masalalar uchun emas.**
 
 ## 8. Takrorlash
 
+> Eksperiment qamrovi — qaysi sohalar, nechta kategoriya, qaysi raqobatchilar
+> va dizayn sonlari — alohida hujjatda: **`reports/QAMROV_UZ.md`**.
+
+
 ```bash
 pip install -r requirements.txt
 python tests/test_all.py                                    # 16/16 o'tishi kerak
