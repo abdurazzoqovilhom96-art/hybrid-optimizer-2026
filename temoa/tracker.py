@@ -62,6 +62,9 @@ class Tracker:
 
         self._f_star = problem.f_star
         self._kind = problem.kind
+        # CEC convention: an error below 1e-8 is reported as 0. Legacy problems
+        # set no floor, so nothing changes for them.
+        self._error_floor = float(getattr(problem, "error_floor", 0.0) or 0.0)
 
     # ------------------------------------------------------------------
     def __call__(self, x):
@@ -96,11 +99,14 @@ class Tracker:
             self._k += 1
         return f
 
+    def _floor(self, err: float) -> float:
+        return 0.0 if (self._error_floor and err < self._error_floor) else err
+
     def _curve_value(self) -> float:
         if self._kind == "dynamic":
             seen = self._win_mins + ([self._win_min] if np.isfinite(self._win_min) else [])
             return float(np.mean(seen)) if seen else np.inf
-        return float(self.best_f - self._f_star)
+        return self._floor(float(self.best_f - self._f_star))
 
     # ------------------------------------------------------------------
     def finalize(self) -> tuple[np.ndarray, float]:
@@ -118,8 +124,8 @@ class Tracker:
             # recommendation rule: re-evaluate the pool, take the best sample mean
             means = [np.mean([self.problem(x) for _ in range(REEVAL_K)]) for _, x in self._pool]
             rec = self._pool[int(np.argmin(means))][1]
-            return float(self.problem.true_obj(rec) - self._f_star)
+            return self._floor(float(self.problem.true_obj(rec) - self._f_star))
 
         if self.best_x is None:
             return float("inf")
-        return float(self.problem.true_obj(self.best_x) - self._f_star)
+        return self._floor(float(self.problem.true_obj(self.best_x) - self._f_star))

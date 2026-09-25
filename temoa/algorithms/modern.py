@@ -203,3 +203,97 @@ def jSO(obj_func, dim, bounds, max_fes, rng, ARC_RATE=1.0):
         arc_max = int(round(ARC_RATE * pop_size))
         if len(archive) > arc_max:
             archive = archive[rng.choice(len(archive), arc_max, replace=False)]
+
+
+# ==========================================================================
+# CMA-ES family -- the comparison that matters for ill-conditioned problems
+# ==========================================================================
+# TEMOA's one measured strength is its eigenbasis crossover on ill-conditioned
+# rotated problems. That is precisely CMA-ES's home ground: it adapts the full
+# covariance and is invariant to rotation by construction. Leaving it out of the
+# comparison, as the original study did, makes the strength claim untestable.
+#
+# These are thin wrappers around Nikolaus Hansen's own ``cma`` package rather
+# than reimplementations. Reimplementing a published competitor risks getting it
+# wrong in our own favour, which is the exact fault this project criticises.
+#
+# Budget: ``cma.fmin2`` checks ``maxfevals`` between generations, so it overruns
+# by a few evaluations (measured: 3011 against a budget of 3000). A hard guard
+# enforces the budget exactly, so every algorithm gets the same number of
+# evaluations. Calls past the budget never reach the tracker.
+
+# Restarts are capped by the budget, not by a restart count. With restarts=9 a
+# plain restart CMA-ES exhausts its restarts and stops early -- measured: 27410
+# of a 100000 evaluation budget, i.e. 73% unspent. That would hand our algorithm
+# a win it did not earn. cma stops at maxfevals regardless, so a high cap simply
+# means the budget governs.
+_MAX_RESTARTS = 200
+
+
+class _BudgetGuard:
+    """Caps evaluations at ``max_fes`` exactly; later calls never reach the tracker."""
+
+    def __init__(self, obj_func, max_fes: int):
+        self._obj, self._max_fes = obj_func, int(max_fes)
+        self.used = 0
+        self._last = 1e30
+
+    def __call__(self, x):
+        if self.used >= self._max_fes:
+            return self._last          # search is already over; keeps the scale sane
+        self.used += 1
+        self._last = self._obj(x)
+        return self._last
+
+
+def _cma_driver(obj_func, dim, bounds, max_fes, rng, *, restarts, bipop,
+                incpopsize=2, diagonal=False, sigma_frac=0.3):
+    import cma
+
+    lb, ub = bounds
+    guard = _BudgetGuard(obj_func, max_fes)
+    opts = {
+        "bounds": [lb, ub],
+        "maxfevals": max_fes,
+        "seed": int(rng.integers(1, 2**31 - 1)),
+        "verbose": -9, "verb_log": 0, "verb_disp": 0,   # verb_log=0: writes no files
+        "CMA_diagonal": bool(diagonal),
+    }
+    # A callable x0 is re-evaluated on every restart, so each restart starts from
+    # a fresh uniform point rather than repeating the same basin.
+    cma.fmin2(guard, lambda: list(rng.uniform(lb, ub, dim)),
+              sigma_frac * (ub - lb), options=opts,
+              restarts=restarts, incpopsize=incpopsize, bipop=bipop)
+
+
+def CMAES(obj_func, dim, bounds, max_fes, rng, sigma_frac=0.3):
+    """Restart CMA-ES: a fresh uniform start whenever it converges, popsize fixed.
+
+    ``incpopsize=1`` keeps the population constant across restarts. Without it
+    this would be IPOP -- ``cma`` defaults to ``incpopsize=2``.
+    """
+    _cma_driver(obj_func, dim, bounds, max_fes, rng,
+                restarts=_MAX_RESTARTS, bipop=False, incpopsize=1, sigma_frac=sigma_frac)
+
+
+def IPOP_CMAES(obj_func, dim, bounds, max_fes, rng, sigma_frac=0.3):
+    """IPOP-CMA-ES (Auger & Hansen 2005): population doubles on each restart."""
+    _cma_driver(obj_func, dim, bounds, max_fes, rng,
+                restarts=_MAX_RESTARTS, bipop=False, sigma_frac=sigma_frac)
+
+
+def BIPOP_CMAES(obj_func, dim, bounds, max_fes, rng, sigma_frac=0.3):
+    """BIPOP-CMA-ES (Hansen 2009): alternates large- and small-population regimes.
+
+    The strongest general-purpose baseline for multimodal and ill-conditioned
+    continuous problems, and the one TEMOA has to answer for.
+    """
+    _cma_driver(obj_func, dim, bounds, max_fes, rng,
+                restarts=_MAX_RESTARTS, bipop=True, sigma_frac=sigma_frac)
+
+
+def sepCMAES(obj_func, dim, bounds, max_fes, rng, sigma_frac=0.3):
+    """Separable CMA-ES (Ros & Hansen 2008): diagonal covariance, O(D) per sample."""
+    _cma_driver(obj_func, dim, bounds, max_fes, rng,
+                restarts=_MAX_RESTARTS, bipop=False, incpopsize=1, diagonal=True,
+                sigma_frac=sigma_frac)

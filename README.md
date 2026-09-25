@@ -28,12 +28,23 @@ and the analysis. Safe to interrupt: re-running resumes where it stopped.
 
 ```bash
 pip install -r requirements.txt
-python tests/test_all.py                                    # 19 correctness tests
-python tests/test_port_fidelity.py                          # port == original (~4 min)
-python run_all.py --smoke --jobs 20                         # ~3 min end-to-end check
-python run_all.py --dims 30 50 100 --runs 30 --jobs 20      # main study
-python analyze.py --out results --control TEMOA_V11         # tables, stats, figures
+
+# tests: 40 in total
+python tests/test_all.py                   # 19 regression
+python tests/test_suites.py                # 13 suite + protocol correctness
+python tests/test_competitor_validation.py #  8 the competitors really work
+python tests/test_port_fidelity.py         # port == original (~4 min)
+
+python run_all.py --suite cec2017 --smoke --jobs 20              # ~2 min check
+python run_all.py --suite cec2017 --dims 10 --jobs 20            # THE GATE (~2.5 h)
+python analyze.py --out results_cec2017 --control TEMOA_V11
 ```
+
+The protocol comes from the suite, not the command line: `--suite cec2017` runs
+51 runs at 10000·D evaluations because that is what the competition specifies.
+Overrides are allowed but are recorded in `manifest.json` and printed as a
+warning, because a result under a non-standard protocol cannot be compared with
+any published table.
 
 Optional deeper studies:
 
@@ -58,13 +69,15 @@ Reference timing: the full 30D/50D/100D protocol takes roughly **2 hours** on a
 | `temoa/tracker.py` | FES accounting; offline-error and noisy-recommendation scoring |
 | `temoa/algorithms/temoa_v10.py` | the original algorithm (RNG injected, otherwise identical) |
 | `temoa/algorithms/temoa_v11.py` | the repaired variant, with the evidence for each change |
-| `temoa/algorithms/modern.py` | L-SHADE and jSO — the comparators the original study omits |
+| `temoa/suites.py` | CEC'2017 / CEC'2022 suites, official numbering, per-suite protocol |
+| `temoa/algorithms/modern.py` | L-SHADE, jSO, and the CMA-ES family — the comparators the original study omits |
+| `temoa/registry.py` | two tiers: `MODERN` (what counts) and `LEGACY_SWARM` (secondary) |
 | `temoa/algorithms/baselines.py` | DE, GWO, WOA, SCA, PSO, HHO (+ the original weakened PSO/HHO) |
 | `temoa/stats.py` | Friedman, Iman-Davenport, Holm, Nemenyi, signed-rank, Vargha-Delaney A12 |
 | `run_all.py` / `analyze.py` | experiment driver / reporting |
 | `tests/test_port_fidelity.py` | proves the ported V10 matches `hybrid 2026.py` |
 | `reports/TAHLIL_UZ.md` | **the analysis — start here** |
-| `reports/QAMROV_UZ.md` | experimental scope: 11 rivals, 8 categories, 12 functions, design counts |
+| `reports/QAMROV_UZ.md` | experimental scope of the legacy study |
 
 ## Protocol
 
