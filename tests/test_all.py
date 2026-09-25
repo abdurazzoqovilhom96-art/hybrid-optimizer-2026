@@ -214,6 +214,51 @@ def test_lshade_dgr_is_v12_with_the_noise_mechanism_removed():
                              f"large for rounding alone ({a!r} vs {b!r})")
 
 
+def test_sharding_by_function_changes_nothing(tmp_path=None):
+    """Splitting the run across CI jobs by function must not change a number.
+
+    The gate is sharded one function per job so it fits inside a six-hour job
+    limit. That is only safe because no seed contains a function or shard term:
+    default_rng([SEED_BASE, dim, run, algorithm_seed(name)]). If it ever did,
+    the CI table and a local table would disagree and neither would be wrong on
+    its face -- the worst kind of discrepancy to discover after publication.
+    """
+    import shutil
+    import tempfile
+
+    import run_all
+    from tools.merge_shards import main as merge
+
+    root = Path(tempfile.mkdtemp())
+    try:
+        algos = ["L-SHADE-DGR", "jSO", "CMAES"]
+        common = ["--suite", "cec2017", "--dims", "10", "--runs", "2",
+                  "--fes-per-dim", "1000", "--jobs", "2", "--algos", *algos]
+
+        arts = root / "artifacts"
+        for fid in ("1", "3"):
+            run_all.main(common + ["--functions", fid, "--out", str(root / f"shard_F{fid}")])
+            shutil.copytree(root / f"shard_F{fid}", arts / f"shard-F{fid}")
+        assert merge(["--shards", str(arts), "--out", str(root / "merged"),
+                      "--expect-functions", "2",
+                      "--expect-rows", str(2 * 2 * len(algos))]) == 0
+
+        run_all.main(common + ["--functions", "1", "3", "--out", str(root / "single")])
+
+        key = ["Algorithm", "Function", "Dimension", "Run"]
+        a = pd.read_csv(root / "merged" / "raw" / "results.csv",
+                        float_precision="round_trip").sort_values(key).reset_index(drop=True)
+        b = pd.read_csv(root / "single" / "raw" / "results.csv",
+                        float_precision="round_trip").sort_values(key).reset_index(drop=True)
+        assert a[key].equals(b[key]), "sharded and single-process runs cover different cells"
+        assert a["Error"].equals(b["Error"]), (
+            "sharded results differ from single-process results:\n"
+            + a.merge(b, on=key, suffixes=("_shard", "_single"))
+              .query("Error_shard != Error_single").to_string())
+    finally:
+        shutil.rmtree(root, ignore_errors=True)
+
+
 # ----------------------------------------------------------- reproducibility
 def test_same_seed_gives_bit_identical_results():
     """Every algorithm must be a pure function of its injected RNG."""
