@@ -17,6 +17,104 @@ o'zgarishlar ham o'sha faylda bo'ladi.
 
 ---
 
+## BAJARILDI — 1-bosqich: raqiblar ro'yxati va algoritm nomi
+
+Buyruq: *"ANIQ 8 TA Q1 NATIJAGA MOS RAQIB QOLDIR QOLGAN KUCHSIZLARNI OLIB
+TASHLA."* Bajarildi. Quyida **nima qilinganining aniq ro'yxati** va har biri
+qanday tekshirilgani.
+
+### 1. Yakuniy line-up — `temoa/registry.py`
+
+| Guruh | A'zolar | Soni |
+|---|---|---|
+| Bizniki | `L-SHADE-DGR` (**yangi nom**), `TEMOA_V10`, `TEMOA_V11`, `TEMOA_V12` | 4 |
+| Raqib — ishga tushiriladi | `LSHADE`, `jSO`, `BIPOP_CMAES`, `IPOP_CMAES`, `CMAES`, `sepCMAES` | 6 |
+| Raqib — nashr etilgan jadvaldan | `EA4eig` (CEC'2022), `L-SRTDE` (CEC'2024) | 2 |
+| **Jami raqib** | | **8** |
+
+`LEGACY_SWARM` va `WEAKENED` lug'atlari **butunlay o'chirildi**. PSO, GWO, WOA,
+SCA, HHO, DE/rand/1/bin va ikkita zaiflashtirilgan nazorat endi hech bir
+eksperimentda qatnashmaydi. `baselines.py` fayli asl tadqiqotni qayta ishlab
+chiqarish uchun **saqlanadi**, lekin hech qayerdan import qilinmaydi — buni
+`test_the_original_baselines_are_kept_but_unused` `ast` bilan tekshiradi
+(matn qidirish emas, haqiqiy import daraxti).
+
+### 2. Algoritm nomi: `TEMOA_V13` emas, `L-SHADE-DGR`
+
+Yangi fayl: `temoa/algorithms/lshade_dgr.py`. `TARGET = "L-SHADE-DGR"`.
+Docstring har bir komponentning **egasini** aytadi (L-SHADE, jSO,
+LSHADE-cnEpSin/EA4eig/L-SRTDE, HHO, Auger & Hansen) va har bir olib
+tashlangan qismning **o'lchov sababini** yozadi.
+
+**Nomni o'zgartirish algoritmni o'zgartirmaganini isbotladim.** Bu muhim:
+agar tahrir paytida biror koeffitsient ham o'zgargan bo'lsa, V12 ga qarshi
+yozilgan barcha ablatsiya raqamlari jimgina noto'g'ri bo'lib qolardi.
+
+| Tekshiruv | Natija |
+|---|---|
+| V12 (shovqin mexanizmi o'chirilgan) vs `L-SHADE-DGR`, 1 avlod | **bit-identical** (F1, F4, F11, F21, F25) |
+| ... 8 avloddan keyin | maksimal nisbiy farq **3.2e-13** |
+| V12 dan bitta ortiqcha `wf/wf.sum()` normallashtirish olib tashlansa | **8000 FES da ham bit-identical** |
+
+Ya'ni yagona farq — allaqachon normallashtirilgan vektorni qayta
+normallashtirish (matematik jihatdan no-op, sonli jihatdan ~1 ULP), keyin
+xaotik kuchayish. Test: `test_lshade_dgr_is_v12_with_the_noise_mechanism_removed`.
+
+### 3. Yo'l-yo'lakay topilgan xato — urug'lash (seeding) sxemasi
+
+Bu rejada yo'q edi; raqiblarni olib tashlashda **ochilib qoldi va tuzatildi**.
+
+`run_all.py` har bir algoritmga urug'ni uning `sorted(ALL_ALGORITHMS)`
+ichidagi **o'rnidan** berardi. Demak zaif baseline'larni olib tashlash
+qolgan **hamma algoritmning tasodifiy oqimini o'zgartirardi**. Hech narsa
+xato bermaydi — shunchaki raqamlar boshqa raqamlarga aylanadi, va `--resume`
+bitta faylga **ikkita har xil urug' sxemasini** aralashtirib yuboradi.
+
+Tuzatish: `algorithm_seed(name) = blake2b-8(name) mod (2**31−1)` — urug'
+faqat **nomga** bog'liq. Endi raqib qo'shish yoki olib tashlash boshqalarning
+oqimiga tegmaydi. Manifestda `seed_scheme_version: 2` yoziladi va **v1 ostida
+yozilgan natijani davom ettirish rad etiladi** (xato xabari bilan).
+
+> **Muhim oqibat:** `results_gate10` (5 yurish, eski line-up) endi hozirgi kod
+> bilan qayta ishlab chiqarilmaydi. Baribir E1 protokoli 51 yurish talab
+> qiladi, ya'ni darvoza qaytadan ishga tushadi — lekin buni **ochiq yozib
+> qo'yamiz**, jimgina o'tkazib yubormaymiz.
+
+### 4. Testlar: 60 → 72, hammasi o'tadi
+
+| Fayl | Testlar | Holat |
+|---|---|---|
+| `tests/test_all.py` | 20 (+1: nasl aniqligi) | PASS |
+| `tests/test_suites.py` | 14 | PASS |
+| `tests/test_registry.py` | **11 (yangi fayl)** | PASS |
+| `tests/test_competitor_validation.py` | 8 | PASS |
+| `tests/test_noise.py` | 19 | PASS |
+| **Jami** | **72** | **PASS** |
+
+`test_registry.py` uchta narsani qulflab qo'yadi: (a) `TARGET` ro'yxatda
+bor; (b) roppa-rosa 8 ta raqib, zaif baseline'lar yo'q; (c) urug'
+qiymatlari **pinned** — ularni o'zgartirish uchun testni tahrirlash kerak,
+ya'ni tasodifan o'zgarib ketmaydi.
+
+`L-SHADE-DGR` `ALL_ALGORITHMS` ichida bo'lgani uchun mavjud tekshiruvlar
+avtomatik unga ham tegadi: byudjetdan oshmaslik, byudjetning >98% ini
+sarflash, bir urug'dan bit-identical natija. Qo'shimcha: 6 xil
+konfiguratsiyada (`RESTART`, `EIGEN_GATE`, `DIV_GUARD` o'chirilgan, `OPS`
+qisqartirilgan) D=10 va D=30 da to'liq byudjet — overrun **0**.
+
+### Keyingi qadam
+
+Reja bo'yicha navbatdagi ish — **E1 darvozasi** (CEC'2017, D=10, 29 funksiya,
+**51 yurish**, 100 000 FES). Bu sizning kompyuteringizda ishga tushadi:
+
+```
+python START.py --jobs 20
+```
+
+Buyrug'ingizni kutaman.
+
+---
+
 ## SIZ QAROR QILADIGAN 4 TA NARSA
 
 Quyida to'rtta bandingiz bo'yicha **taklif va yechim** — tahlil emas, qaror.

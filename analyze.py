@@ -3,7 +3,7 @@
 Separate from ``run_all.py`` on purpose: analysis is cheap and gets re-run many
 times, the experiment is expensive and gets run once.
 
-    python analyze.py --out results --control TEMOA_V11
+    python analyze.py --out results --control L-SHADE-DGR
 """
 
 from __future__ import annotations
@@ -18,6 +18,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 
+from temoa.registry import TARGET
 from temoa.stats import (a12_magnitude, descriptive, friedman,
                          friedman_posthoc_holm, holm, mannwhitney, nemenyi_cd,
                          paired_wilcoxon, vargha_delaney_a12)
@@ -236,7 +237,7 @@ def cd_diagram(cd_data, out, alpha=ALPHA):
 def main(argv=None):
     ap = argparse.ArgumentParser()
     ap.add_argument("--out", default="results")
-    ap.add_argument("--control", default="TEMOA_V11")
+    ap.add_argument("--control", default=TARGET)
     ap.add_argument("--algos", nargs="+", default=None)
     args = ap.parse_args(argv)
 

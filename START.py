@@ -50,6 +50,7 @@ REQUIRED = [
 TEST_FILES = [
     ("tests/test_all.py", "regression: problems, tracker, statistics, reproducibility"),
     ("tests/test_suites.py", "CEC suites: function numbering, optima, protocols"),
+    ("tests/test_registry.py", "the line-up: eight rivals, no weak baselines, stable seeds"),
     ("tests/test_competitor_validation.py", "the competitors really are what they claim"),
 ]
 
@@ -130,7 +131,10 @@ def gate(dims, runs, jobs, out, resume, smoke):
 
 
 def analyse(out):
-    code = run([PY, "analyze.py", "--out", out, "--control", "TEMOA_V11"])
+    # The control is read from the registry, never typed here: a name that
+    # drifts out of sync would silently analyse the wrong algorithm.
+    from temoa.registry import TARGET
+    code = run([PY, "analyze.py", "--out", out, "--control", TARGET])
     if code == 0:
         run([PY, "analyze.py", "--out", out, "--control", "TEMOA_V10"])
     return code

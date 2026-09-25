@@ -171,6 +171,49 @@ def test_v10_default_ops_reproduce_the_original_portfolio():
     assert scores[0] == scores[1], scores
 
 
+def test_lshade_dgr_is_v12_with_the_noise_mechanism_removed():
+    """The rename must not have changed the algorithm.
+
+    ``L-SHADE-DGR`` was produced by deleting N0-N3 from ``TEMOA_V12`` -- the
+    noise-robust credit machinery whose measured effect on final error was nil.
+    If the edit also changed a coefficient or an operator, every ablation number
+    recorded against V12 would quietly stop describing the algorithm in the
+    paper.
+
+    Disabling N0-N3 in V12 must therefore reproduce L-SHADE-DGR. It does, up to
+    one redundant renormalisation of an already-normalised weight vector that
+    V12 still performs (mathematically a no-op, about 1 ULP numerically). With
+    that line removed from a copy of V12 the two are bit-identical on F1, F4,
+    F11, F21 and F25; here the claim is pinned without patching V12:
+
+      * after one generation the two agree exactly;
+      * measured divergence stays at 3.2e-13 through eight generations, which is
+        rounding noise amplified by a chaotic map, not a change in behaviour.
+    """
+    from temoa.algorithms.lshade_dgr import LSHADE_DGR
+    from temoa.algorithms.temoa_v12 import TEMOA_V12
+    from temoa.suites import make_suite_problem
+    off = dict(NOISE_M=0, CREDIT_TAU=0.0, RANK_WEIGHTS=False, REEVAL_R=0)
+
+    def run(alg, fid, budget, **kw):
+        pr = make_suite_problem("cec2017", fid, 10)
+        tr = Tracker(pr, budget, 10)
+        alg(tr, 10, (pr.lb, pr.ub), budget, np.random.default_rng(5), **kw)
+        return tr.finalize()[1]
+
+    n_init = 120                                   # POP_FACTOR * dim at D=10
+    for fid in (1, 4, 11, 21, 25):
+        a = run(LSHADE_DGR, fid, 2 * n_init)
+        b = run(TEMOA_V12, fid, 2 * n_init, **off)
+        assert a == b, f"F{fid}: the two differ after one generation: {a!r} vs {b!r}"
+
+        a = run(LSHADE_DGR, fid, 9 * n_init)
+        b = run(TEMOA_V12, fid, 9 * n_init, **off)
+        rel = abs(a - b) / abs(b)
+        assert rel < 1e-10, (f"F{fid}: {rel:.3e} after eight generations is too "
+                             f"large for rounding alone ({a!r} vs {b!r})")
+
+
 # ----------------------------------------------------------- reproducibility
 def test_same_seed_gives_bit_identical_results():
     """Every algorithm must be a pure function of its injected RNG."""

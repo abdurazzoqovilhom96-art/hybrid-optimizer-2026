@@ -43,25 +43,26 @@ import numpy as np
 import pandas as pd
 from joblib import Parallel, delayed
 
-from temoa.registry import ALL_ALGORITHMS, LEGACY_SWARM, MODERN, WEAKENED
+from temoa.registry import ALL_ALGORITHMS, algorithm_seed
 from temoa.suites import SUITES, make_suite_problem
 from temoa.tracker import Tracker
 
 SEED_BASE = 42          # algorithm streams
+SEED_SCHEME_VERSION = 2  # v1 seeded from the position in sorted(ALL_ALGORITHMS)
 NOISE_SEED = 99         # noise streams: matched across algorithms within a run
 N_POINTS = 100          # convergence-curve checkpoints
 
 RAW_COLUMNS = ["Algorithm", "Function", "Dimension", "Run", "Error", "Seconds", "FES", "Overrun"]
 
 
-def run_task(alg_name, fid, dim, run_id, max_fes, suite, legacy_track, alg_index):
+def run_task(alg_name, fid, dim, run_id, max_fes, suite, legacy_track, alg_code):
     """One (algorithm, function, dimension, run). Returns a row and a curve."""
     problem = make_suite_problem(
         suite, fid, dim,
         noise_rng=np.random.default_rng([NOISE_SEED, dim, run_id]),
         legacy_track=legacy_track)
     tracker = Tracker(problem, max_fes, N_POINTS)
-    rng = np.random.default_rng([SEED_BASE, dim, run_id, alg_index])
+    rng = np.random.default_rng([SEED_BASE, dim, run_id, alg_code])
 
     t0 = time.perf_counter()
     ALL_ALGORITHMS[alg_name](tracker, dim, (problem.lb, problem.ub), max_fes, rng)
@@ -87,9 +88,6 @@ def main(argv=None):
     ap.add_argument("--legacy-track", choices=["rotated", "shift"], default="rotated",
                     help="only for --suite legacy: 'shift' reproduces the original study")
     ap.add_argument("--out", default=None)
-    ap.add_argument("--tier", choices=["modern", "all", "legacy"], default="modern",
-                    help="'modern' = the comparison that counts; 'all' adds the swarm "
-                         "baselines and the original study's weakened configurations")
     ap.add_argument("--algos", nargs="+", default=None)
     ap.add_argument("--functions", nargs="+", default=None,
                     help="official function ids (CEC) or names (legacy)")
@@ -109,14 +107,9 @@ def main(argv=None):
         fes_of = lambda d: 1000 * d          # noqa: E731
         out = Path(str(out) + "_smoke")
 
-    if args.tier == "modern":
-        algos = list(MODERN)
-    elif args.tier == "legacy":
-        algos = list(LEGACY_SWARM) + list(WEAKENED)
-    else:
-        algos = list(ALL_ALGORITHMS)
-    if args.algos:
-        algos = args.algos
+    # One line-up only: the weak swarm baselines were removed outright, so there
+    # is no tier to choose. See temoa/registry.py for why.
+    algos = args.algos or list(ALL_ALGORITHMS)
     unknown = [a for a in algos if a not in ALL_ALGORITHMS]
     if unknown:
         ap.error(f"unknown algorithms: {unknown}. Available: {list(ALL_ALGORITHMS)}")
@@ -143,6 +136,16 @@ def main(argv=None):
 
     done = set()
     if args.resume and raw_csv.exists():
+        # Refuse to append rows produced under the old, line-up-dependent seed
+        # scheme: the file would then hold two different random streams for the
+        # same algorithm and nothing in it could be reproduced.
+        old = out / "manifest.json"
+        prev_version = (json.loads(old.read_text(encoding="utf-8")).get("seed_scheme_version", 1)
+                        if old.exists() else 1)
+        if prev_version != SEED_SCHEME_VERSION:
+            ap.error(f"{raw_csv} was written under seed scheme v{prev_version}, this is "
+                     f"v{SEED_SCHEME_VERSION}; the runs are not comparable. Start a fresh "
+                     f"--out directory, or delete {out} to re-run from scratch.")
         prev = pd.read_csv(raw_csv, float_precision="round_trip")
         done = set(map(tuple, prev[["Algorithm", "Function", "Dimension", "Run"]].to_numpy()))
         print(f"[resume] {len(done)} runs already recorded in {raw_csv}")
@@ -162,18 +165,25 @@ def main(argv=None):
         "protocol_overrides": overrides or ({"smoke": True} if args.smoke else {}),
         "dims": dims, "runs": runs,
         "max_fes_per_dim": {int(d): int(fes_of(d)) for d in dims},
-        "tier": args.tier, "algorithms": algos,
+        "algorithms": algos,
         "functions": [spec.label(f) for f in funcs],
         "legacy_track": args.legacy_track if args.suite == "legacy" else None,
         "seed_base": SEED_BASE, "noise_seed": NOISE_SEED,
-        "seed_scheme": "algorithm rng = default_rng([SEED_BASE, dim, run, alg_index]); "
-                       "noise rng = default_rng([NOISE_SEED, dim, run]) (matched across algorithms)",
+        "seed_scheme_version": SEED_SCHEME_VERSION,
+        "seed_scheme": "algorithm rng = default_rng([SEED_BASE, dim, run, "
+                       "algorithm_seed(name)]), algorithm_seed = blake2b-8(name) "
+                       "mod (2**31-1); noise rng = default_rng([NOISE_SEED, dim, run]) "
+                       "(matched across algorithms). Version 1 used the algorithm's "
+                       "index in sorted(ALL_ALGORITHMS), which re-seeded every "
+                       "algorithm whenever the line-up changed; results recorded "
+                       "under version 1 are NOT resumable here.",
+        "algorithm_seeds": {a: int(algorithm_seed(a)) for a in algos},
     }
     (out / "manifest.json").write_text(json.dumps(manifest, indent=2), encoding="utf-8")
 
-    alg_index = {a: i for i, a in enumerate(sorted(ALL_ALGORITHMS))}
+    alg_code = {a: algorithm_seed(a) for a in algos}
     total = len(algos) * len(funcs) * len(dims) * runs
-    print(f"[*] suite={args.suite} tier={args.tier} algorithms={len(algos)} "
+    print(f"[*] suite={args.suite} algorithms={len(algos)} "
           f"functions={len(funcs)} dims={dims} runs={runs}")
     print(f"[*] budget: " + ", ".join(f"{d}D={fes_of(d):,} FES" for d in dims))
     print(f"[*] {total} runs total, {max(0, total - len(done))} to do, jobs={args.jobs}")
@@ -195,7 +205,7 @@ def main(argv=None):
             t0 = time.perf_counter()
             results = Parallel(n_jobs=args.jobs, backend="loky")(
                 delayed(run_task)(a, fid, dim, r, max_fes, args.suite, args.legacy_track,
-                                  alg_index[a])
+                                  alg_code[a])
                 for a, r in todo)
 
             pd.DataFrame([row for row, _ in results])[RAW_COLUMNS].to_csv(
