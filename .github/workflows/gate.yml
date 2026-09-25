@@ -10,7 +10,16 @@ name: E1 gate (CEC'2017)
 # for the function or the shard, so sharded and single-process runs agree
 # row for row. tools/merge_shards.py refuses to assemble a partial set.
 
+# Two ways in. workflow_dispatch (the "Run workflow" button) only works for a
+# workflow file that is on the repository's DEFAULT branch, and this study lives
+# on a development branch, so the button is not available yet. Until the branch
+# is merged, the run is launched by committing a line to .github/gate-trigger.txt
+# -- a push event reads the workflow from the ref that was pushed, so no change
+# to the default branch is needed.
 on:
+  push:
+    branches: ["claude/**"]
+    paths: [".github/gate-trigger.txt"]
   workflow_dispatch:
     inputs:
       dim:
@@ -89,8 +98,8 @@ jobs:
         run: |
           python run_all.py \
             --suite cec2017 \
-            --dims ${{ inputs.dim }} \
-            --runs ${{ inputs.runs }} \
+            --dims ${{ inputs.dim || '10' }} \
+            --runs ${{ inputs.runs || '51' }} \
             --functions ${{ matrix.fid }} \
             --jobs $(nproc) \
             --out "shard_F${{ matrix.fid }}"
@@ -125,23 +134,23 @@ jobs:
             --shards artifacts \
             --out results_cec2017 \
             --expect-functions 29 \
-            --expect-rows $(python -c "print(29 * ${{ inputs.runs }} * 10)")
+            --expect-rows $(python -c "print(29 * ${{ inputs.runs || '51' }} * 10)")
 
       - name: Analyse
         run: python analyze.py --out results_cec2017
 
       - uses: actions/upload-artifact@v4
         with:
-          name: gate-results-${{ inputs.dim }}D
+          name: gate-results-${{ inputs.dim || '10' }}D
           path: results_cec2017/
           retention-days: 90
 
       # The curves are large and regenerable; the rows and the tables are the
       # record, so only those go into the repository.
       - name: Commit the results
-        if: ${{ inputs.commit_results }}
+        if: ${{ inputs.commit_results == true || github.event_name == 'push' }}
         run: |
-          DEST="reports/data_gate_E1_${{ inputs.dim }}D"
+          DEST="reports/data_gate_E1_${{ inputs.dim || '10' }}D"
           mkdir -p "$DEST"
           cp results_cec2017/raw/results.csv "$DEST/"
           cp results_cec2017/manifest.json "$DEST/"
@@ -154,7 +163,7 @@ jobs:
             exit 0
           fi
           {
-            echo "E1 gate results: CEC'2017 D=${{ inputs.dim }}, ${{ inputs.runs }} runs"
+            echo "E1 gate results: CEC'2017 D=${{ inputs.dim || '10' }}, ${{ inputs.runs || '51' }} runs"
             echo
             echo "Produced by .github/workflows/gate.yml: 29 functions sharded one per"
             echo "job and merged by tools/merge_shards.py, which verified that every"

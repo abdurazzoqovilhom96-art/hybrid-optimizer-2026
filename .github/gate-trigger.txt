@@ -1,0 +1,10 @@
+# Committing a line here launches .github/workflows/gate.yml on this branch.
+#
+# The "Run workflow" button needs the workflow file to sit on the repository's
+# default branch; this study is on a development branch, so a push event is used
+# instead. A push reads the workflow from the ref that was pushed, which keeps
+# the default branch untouched.
+#
+# One line per launch: date, dimension, runs, why.
+
+2026-09-25  D=10  runs=51  E1 gate, first full-protocol run of the eight-rival line-up
