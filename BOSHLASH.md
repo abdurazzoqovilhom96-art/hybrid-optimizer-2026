@@ -5,6 +5,25 @@ Bu fayl bitta narsa uchun: eksperimentni **ILHOM** kompyuterida (i7-13700F,
 
 ---
 
+## Eng oson yo'l — `BOSHLA.bat` (git bilimi shart emas)
+
+Chatdan **`BOSHLA.bat`** faylini yuklab oling, istalgan papkaga saqlang va
+**ikki marta bosing**. Qolganini o'zi qiladi: git va python borligini
+tekshiradi, loyihani to'g'ri branchdan yuklaydi, kutubxonalarni o'rnatadi,
+72 ta testni o'tkazadi va eksperimentni boshlaydi.
+
+Ishchi sonini o'zgartirmoqchi bo'lsangiz, `cmd.exe` dan:
+
+```bat
+BOSHLA.bat 20
+```
+
+Nimadir noto'g'ri ketsa, oyna **yopilmaydi** — xato xabari ekranda qoladi.
+
+Quyidagisi qo'lda qilmoqchi bo'lganlar uchun.
+
+---
+
 ## Muhim: kod `main` branchda EMAS
 
 `main` branchda faqat **3 ta fayl** bor: `README.md`, `.gitignore` va asl

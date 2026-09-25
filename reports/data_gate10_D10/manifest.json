@@ -1,0 +1,71 @@
+{
+  "started": "2026-09-25 10:10:32",
+  "python": "3.11.15",
+  "platform": "Linux-6.18.44-fc-v37-x86_64-with-glibc2.39",
+  "processor": "x86_64",
+  "cpu_count": 4,
+  "numpy": "2.4.6",
+  "pandas": "3.0.6",
+  "suite": "cec2017",
+  "suite_protocol_verified": true,
+  "suite_note": "CEC'2017 bound-constrained: 51 runs, MaxFES = 10000*D, D in {10,30,50,100}, errors below 1e-8 reported as 0. F2 excluded (withdrawn as unstable), leaving F1 and F3..F30.",
+  "protocol_overrides": {
+    "dims": [
+      10
+    ],
+    "runs": 5
+  },
+  "dims": [
+    10
+  ],
+  "runs": 5,
+  "max_fes_per_dim": {
+    "10": 100000
+  },
+  "tier": "modern",
+  "algorithms": [
+    "TEMOA_V10",
+    "TEMOA_V11",
+    "jSO",
+    "LSHADE",
+    "BIPOP_CMAES",
+    "IPOP_CMAES",
+    "CMAES",
+    "sepCMAES"
+  ],
+  "functions": [
+    "F1",
+    "F3",
+    "F4",
+    "F5",
+    "F6",
+    "F7",
+    "F8",
+    "F9",
+    "F10",
+    "F11",
+    "F12",
+    "F13",
+    "F14",
+    "F15",
+    "F16",
+    "F17",
+    "F18",
+    "F19",
+    "F20",
+    "F21",
+    "F22",
+    "F23",
+    "F24",
+    "F25",
+    "F26",
+    "F27",
+    "F28",
+    "F29",
+    "F30"
+  ],
+  "legacy_track": null,
+  "seed_base": 42,
+  "noise_seed": 99,
+  "seed_scheme": "algorithm rng = default_rng([SEED_BASE, dim, run, alg_index]); noise rng = default_rng([NOISE_SEED, dim, run]) (matched across algorithms)"
+}
