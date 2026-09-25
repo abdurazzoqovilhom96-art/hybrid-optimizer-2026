@@ -1,0 +1,21 @@
+# Line endings. Git normalises text files to LF in the repository and checks
+# them out per the rules below.
+#
+# The batch launcher MUST be CRLF. cmd.exe parses a .bat file line by line as it
+# executes it, and a file with bare LF endings can break on labels and on
+# multi-line blocks -- silently, with no error message. It was committed with LF
+# endings and no .gitattributes, so on a Windows checkout without
+# core.autocrlf=true it arrived in a form cmd.exe could mishandle.
+* text=auto
+
+*.bat  text eol=crlf
+*.cmd  text eol=crlf
+*.ps1  text eol=crlf
+
+*.py   text eol=lf
+*.sh   text eol=lf
+*.md   text eol=lf
+
+*.npz  binary
+*.png  binary
+*.pdf  binary
