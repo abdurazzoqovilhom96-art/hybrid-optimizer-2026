@@ -9,6 +9,7 @@ times, the experiment is expensive and gets run once.
 from __future__ import annotations
 
 import argparse
+import re
 from pathlib import Path
 
 import matplotlib
@@ -24,6 +25,18 @@ from temoa.stats import (a12_magnitude, descriptive, friedman,
 ALPHA = 0.05
 
 
+def function_order(labels):
+    """Natural order: F1, F3, F4, ..., F30 -- not the string order F1, F10, F3.
+
+    CEC function labels sort wrongly as strings, which would put F10 before F3 in
+    every table and invite a misreading. Legacy names stay alphabetical.
+    """
+    def key(lbl):
+        m = re.fullmatch(r"F(\d+)", str(lbl))
+        return (0, int(m.group(1)), "") if m else (1, 0, str(lbl))
+    return sorted(labels, key=key)
+
+
 def load(out: Path) -> pd.DataFrame:
     # float_precision="round_trip" is required: the default CSV parser is off by
     # up to one ULP, which matters when algorithms are separated at 1e-20.
@@ -37,14 +50,18 @@ def table_descriptive(df, tdir):
     for (f, d, a), g in df.groupby(["Function", "Dimension", "Algorithm"]):
         rows.append({"Function": f, "Dimension": d, "Algorithm": a,
                      **descriptive(g["Error"].to_numpy())})
-    out = pd.DataFrame(rows).sort_values(["Dimension", "Function", "median"])
+    out = pd.DataFrame(rows)
+    order = {f: i for i, f in enumerate(function_order(out["Function"].unique()))}
+    out = (out.assign(_o=out["Function"].map(order))
+              .sort_values(["Dimension", "_o", "median"]).drop(columns="_o"))
     out.to_csv(tdir / "descriptive_stats.csv", index=False)
     return out
 
 
 def median_pivot(df, dim):
     sel = df[df["Dimension"] == dim]
-    return sel.pivot_table(index="Function", columns="Algorithm", values="Error", aggfunc="median")
+    piv = sel.pivot_table(index="Function", columns="Algorithm", values="Error", aggfunc="median")
+    return piv.reindex(function_order(piv.index))
 
 
 def stats_per_dimension(df, tdir, control, algos):
@@ -85,7 +102,7 @@ def pairwise(df, tdir, control, algos):
     competitors = [a for a in algos if a != control]
     rows = []
     for dim in sorted(df["Dimension"].unique()):
-        for f in sorted(df["Function"].unique()):
+        for f in function_order(df["Function"].unique()):
             sel = df[(df["Dimension"] == dim) & (df["Function"] == f)]
             ctl = sel[sel["Algorithm"] == control].sort_values("Run")["Error"].to_numpy()
             if ctl.size == 0:
@@ -161,7 +178,7 @@ def figures(df, out, algos, control):
             continue
         data = np.load(path)
         fes_axis = None
-        for f in sorted(df["Function"].unique()):
+        for f in function_order(df["Function"].unique()):
             plt.figure(figsize=(9, 5.5))
             plotted = False
             for a in algos:

@@ -155,6 +155,20 @@ def test_cec_problem_satisfies_the_tracker_interface():
     assert tr.overrun == 0
 
 
+# ------------------------------------------------------------ presentation
+def test_function_labels_sort_naturally_in_tables():
+    """As strings, F10 sorts before F3. Every table and figure would then be in
+    an order that invites a misreading."""
+    sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+    from analyze import function_order
+    labels = ["F30", "F3", "F10", "F1", "F4", "F20"]
+    assert function_order(labels) == ["F1", "F3", "F4", "F10", "F20", "F30"]
+    assert sorted(labels) != function_order(labels), "this test would be vacuous"
+    # legacy names still come out stable and after the numbered ones
+    mixed = function_order(["F3", "Ackley", "F1", "Schwefel"])
+    assert mixed == ["F1", "F3", "Ackley", "Schwefel"], mixed
+
+
 if __name__ == "__main__":
     fns = [(n, f) for n, f in sorted(globals().items()) if n.startswith("test_")]
     failed = 0
