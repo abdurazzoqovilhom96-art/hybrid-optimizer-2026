@@ -28,7 +28,8 @@ and the analysis. Safe to interrupt: re-running resumes where it stopped.
 
 ```bash
 pip install -r requirements.txt
-python tests/test_all.py                                    # 16 correctness tests
+python tests/test_all.py                                    # 19 correctness tests
+python tests/test_port_fidelity.py                          # port == original (~4 min)
 python run_all.py --smoke --jobs 20                         # ~3 min end-to-end check
 python run_all.py --dims 30 50 100 --runs 30 --jobs 20      # main study
 python analyze.py --out results --control TEMOA_V11         # tables, stats, figures
@@ -61,6 +62,7 @@ Reference timing: the full 30D/50D/100D protocol takes roughly **2 hours** on a
 | `temoa/algorithms/baselines.py` | DE, GWO, WOA, SCA, PSO, HHO (+ the original weakened PSO/HHO) |
 | `temoa/stats.py` | Friedman, Iman-Davenport, Holm, Nemenyi, signed-rank, Vargha-Delaney A12 |
 | `run_all.py` / `analyze.py` | experiment driver / reporting |
+| `tests/test_port_fidelity.py` | proves the ported V10 matches `hybrid 2026.py` |
 | `reports/TAHLIL_UZ.md` | **the analysis — start here** |
 
 ## Protocol

@@ -11,36 +11,54 @@ ko'rsatilgan maxsus diagnostik yurishlardan olingan. To'liq protokol (30/50/100D
 
 ## 1. Qisqacha xulosa
 
-Uchta natija, muhimlik tartibida:
+To'rtta natija, muhimlik tartibida. **Ular 30D, rotated suite, 12 ta funksiya,
+12 ta mustaqil yurishdagi to'liq o'lchovga asoslangan** (`results_prelim/`).
 
-**1.1. Gibrid o'zining yadrosidan yomonroq ishlaydi.** Kod izohida TEMOA'ning
-o'zagi L-SHADE/jSO ekani ochiq aytilgan. Ammo taqqoslashda na L-SHADE, na jSO
-bor. Men ikkalasini ham yozib qo'shganimda, asl TEMOA_V10 ularga ko'pchilik
-funksiyalarda yutqazadi, Schwefel'da esa ~6 tartibga (30D, median error):
+**1.1. Taqqoslash adolatsiz tuzilgan.** Ikkita baseline nashr etilgan shaklidan
+zaiflashtirilgan, zamonaviy DE (L-SHADE, jSO) esa umuman yo'q — holbuki kod
+izohida TEMOA'ning o'zagi aynan shular ekani aytilgan (§2.1). Bu holatda
+"gibridlashtirish foyda berdi" degan da'voni tekshirib bo'lmaydi: siz faqat
+"zamonaviy DE 1995-yilgi swarm usullaridan yaxshi" ekanini ko'rsatgan bo'lasiz.
 
-| 30D, median error | Schwefel | RotatedElliptic | NoisyRastrigin | BentCigar |
+**1.2. TEMOA_V10 da ikkita jiddiy, aniq lokalizatsiya qilingan nuqson bor:**
+
+| 30D, median error | TEMOA_V10 | jSO | L-SHADE | V10 qancha yomon |
 |---|---|---|---|---|
-| **TEMOA_V10** | 2.05e+03 | 2.01e+04 | 3.58e+01 | 2.43e+00 |
-| jSO | 3.43e+00 | 6.47e+02 | 1.88e+01 | 5.96e+01 |
-| L-SHADE | 9.99e-02 | 1.38e+03 | 2.16e+01 | 3.18e+01 |
+| **Schwefel** | 2.40e+03 | 5.43e+00 | **3.08e-02** | L-SHADE dan **78 000×** |
+| **RotatedElliptic** | 2.35e+04 | **5.47e+02** | 1.84e+03 | jSO dan **43×** |
 
-Bu farq populyatsiya hajmi bilan tushuntirilmaydi — populyatsiya tenglashtirilgan
-nazoratda ham saqlanadi (§3.4).
+Ikkalasining ham sababi aniqlandi (§3.1, §3.3) va tuzatildi (§4).
 
-**1.2. Taqqoslash adolatsiz tuzilgan.** Ikkita baseline nashr etilgan shaklidan
-zaiflashtirilgan, zamonaviy DE esa umuman yo'q (§2.1). Bu holatda "TEMOA hammasidan
-ustun" degan xulosa tekshirib bo'lmaydigan da'vo bo'lib qoladi.
+**1.3. LEKIN — V10 umuman olganda L-SHADE/jSO dan yomon emas.** Bu mening
+dastlabki xulosamning tuzatilishi. Men avval bir necha funksiya bo'yicha
+o'lchab, "V10 o'z yadrosidan ko'pchilik funksiyada yutqazadi" degan edim.
+**To'liq 12 funksiyali to'plamda bu noto'g'ri:**
 
-**1.3. Qulashning sababi aniqlandi va tuzatildi.** Ayb — WOA spirali (operator 2):
-u populyatsiyani `x_pbest` ga yig'ib, **darhol katta foyda beradi**, lekin
-kelajakdagi diversity'ni yo'q qiladi. Adaptiv operator tanlash buni ko'ra olmaydi,
-chunki zarar kechikkan (§3.3). Tuzatilgan **TEMOA_V11** 30D da Schwefel'da
-2.05e+03 → 1.25e-01 (16 000×) va RotatedElliptic'da 2.01e+04 → 2.77e+01 (725×)
-beradi, va jSO'ni 8 funksiyadan 7 tasida yutadi (§4.2).
+| | TEMOA_V11 | TEMOA_V10 | jSO | L-SHADE | DE |
+|---|---|---|---|---|---|
+| o'rtacha rank (12 funksiya) | **2.08** | 2.46 | 3.17 | 3.50 | 3.79 |
+| V10 nechta funksiyada yutadi | — | — | 7/12 | 8/12 | — |
 
-> **Eng muhim tavsiya:** maqolani hozirgi holatida "V10 hammasidan ustun" deb
-> yubormang. Ma'lumot bu da'voni qo'llab-quvvatlamaydi. Qo'llab-quvvatlanadigan,
-> va aslida qiziqarliroq bo'lgan da'vo §6 da.
+Mening oldingi xulosam men **tanlagan qism to'plamga** asoslangan edi va u
+tasodifan V10 ning zaif holatlarini o'z ichiga olgan. Bu — aynan men asl
+tadqiqotni tanqid qilgan xato (cherry-picking), shuning uchun uni ochiq
+tuzatyapman. To'g'ri ifoda: **V10 o'rtacha yaxshi, lekin ikkita funksiyada
+halokatli darajada yomon**, va aynan shu ikki holat tuzatishga arziydi.
+
+**1.4. Hech bir DE-oilasi algoritmi orasidagi farq statistik ahamiyatli emas.**
+Friedman juda ahamiyatli (χ²=114.4, p=2.4e-19; Iman–Davenport F=71.6,
+p=1.4e-47), lekin bu faqat "swarm usullari DE oilasidan orqada" degani. Holm
+post-hoc'da TEMOA_V11 ning GWO/WOA/HHO/PSO/SCA dan ustunligi ahamiyatli
+(p_holm 3.6e-09 … 5.1e-03), ammo **V10, jSO, L-SHADE va hatto oddiy DE bilan
+farqi ahamiyatsiz** (p_holm > 0.80). Nemenyi critical difference = 4.81,
+yuqoridagi 5 ta algoritm orasidagi rank farqi esa 1.7 dan kichik.
+
+> **Bu 12 funksiya DE oilasi ichida hech qanday ustunlik da'vosini
+> qo'llab-quvvatlay olmaydi** — qaysi algoritm g'olib bo'lishidan qat'i nazar.
+> Bu asl tadqiqotning markaziy da'vosiga ham to'liq tegishli.
+
+Batafsil §4.3 da, shu jumladan nima uchun 12 yurish printsipial jihatdan
+yetarli emasligi va 30 yurish nega yetarli bo'lishi.
 
 ---
 
@@ -133,6 +151,12 @@ platforma, har yurishda wall-clock.
 ---
 
 ## 3. Diagnostika: nima ishlaydi, nima ishlamaydi
+
+> **Ogohlantirish.** Bu bo'limdagi o'lchovlar **tanlangan qism to'plamlarda**
+> (4–8 funksiya) — ular sababni aniqlash uchun mo'ljallangan, umumiy ustunlik
+> xulosasi uchun emas. Umumiy xulosalar faqat §4.2 dagi to'liq 12 funksiyali
+> to'plamdan chiqariladi. §1.3 qism to'plamdan noto'g'ri umumlashtirish qanday
+> xatoga olib kelganini ko'rsatadi.
 
 ### 3.1. Operator ablatsiyasi (30D, rotated, 8 yurish, median error)
 
@@ -255,77 +279,137 @@ tanlandi; mezon — `log10(median error)` ning o'rtachasi. G'olib:
 Hisobot qilinadigan 30/50/100D natijalariga qarab hech bir parametr
 tanlanmagan.
 
-### 4.2. V11 natijalari (30D, rotated, 10 yurish, median error)
+### 4.2. V11 natijalari — to'liq 12 funksiyali to'plam
 
-| | Schwefel | NoisyRastrigin | Ackley | Griewank | RotatedElliptic | Rosenbrock | Zakharov | BentCigar |
-|---|---|---|---|---|---|---|---|---|
-| TEMOA_V10 | 2.05e+03 | 3.58e+01 | **7.11e-15** | 0.00e+00 | 2.01e+04 | **1.24e+01** | **1.44e-20** | **2.43e+00** |
-| **TEMOA_V11** | **1.25e-01** | **1.92e+01** | 1.42e-14 | 0.00e+00 | **2.77e+01** | 1.39e+01 | 1.04e-14 | 8.58e+00 |
-| jSO | 3.43e+00 | 1.88e+01 | 3.70e-13 | 1.11e-16 | 6.47e+02 | 1.85e+01 | 1.93e-10 | 5.96e+01 |
-| L-SHADE | 9.99e-02 | 2.16e+01 | 2.09e-12 | 5.55e-17 | 1.38e+03 | 1.86e+01 | 1.07e-10 | 3.18e+01 |
+30D, rotated suite, 12 yurish, **median error** (`results_prelim/tables/`):
 
-**V11 yutgan joylar:** Schwefel V10 dan 16 000×, RotatedElliptic 725×,
-NoisyRastrigin 1.9×. jSO ga nisbatan 8 funksiyadan 7 tasida yaxshiroq,
-bittasida teng (NoisyRastrigin, 1.02×).
+| Function | TEMOA_V11 | TEMOA_V10 | jSO | L-SHADE | DE |
+|---|---|---|---|---|---|
+| Ackley | 1.42e-14 | **7.11e-15** | 4.69e-13 | 3.80e-12 | **7.11e-15** |
+| BentCigar | 3.70e+01 | **2.46e+00** | 7.99e+01 | 3.05e+01 | 1.49e+03 |
+| Composition | 7.11e-15 | **0.00e+00** | 3.08e-13 | 2.82e-12 | 2.67e-15 |
+| DynamicSphere | 1.14e+03 | 6.85e+02 | 2.48e+03 | 2.92e+03 | **4.81e+02** |
+| Griewank | **0.00e+00** | **0.00e+00** | 1.11e-16 | 5.55e-17 | **0.00e+00** |
+| Levy | **1.97e-22** | 4.48e-02 | 3.91e-21 | 3.97e-21 | 8.95e-02 |
+| NoisyRastrigin | **2.03e+01** | 3.14e+01 | 2.18e+01 | 2.18e+01 | 1.83e+02 |
+| NoisySphere | **1.06e-02** | 1.11e-02 | 1.07e-02 | 1.44e-02 | 1.71e-02 |
+| Rosenbrock | 1.41e+01 | **1.30e+01** | 1.79e+01 | 1.83e+01 | 2.83e+01 |
+| RotatedElliptic | **2.68e+01** | 2.35e+04 | 5.47e+02 | 1.84e+03 | 3.36e+06 |
+| Schwefel | 1.18e+02 | 2.40e+03 | 5.43e+00 | **3.08e-02** | 1.93e+03 |
+| Zakharov | 6.73e-15 | **2.28e-20** | 1.23e-10 | 2.66e-10 | 2.73e-02 |
+| **o'rtacha rank** | **2.08** | 2.46 | 3.17 | 3.50 | 3.79 |
 
-**V11 yutqazgan joylar — bularni yashirmaslik kerak:**
-- **BentCigar**: 8.58 vs V10 ning 2.43 (3.5× yomon). V11 baribir jSO (59.6) va
-  L-SHADE (31.8) dan yaxshi, lekin V10 dan yomon.
-- **Zakharov**: 1.04e-14 vs 1.44e-20. Ikkalasi ham amalda nol, lekin farq real.
-- **Rosenbrock**: 13.9 vs 12.4 (1.12× yomon). Bu kutilgan edi — §3.1 ga ko'ra
-  Rosenbrock aynan op1 (leader) dominant bo'lganda yaxshi ishlaydi, V11 esa
-  `P_MIN` ni pasaytirib va diversity qo'riqchisini qo'shib, uning
-  dominantligini kamaytiradi.
-- **Ackley**: 1.42e-14 vs 7.11e-15 — ikkalasi ham mashina aniqligida, farq
-  ahamiyatsiz.
+**V11 hal qilgan narsalar (katta effekt hajmi, Â₁₂ = 1.00):**
+- **RotatedElliptic**: 2.35e+04 → 2.68e+01, ya'ni **877×**. V11 bu yerda jSO dan
+  20×, L-SHADE dan 69× yaxshi.
+- **Schwefel**: 2.40e+03 → 1.18e+02, ya'ni **20×**. Muhim: bu **to'liq tuzatish
+  emas** — L-SHADE (3.08e-02) va jSO (5.43) hali ham ancha oldinda. Diversity
+  qo'riqchisi qulashni yumshatadi, lekin bartaraf etmaydi.
+- **NoisyRastrigin**: 3.14e+01 → 2.03e+01 (Â₁₂ = 0.91).
+- **Levy**: 4.48e-02 → 1.97e-22.
 
-Ya'ni V11 ham universal ustun emas. Bu — kutilgan va to'g'ri natija (§6).
+**V11 yomonlashtirgan narsalar — bularni yashirmaslik kerak:**
+- **DynamicSphere**: 6.85e+02 → 1.14e+03 (Â₁₂ = 0.00, ya'ni har bir yurishda
+  yomonroq). Bu tizimli: diversity qo'riqchisi harakatlanuvchi optimumni
+  kuzatishga xalaqit beradi. DE (4.81e+02) ikkalasidan ham yaxshi.
+- **BentCigar**: 2.46e+00 → 3.70e+01 (15×).
+- **Zakharov**: 2.28e-20 → 6.73e-15.
+- **Composition, Ackley**: mashina aniqligida, farq ahamiyatsiz.
+- **Rosenbrock**: 1.30e+01 → 1.41e+01, kutilgan (§3.1).
+
+Ya'ni V11 universal yaxshilanish emas: u ikkita og'ir nuqsonni tuzatadi va
+o'rtacha rankni 2.46 → 2.08 ga keltiradi, lekin buning evaziga
+DynamicSphere va BentCigar'da haq to'laydi.
+
+### 4.3. Statistik quvvat — nega bu raqamlar hali yetarli emas
+
+Holm tuzatishi katak ichida (11 ta raqobatchi) qo'llanganda V11 ning
+GWO/WOA/HHO/PSO/SCA ustidan ustunligi ahamiyatli. Ammo **butun oila bo'yicha
+(132 ta test) hech bir katak omon qolmaydi — 0/132.**
+
+Bu "effekt yo'q" degani emas, bu **quvvat yetishmasligi**, va sababi sof
+matematik:
+
+| yurishlar (n) | Wilcoxon signed-rank minimal p = 2/2ⁿ | Holm chegarasi (132 test) | mumkinmi? |
+|---|---|---|---|
+| 12 (hozirgi) | 4.88e-04 | 3.79e-04 | **yo'q** |
+| 20 | 1.91e-06 | 3.79e-04 | ha |
+| **30 (to'liq protokol)** | **1.86e-09** | 2.31e-04 (216 test) | **ha, keng zaxira bilan** |
+
+Ya'ni 12 yurishda **hech qanday natija** oila darajasida ahamiyatli bo'la
+olmaydi, qancha katta effekt bo'lishidan qat'i nazar. 30 yurishda esa quvvat
+mo'l-ko'l. **Shuning uchun maqola raqamlari uchun to'liq 30 yurishli protokol
+majburiy** — bu shunchaki "yaxshiroq" emas, balki xulosa chiqarish uchun zarur
+shart.
+
+Ikkinchi cheklov — **funksiyalar soni**. Nemenyi critical difference 12 blok va
+12 algoritm uchun **4.81**, yuqoridagi 5 ta DE algoritmi orasidagi rank farqi
+esa 1.71. Yurishlar sonini oshirish bunga yordam bermaydi — bu bloklar
+(funksiyalar) soniga bog'liq. CD ni 2.0 ga tushirish uchun **~70 ta funksiya**
+kerak. Amaliy yechim: CEC'2017 (30 funksiya) + CEC'2022 (12 funksiya) ni
+qo'shish, yoki taqqoslanadigan algoritmlar sonini 5–6 taga qisqartirish
+(CD k ga ham bog'liq).
 
 ---
 
 ## 5. Hisoblash xarajati
 
-10D, bitta yurishga o'rtacha wall-clock (4 yadroli konteyner, 12 ta yurish):
+30D, bitta yurishga o'rtacha wall-clock (4 yadroli konteyner, 12 yurish,
+FES = 90 000, `results_prelim/tables/runtime_seconds.csv`):
 
-| algoritm | sekund | | algoritm | sekund |
+| algoritm | sek | | algoritm | sek |
 |---|---|---|---|---|
-| jSO | 0.19 | | PSO | 0.30 |
-| L-SHADE | 0.19 | | TEMOA_V11 | 0.33 |
-| HHO | 0.26 | | TEMOA_V10 | 0.42 |
-| WOA | 0.25 | | SCA | 0.44 |
-| GWO | 0.46 | | DE | 0.59 |
+| jSO | 1.89 | | HHO | 2.73 |
+| L-SHADE | 1.94 | | **TEMOA_V10** | **2.98** |
+| HHO_orig | 2.30 | | PSO | 3.36 |
+| **TEMOA_V11** | **2.43** | | SCA | 4.79 |
+| WOA | 2.58 | | GWO | 5.07 |
+| PSO_orig | 2.73 | | DE | 6.54 |
 
-TEMOA_V10 jSO dan ~2.2× qimmat (eigendekompozitsiya har avlodda `O(D³)`).
-V11 arzonroq, chunki eigen-gate rank-deficient holatda eigendekompozitsiyani
-o'tkazib yuboradi. `O(D³)` 100D da hali ham arzon (funksiya baholashga
-nisbatan), lekin 1000D da hukmron bo'ladi — **masshtablanish chegarasi shu
-yerda**, va maqolada aytilishi kerak.
+- TEMOA_V10 jSO dan **1.58× qimmat** — har avlodda `O(D³)` eigendekompozitsiya.
+- TEMOA_V11 V10 dan **19% arzon**, chunki eigen-gate rank-deficient holatda
+  dekompozitsiyani o'tkazib yuboradi (§4.1.c) va ES dumi yo'q.
+- DE va GWO sekinligi algoritm murakkabligidan emas, **Python sikllaridan**:
+  ular har individ uchun alohida iteratsiya qiladi, DE/jSO oilasi esa
+  vektorlashtirilgan. Ya'ni bu jadval algoritmik xarajatni emas,
+  implementatsiya sifatini ham aks ettiradi — maqolada shuni aytish kerak.
+
+**Masshtablanish chegarasi.** `O(D³)` 100D da funksiya baholashga nisbatan
+arzon, lekin 500–1000D da hukmron bo'ladi. Katta o'lchamli optimizatsiya
+da'vosi qilinmoqchi bo'lsa, eigen-crossover'ni cheklangan xotirali variantga
+(masalan, faqat yuqori k ta asosiy komponenta) almashtirish kerak.
 
 Xotira: `O(N·D)` populyatsiya + arxiv, `O(D²)` kovariatsiya. 100D, N=500 da
 ahamiyatsiz.
 
----
-
 ## 6. No-Free-Lunch: TEMOA qaysi masala sinfiga mos?
 
-Ma'lumot "universal ustunlik" ni qo'llab-quvvatlamaydi va hech qachon
-qo'llab-quvvatlamaydi ham — NFL bo'yicha bu kutilgan. Ammo ma'lumot **aniq,
-tor va himoya qilinadigan** da'voni qo'llab-quvvatlaydi:
+To'liq to'plamdagi ma'lumot "universal ustunlik" ni qo'llab-quvvatlamaydi
+(§1.4: DE oilasi ichidagi farqlar ahamiyatsiz). Ammo u **aniq, tor va
+mexanizmi tushuntirilgan** da'voni qo'llab-quvvatlaydi:
 
-> TEMOA'ning kovariatsiya-bazisli crossover'i **yomon shartlangan, aylantirilgan,
-> separabel bo'lmagan** masalalarda haqiqiy ustunlik beradi: RotatedElliptic'da
-> op0-only konfiguratsiyasi eigen bilan 2.19e+02, eigensiz 1.35e+04 (62×), va
-> V11 shu masalada jSO dan 23×, L-SHADE dan 50× yaxshi. Zakharov'da ham TEMOA
-> oilasi L-SHADE'dan barqaror ustun (§3.4).
+> **Kovariatsiya-bazisli (eigen) crossover yomon shartlangan, aylantirilgan
+> masalalarda hal qiluvchi ustunlik beradi.** RotatedElliptic, 30D: op0-only
+> konfiguratsiyasi eigen bilan 2.19e+02, eigensiz 1.35e+04 — **62×** (§3.2).
+> To'liq V11 bu funksiyada 2.68e+01, ya'ni jSO dan 20×, L-SHADE dan 69×
+> yaxshi, Â₁₂ = 1.00 (har bir yurishda). Zakharov'da ham TEMOA oilasi
+> L-SHADE/jSO dan 4–5 tartib oldinda.
 
-Bu — nashrga arzigulik natija. U "12 funksiyada hammasini yutdik" dan ko'ra
-ancha ishonchliroq, chunki mexanizmi tushuntirilgan va ablatsiya bilan
-izolyatsiya qilingan.
+Bu da'vo kuchli, chunki (a) mexanizmi nazariy jihatdan tushunarli — aylantirilgan
+masalada koordinata bo'yicha crossover ishlamaydi, kovariatsiya bazisida
+ishlaydi; (b) ablatsiya bilan izolyatsiya qilingan; (c) effekt hajmi maksimal.
 
-Aksincha, **deceptive multimodal** masalalar (Schwefel) TEMOA_V10 uchun aniq
-zaif sinf, va buning sababi ham aniqlangan (§3.3).
+**Zaif sinflar — ochiq aytilishi kerak:**
+- **Deceptive multimodal (Schwefel).** V10 halokatli (2.40e+03), V11 yaxshilaydi
+  (1.18e+02) lekin **hali ham L-SHADE dan 3800× orqada**. Bu ochiq muammo.
+- **Dinamik masalalar.** V11 V10 dan yomon (1.14e+03 vs 6.85e+02), oddiy DE
+  esa ikkalasidan yaxshi (4.81e+02). Diversity qo'riqchisi harakatlanuvchi
+  optimumni kuzatishga xalaqit beradi.
+- **Juda yomon shartlangan alohida yo'nalish (BentCigar).** V11 V10 dan 15×
+  yomon.
 
----
+Ya'ni to'g'ri xulosa NFL ga mos: **bu oila aylantirilgan/ill-conditioned
+masalalar uchun, dinamik va deceptive-multimodal masalalar uchun emas.**
 
 ## 7. Nashr uchun aniq tavsiyalar
 
@@ -368,18 +452,39 @@ ettiradi).
 
 Sizning mashinangizda (i7-13700F, 16 yadro / 24 oqim) to'liq protokol ~2 soat.
 
+### Port to'g'riligi — bu hisobotdagi barcha tanqid shunga tayanadi
+
+Butun tahlil `temoa/` paketidagi ko'chirilgan V10 asl `hybrid 2026.py` dagi V10
+bilan bir xil ishlashiga tayanadi. Bu tekshirildi (`tests/test_port_fidelity.py`):
+
+| Tekshiruv | Natija |
+|---|---|
+| Landshaftlar (`--suite shift` vs asl `make_problem`) | **bit-ma-bit bir xil**, max nisbiy farq = 0.000e+00 |
+| TEMOA_V10 natijalari, 30D, 10 yurish, Mann–Whitney | Ackley p=1.000, Schwefel p=0.427, Rosenbrock p=0.970, RotatedElliptic p=0.910 |
+
+Ya'ni port aniqlanadigan farq bermaydi. (Bit-ma-bit bir xillik mumkin emas:
+asl kod global RNG dan, port esa in'ektsiya qilingan `Generator` dan oladi.)
+
+Ishga tushirish: `python tests/test_port_fidelity.py`
+
 ### Bu hisobotdagi raqamlarning manbai
 
-| Bo'lim | Manba | Yurishlar |
-|---|---|---|
-| §1.1, §4.2 | 30D, rotated suite | 10 |
-| §3.1 | operator ablatsiyasi, 30D | 8 |
-| §3.3 (instrumentatsiya) | `logger=` bilan bitta yurish | 1 |
-| §3.4 | POP_FACTOR sweep, 30D | 5 |
-| §5 | 10D smoke | 12 |
+| Bo'lim | Manba | Funksiyalar | Yurishlar |
+|---|---|---|---|
+| §1, §4.2, §4.3, §5 | `results_prelim/` — to'liq 30D, rotated suite | **12 (hammasi)** | 12 |
+| §3.1 (operator ablatsiyasi) | maxsus diagnostik yurish, 30D | 5 (tanlangan) | 8 |
+| §3.2 (eigen) | §3.1 dan | 1 | 8 |
+| §3.3 (instrumentatsiya) | `logger=` bilan bitta yurish | 2 | 1 |
+| §3.4 (populyatsiya) | POP_FACTOR sweep, 30D | 4–8 (tanlangan) | 5 |
+| §4.1 (sozlash) | 10D grid search | 3 (tuning set) | 10 |
 
-Bular **dastlabki** o'lchovlar: statistik testlar uchun yurishlar soni kam
-(Wilcoxon signed-rank n=10 da minimal p ≈ 0.002, n=8 da ≈ 0.008). Yakuniy
-maqola raqamlari uchun 30 yurishli to'liq protokolni o'z mashinangizda ishga
-tushiring — barcha xulosalar yo'nalishi shu ma'lumotda allaqachon aniq, lekin
-p-qiymatlar va effekt hajmlari to'liq yurishdan olinishi kerak.
+**Muhim ogohlantirish.** §3 va §3.4 dagi o'lchovlar **tanlangan qism
+to'plamlarda** — ular diagnostika uchun, umumiy xulosa uchun emas. §1.3 aynan
+shunday qism to'plamdan noto'g'ri umumlashtirish qanday xatoga olib
+kelganini ko'rsatadi. Umumiy xulosalar faqat §1, §4.2, §4.3 dagi to'liq
+to'plamdan chiqarilgan.
+
+**Va eng muhimi:** 12 yurishda oila darajasidagi statistik ahamiyatlilikka
+erishib bo'lmaydi (§4.3). Maqolaga kiritiladigan har qanday raqam **30
+yurishli to'liq protokoldan** olinishi kerak.
+

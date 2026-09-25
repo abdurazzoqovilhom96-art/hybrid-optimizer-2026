@@ -1,0 +1,32 @@
+=== 30D  (12 functions, 12 algorithms) ===
+Friedman chi2 = 114.4199, p = 2.3917e-19
+Iman-Davenport F = 71.5933, p = 1.3810e-47
+Nemenyi critical difference (alpha=0.05) = 4.8104
+Average ranks (1 = best):
+Algorithm
+TEMOA_V11     2.083333
+TEMOA_V10     2.458333
+jSO           3.250000
+LSHADE        3.666667
+DE            3.958333
+PSO           6.916667
+HHO           7.083333
+SCA           7.166667
+PSO_orig      9.250000
+GWO           9.916667
+WOA          10.916667
+HHO_orig     11.333333
+
+Holm post-hoc, control = TEMOA_V11:
+            comparison  rank_diff         z        p_raw       p_holm
+ TEMOA_V11 vs HHO_orig  -9.250000 -6.284138 3.296787e-10 3.626466e-09
+      TEMOA_V11 vs WOA  -8.833333 -6.001068 1.960235e-09 1.960235e-08
+      TEMOA_V11 vs GWO  -7.833333 -5.321702 1.028008e-07 9.252076e-07
+ TEMOA_V11 vs PSO_orig  -7.166667 -4.868791 1.122829e-06 8.982635e-06
+      TEMOA_V11 vs SCA  -5.083333 -3.453445 5.534752e-04 3.874327e-03
+      TEMOA_V11 vs HHO  -5.000000 -3.396831 6.817103e-04 4.090262e-03
+      TEMOA_V11 vs PSO  -4.833333 -3.283603 1.024890e-03 5.124452e-03
+       TEMOA_V11 vs DE  -1.875000 -1.273812 2.027302e-01 8.109207e-01
+   TEMOA_V11 vs LSHADE  -1.583333 -1.075663 2.820779e-01 8.462338e-01
+TEMOA_V11 vs TEMOA_V10  -0.375000 -0.254762 7.989067e-01 8.560289e-01
+      TEMOA_V11 vs jSO  -1.166667 -0.792594 4.280144e-01 8.560289e-01
