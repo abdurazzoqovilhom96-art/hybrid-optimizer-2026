@@ -7,58 +7,66 @@ crossover and a (1+1)-ES refinement phase.
 This repository contains the original algorithm, a repaired variant
 (**TEMOA_V11**), fair comparators, and a reproducible experimental protocol.
 
-> **Main finding.** As published, TEMOA_V10 is outperformed by plain L-SHADE and
-> jSO — the very algorithms its own header comment names as its core — on most of
-> the suite, and collapses by roughly six orders of magnitude on Schwefel. The
-> cause is diagnosed in `reports/TAHLIL_UZ.md` and repaired in `TEMOA_V11`.
-> Read that report before using any number from the original study.
+> **Where this stands.** On the original twelve-function suite TEMOA_V10 is good
+> on average — better mean rank than jSO and L-SHADE — but collapses on two
+> functions: Schwefel, where it is ~78 000× behind L-SHADE, and RotatedElliptic,
+> ~43× behind jSO. Both causes were diagnosed and repaired in `TEMOA_V11`.
+>
+> That suite is not, however, a basis for any claim: no difference among the
+> DE-family algorithms is statistically significant on 12 functions, and the
+> eigenbasis crossover that gives TEMOA its one real strength is already the core
+> of EA4eig, the CEC'2022 winner. The CEC'2017 gate exists to find out what
+> survives against real competitors. Read `reports/TAHLIL_UZ.md` and
+> `reports/PRIOR_ART.md` before using any number from this repository.
 
-## Quick start
-
-### Windows (one click)
+## Quick start — one file, one command
 
 ```
-run_windows.bat
+python START.py
 ```
 
-Installs dependencies, runs the tests and the smoke test, then the full study
-and the analysis. Safe to interrupt: re-running resumes where it stopped.
+That is the whole thing. `START.py` checks the dependencies, installs anything
+missing, runs all 41 tests, and **refuses to start the experiment if any test
+fails** — a benchmark that is wrong is worse than no benchmark. Then it runs the
+gate and the analysis.
 
-### Any platform
+On Windows, double-click `run_windows.bat` instead; it only sets the thread
+environment and calls `START.py`.
 
-```bash
-pip install -r requirements.txt
-
-# tests: 40 in total
-python tests/test_all.py                   # 19 regression
-python tests/test_suites.py                # 13 suite + protocol correctness
-python tests/test_competitor_validation.py #  8 the competitors really work
-python tests/test_port_fidelity.py         # port == original (~4 min)
-
-python run_all.py --suite cec2017 --smoke --jobs 20              # ~2 min check
-python run_all.py --suite cec2017 --dims 10 --jobs 20            # THE GATE (~2.5 h)
-python analyze.py --out results_cec2017 --control TEMOA_V11
+```
+python START.py --check     # dependencies and tests only (~4 min)
+python START.py --smoke     # tiny end-to-end run (~2 min)
+python START.py --jobs 20   # set the worker count (default: 80% of cores)
 ```
 
-The protocol comes from the suite, not the command line: `--suite cec2017` runs
-51 runs at 10000·D evaluations because that is what the competition specifies.
-Overrides are allowed but are recorded in `manifest.json` and printed as a
-warning, because a result under a non-standard protocol cannot be compared with
-any published table.
+Interrupt with Ctrl+C at any point and run the same command again: finished runs
+are skipped and the result is bit-identical to an uninterrupted run (there is a
+test for that).
 
-Optional deeper studies:
+### What it runs by default, and what it deliberately does not
 
-```bash
-python experiments/ablation.py    --dim 30 --runs 15 --jobs 20
-python experiments/sensitivity.py --dim 30 --runs 15 --jobs 20
+The default is the **decision gate**: CEC'2017 at D=10, 29 functions, 51 runs,
+100 000 evaluations each — 1.18e9 evaluations, about **2.5 hours on 20 workers**.
+That single run answers the only question worth answering now: where, if
+anywhere, is this algorithm competitive against CMA-ES and the adaptive-DE
+lineage it was built from.
+
+Higher dimensions are **not** the default, and that is on purpose. Measured from
+this machine's throughput, D=30 costs a further ~11 hours and D=50 about
+~27 hours on 20 workers. Run them only after reading the gate:
+
+```
+python START.py --dims 10 30
 ```
 
-**`--jobs`**: use about 80% of your logical cores (20 on a 24-thread CPU). Each
-worker is pinned to one BLAS thread; without that pinning NumPy's internal
-threads oversubscribe the CPU and more jobs makes the run *slower*.
+### The protocol comes from the suite, not from you
 
-Reference timing: the full 30D/50D/100D protocol takes roughly **2 hours** on a
-16-core / 24-thread desktop, or about 6 hours on 4 cores.
+`--suite cec2017` means 51 runs at 10000·D evaluations because that is what the
+competition specifies. Overrides are allowed, but they are recorded in
+`manifest.json` and printed as a warning, because a result measured under a
+non-standard protocol cannot be compared with any published table. The original
+study's 30 runs at 3000·D matched no competition, which is why its numbers could
+never be placed beside a published one.
 
 ## Layout
 
