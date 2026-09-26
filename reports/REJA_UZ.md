@@ -1,685 +1,557 @@
 <!-- Bu fayl rejaning ishchi nusxasi. Asl nusxa Claude ning ichki papkasida
-     edi va siz uni ocha olmasdingiz; endi u shu yerda va commit qilingan.
+     bo'lgani uchun siz uni ocha olmasdingiz; bu yerda va commit qilingan.
      Har qanday o'zgarish shu faylda bo'ladi. -->
 
-# BEEI maqolasi: gibrid optimizatsiya + ML giperparametr/vazn sozlash
+# REJA — L-SHADE-DGR ni Q1 darajaga olib chiqish
 
-## QADAM 0 — bu rejani siz ocha oladigan joyga ko'chirish
+## Context — nega bu reja kerak
 
-**Muammo:** bu fayl `/root/.claude/plans/` da turibdi, ya'ni ish papkangizdan
-tashqarida. Claude ilovasi uni **ocha olmaydi** — shuning uchun siz men
-yozganlarni ko'rmagansiz. Bu mening xatom.
-
-**Tasdiqlangandan keyin birinchi bajariladigan ish:** shu rejaning to'liq
-matni `reports/REJA_UZ.md` ga ko'chiriladi, commit va push qilinadi.
-Shundan keyin siz uni istalgan vaqtda ocha olasiz. Keyingi barcha
-o'zgarishlar ham o'sha faylda bo'ladi.
-
----
-
-## BAJARILDI — 1-bosqich: raqiblar ro'yxati va algoritm nomi
-
-Buyruq: *"ANIQ 8 TA Q1 NATIJAGA MOS RAQIB QOLDIR QOLGAN KUCHSIZLARNI OLIB
-TASHLA."* Bajarildi. Quyida **nima qilinganining aniq ro'yxati** va har biri
-qanday tekshirilgani.
-
-### 1. Yakuniy line-up — `temoa/registry.py`
-
-| Guruh | A'zolar | Soni |
-|---|---|---|
-| Bizniki | `L-SHADE-DGR` (**yangi nom**), `TEMOA_V10`, `TEMOA_V11`, `TEMOA_V12` | 4 |
-| Raqib — ishga tushiriladi | `LSHADE`, `jSO`, `BIPOP_CMAES`, `IPOP_CMAES`, `CMAES`, `sepCMAES` | 6 |
-| Raqib — nashr etilgan jadvaldan | `EA4eig` (CEC'2022), `L-SRTDE` (CEC'2024) | 2 |
-| **Jami raqib** | | **8** |
-
-`LEGACY_SWARM` va `WEAKENED` lug'atlari **butunlay o'chirildi**. PSO, GWO, WOA,
-SCA, HHO, DE/rand/1/bin va ikkita zaiflashtirilgan nazorat endi hech bir
-eksperimentda qatnashmaydi. `baselines.py` fayli asl tadqiqotni qayta ishlab
-chiqarish uchun **saqlanadi**, lekin hech qayerdan import qilinmaydi — buni
-`test_the_original_baselines_are_kept_but_unused` `ast` bilan tekshiradi
-(matn qidirish emas, haqiqiy import daraxti).
-
-### 2. Algoritm nomi: `TEMOA_V13` emas, `L-SHADE-DGR`
-
-Yangi fayl: `temoa/algorithms/lshade_dgr.py`. `TARGET = "L-SHADE-DGR"`.
-Docstring har bir komponentning **egasini** aytadi (L-SHADE, jSO,
-LSHADE-cnEpSin/EA4eig/L-SRTDE, HHO, Auger & Hansen) va har bir olib
-tashlangan qismning **o'lchov sababini** yozadi.
-
-**Nomni o'zgartirish algoritmni o'zgartirmaganini isbotladim.** Bu muhim:
-agar tahrir paytida biror koeffitsient ham o'zgargan bo'lsa, V12 ga qarshi
-yozilgan barcha ablatsiya raqamlari jimgina noto'g'ri bo'lib qolardi.
-
-| Tekshiruv | Natija |
-|---|---|
-| V12 (shovqin mexanizmi o'chirilgan) vs `L-SHADE-DGR`, 1 avlod | **bit-identical** (F1, F4, F11, F21, F25) |
-| ... 8 avloddan keyin | maksimal nisbiy farq **3.2e-13** |
-| V12 dan bitta ortiqcha `wf/wf.sum()` normallashtirish olib tashlansa | **8000 FES da ham bit-identical** |
-
-Ya'ni yagona farq — allaqachon normallashtirilgan vektorni qayta
-normallashtirish (matematik jihatdan no-op, sonli jihatdan ~1 ULP), keyin
-xaotik kuchayish. Test: `test_lshade_dgr_is_v12_with_the_noise_mechanism_removed`.
-
-### 3. Yo'l-yo'lakay topilgan xato — urug'lash (seeding) sxemasi
-
-Bu rejada yo'q edi; raqiblarni olib tashlashda **ochilib qoldi va tuzatildi**.
-
-`run_all.py` har bir algoritmga urug'ni uning `sorted(ALL_ALGORITHMS)`
-ichidagi **o'rnidan** berardi. Demak zaif baseline'larni olib tashlash
-qolgan **hamma algoritmning tasodifiy oqimini o'zgartirardi**. Hech narsa
-xato bermaydi — shunchaki raqamlar boshqa raqamlarga aylanadi, va `--resume`
-bitta faylga **ikkita har xil urug' sxemasini** aralashtirib yuboradi.
-
-Tuzatish: `algorithm_seed(name) = blake2b-8(name) mod (2**31−1)` — urug'
-faqat **nomga** bog'liq. Endi raqib qo'shish yoki olib tashlash boshqalarning
-oqimiga tegmaydi. Manifestda `seed_scheme_version: 2` yoziladi va **v1 ostida
-yozilgan natijani davom ettirish rad etiladi** (xato xabari bilan).
-
-> **Muhim oqibat:** `results_gate10` (5 yurish, eski line-up) endi hozirgi kod
-> bilan qayta ishlab chiqarilmaydi. Baribir E1 protokoli 51 yurish talab
-> qiladi, ya'ni darvoza qaytadan ishga tushadi — lekin buni **ochiq yozib
-> qo'yamiz**, jimgina o'tkazib yubormaymiz.
-
-### 4. Testlar: 60 → 72, hammasi o'tadi
-
-| Fayl | Testlar | Holat |
-|---|---|---|
-| `tests/test_all.py` | 20 (+1: nasl aniqligi) | PASS |
-| `tests/test_suites.py` | 14 | PASS |
-| `tests/test_registry.py` | **11 (yangi fayl)** | PASS |
-| `tests/test_competitor_validation.py` | 8 | PASS |
-| `tests/test_noise.py` | 19 | PASS |
-| **Jami** | **72** | **PASS** |
-
-`test_registry.py` uchta narsani qulflab qo'yadi: (a) `TARGET` ro'yxatda
-bor; (b) roppa-rosa 8 ta raqib, zaif baseline'lar yo'q; (c) urug'
-qiymatlari **pinned** — ularni o'zgartirish uchun testni tahrirlash kerak,
-ya'ni tasodifan o'zgarib ketmaydi.
-
-`L-SHADE-DGR` `ALL_ALGORITHMS` ichida bo'lgani uchun mavjud tekshiruvlar
-avtomatik unga ham tegadi: byudjetdan oshmaslik, byudjetning >98% ini
-sarflash, bir urug'dan bit-identical natija. Qo'shimcha: 6 xil
-konfiguratsiyada (`RESTART`, `EIGEN_GATE`, `DIV_GUARD` o'chirilgan, `OPS`
-qisqartirilgan) D=10 va D=30 da to'liq byudjet — overrun **0**.
-
-### Keyingi qadam
-
-Reja bo'yicha navbatdagi ish — **E1 darvozasi** (CEC'2017, D=10, 29 funksiya,
-**51 yurish**, 100 000 FES). Bu sizning kompyuteringizda ishga tushadi:
+E1 darvozasi tugadi: CEC'2017, D=10, 29 funksiya, **51 yurish**, 10 algoritm,
+100 000 FES. Natija ikki tomonlama:
 
 ```
-python START.py --jobs 20
+Friedman chi2 = 65.76,  p = 1.03e-10
+Iman-Davenport F = 9.43, p = 2.33e-12
+Nemenyi CD (alpha=0.05) = 2.5157
 ```
 
-Buyrug'ingizni kutaman.
+| # | Algorithm | rank | Holm p (vs bizniki) |
+|---|---|---|---|
+| **1** | **L-SHADE-DGR** | **3.48** | — |
+| 2 | jSO | 4.22 | 0.596 **ahamiyatsiz** |
+| 3 | TEMOA_V12 | 4.31 | 0.596 ahamiyatsiz |
+| 4 | TEMOA_V11 | 4.55 | 0.536 ahamiyatsiz |
+| 5 | LSHADE | 5.00 | 0.225 ahamiyatsiz |
+| 6 | BIPOP_CMAES | 5.36 | 0.090 ahamiyatsiz |
+| 7 | IPOP_CMAES | 5.60 | **0.046 ahamiyatli** |
+| 8 | CMAES | 7.16 | **2.8e-05 ahamiyatli** |
+| 9 | TEMOA_V10 | 7.17 | **2.8e-05 ahamiyatli** |
+| 10 | sepCMAES | 8.14 | **4.3e-08 ahamiyatli** |
+
+**Biz 1-o'rindamiz, lekin adaptiv DE nasabidan ustunligimiz isbotlanmagan.**
+jSO ga qarshi win/tie/loss = **4–21–4**. Rank farqi 0.74, Nemenyi CD esa 2.52.
+
+Bu reja beshta talabingizni bajaradi va shu holatdan Q1 darajaga chiqish
+yo'lini beradi.
 
 ---
 
-## SIZ QAROR QILADIGAN 4 TA NARSA
+## §1 — Raqiblar ro'yxati: TEMOA_V10/V11/V12 olib tashlanadi
 
-Quyida to'rtta bandingiz bo'yicha **taklif va yechim** — tahlil emas, qaror.
-Har biriga mening tavsiyam qo'yilgan.
+### Nega olib tashlanadi
 
-### Q1 — Qaysi kategoriyada bellashamiz (jadval §0A da)
+Ular **raqib emas** — bizning o'z algoritmimizning eski versiyalari. Ularni
+taqqoslash jadvalida qoldirish ikki xato tug'diradi:
 
-**Taklif:** asosiy da'voni **D3 (CEC hybrid, 10 funksiya) + D5 (qo'llanma)**
-ga qo'yamiz. D1/D2 da "tengmiz" deymiz, **D4 (composition) da ortdamiz deb
-ochiq yozamiz**.
+1. **Friedman rankini buzadi.** TEMOA_V10 (rank 7.17) kabi zaif a'zolar
+   boshqa hammaning o'rtacha rankini sun'iy ravishda yaxshilaydi. Nemenyi CD
+   algoritm soniga bog'liq (o'lchangan, N=29):
 
-**Yechim:** D4 zaifligini yashirmaymiz — IPOP restart qo'shamiz va
-yaxshilanishni o'lchaymiz; yetmasa, cheklov sifatida qayd etamiz.
+   | k (algoritm soni) | Nemenyi CD |
+   |---|---|
+   | 10 (hozirgi) | 2.5157 |
+   | 9 (taklif) | 2.2309 |
+   | 7 (faqat haqiqiy raqiblar) | 1.6730 |
 
-### Q2 — Raqiblar kuchlimi (tahlil §0B da)
+   Ya'ni ro'yxat qisqarsa test **sezgirroq** bo'ladi.
+2. **Taqrizchiga o'zimizni o'zimiz bilan taqqoslayotgandek ko'rinadi.**
 
-**Taklif:** uch o'zgarish.
+> **Muhim va yoqimsiz haqiqat — yashirmayman.** Bu o'zgarish bizning
+> ahvolimizni yaxshilamaydi. k=7 da ham CD = 1.673, jSO bilan rank farqimiz
+> esa atigi **0.38**. Ya'ni raqiblar ro'yxatini tozalash **metodologik
+> to'g'rilik**, "ustunlikni ahamiyatli qilish" usuli emas. jSO dan ustunlik
+> da'vosi baribir o'tmaydi.
 
-1. **Qo'shiladi (hozir yo'q, majburiy):** TPE (Optuna), random search,
-   ReliefF, LASSO, mutual information, RF-importance, **binar-maska
-   formulyatsiyasi**.
-2. **Nashr etilgan jadvaldan taqqoslanadi:** EA4eig, L-SRTDE, NL-SHADE-RSP.
-3. **Butunlay olib tashlanadi:** PSO, GWO, WOA, SCA, HHO, DE/rand/1 va ikkita
-   zaiflashtirilgan nazorat. Yakuniy ro'yxat — **8 ta raqib**, §0B da.
+Ular repozitoriyda **ablatsiya mos yozuvi** sifatida qoladi (`OURS` lug'atida),
+lekin `RIVALS` ga kirmaydi va asosiy jadvalda ko'rinmaydi.
 
-**Yechim:** 1-punkt bajarilmasa, E2 hech narsa isbotlamaydi. Shuning uchun u
-E2 ning **bajarilish sharti** qilib qo'yiladi.
+### Yakuniy 9 ta raqib
 
-### Q3 — Halol yangilik bo'la oladimi (tahlil §0C da)
+| # | Raqib | Yil | Maqomi | Holat |
+|---|---|---|---|---|
+| 1 | CMA-ES (restart) | 2001 | uzluksiz BBO etaloni (Hansen) | ✅ bor |
+| 2 | IPOP-CMA-ES | 2005 | standart restart CMA-ES (Auger & Hansen) | ✅ bor |
+| 3 | sep-CMA-ES | 2008 | diagonal nazorat — aylanish izolyatsiyasi | ✅ bor |
+| 4 | BIPOP-CMA-ES | 2009 | eng kuchli umumiy uzluksiz etalon | ✅ bor |
+| 5 | L-SHADE | 2014 | CEC'2014 **g'olibi** | ✅ bor |
+| 6 | jSO | 2017 | CEC'2017 yetakchisi; bizning yadromiz | ✅ bor |
+| 7 | **LSHADE-cnEpSin** | 2017 | CEC'2017 **3-o'rin**; eigen-crossover ajdodimiz | ❌ **qo'shiladi** |
+| 8 | **L-SHADE-RSP** | 2018 | CEC'2018 **g'olibi**; jSO ning vorisi | ❌ **qo'shiladi** |
+| 9 | **NL-SHADE-RSP** | 2021 | CEC'2021 **g'olibi**; zamonaviy chegara | ❌ **qo'shiladi** |
 
-**Taklif:** algoritmik ustunlik da'vosidan **voz kechamiz**. Maqolaning
-hissasi uchta bo'ladi:
+### Nega aynan shu uchtasi
 
-1. Birgalikda uzluksiz vazn + giperparametr formulyatsiyasi (binar-maskadan
-   ustunlik **o'lchanadi**)
-2. O'lchovga asoslangan gibrid — zararli komponentlar **olib tashlangan**
-   (spiral, ES dumi), har biri ablatsiya bilan
-3. Rejim chegarasi — qaysi byudjetdan boshlab metaevristika BO/TPE dan ustun
+Hozirgi ro'yxatning eng yangi a'zosi **jSO — 2017**. To'qqiz yillik. 2026-yilgi
+maqolada bu aynan biz tanqid qilgan **zaif-baseline muammosi**.
 
-**Yechim:** maqolaning markazi algoritm emas, **masala formulyatsiyasi**.
-Bu Control and Optimization kategoriyasiga to'liq mos va BEEI ning odatiy
-darajasidan yuqori.
+- **LSHADE-cnEpSin** — eigen-crossoverni biz undan olganmiz. Undan ustun
+  kelmasak, "eigen-crossoverli portfel" degan gapning ma'nosi yo'q. Bu
+  **intellektual halollik masalasi**, nafaqat kuch masalasi.
+- **L-SHADE-RSP** — jSO ning bevosita vorisi (rank-based selective pressure).
+  jSO bilan tengmiz; uning vorisi bilan ham tengmizmi — shuni bilish kerak.
+- **NL-SHADE-RSP** — 2021, zamonaviy chegara.
 
-### Q4 — Nom va matematika
+### EA4eig va L-SRTDE nega YO'Q
 
-**Taklif (nom):** `L-SHADE-DGR` — L-SHADE with Diversity Guard and Restart.
-Metafora emas, nasabni ochiq aytadi (jSO, LSHADE-cnEpSin, L-SRTDE kabi).
-Muqobillar §0D da.
+Tekshirdim: ularning nashr etilgan jadvallari **CEC'2021/2022 va CEC'2024**
+to'plamlarida. CEC'2017 D=10, 51 yurishlik jadvali topilmadi. Umumiy asossiz
+taqqoslash — soxta taqqoslash. Ular **faqat iqtibos qilinadigan prior art**
+bo'lib qoladi (eigen-crossover egasi sifatida), raqib sifatida emas.
 
-**Taklif (matematika):** §1A da to'rtta invariantlik tasdig'i qo'shildi.
-Ulardan biri **mening oldingi g'oyamni bekor qiladi**: DE diagonal affin
-transformatsiyaga invariant, ya'ni guruh-normallashtirish hissa bo'la
-olmaydi — u standart tayyorgarlik. §1B da hybrid sinfdagi ustunlik uchun
-**sinaladigan gipoteza** va uni o'lchash formulasi (`align(t)`) berildi.
+### Implementatsiya xavfi va uni yopish
 
----
+> Noto'g'ri implementatsiya qilingan raqib **bizning foydamizga** xato qiladi —
+> bu loyiha aynan shu aybni tuzatish uchun boshlangan.
 
-## Context
+Har bir yangi raqib uchun **majburiy validatsiya**:
 
-**Jurnal.** Bulletin of Electrical Engineering and Informatics. Scopus CiteScore
-bo'yicha **Control and Optimization kategoriyasida Q1** (81-persentil, 37/198).
-Boshqa kategoriyalarida Q2. Scimago SJR bo'yicha esa Q3 — ikkalasi ham to'g'ri,
-har xil metrika; muassasa qaysi birini hisoblashini bilish kerak.
-
-**Bundan kelib chiqadigan qat'iy qoida:** maqola **birinchi navbatda
-optimizatsiya maqolasi** bo'lishi kerak. Agar u "IDS uchun yangi usul" yoki
-"neyron tarmoq uchun yangi usul" deb yozilsa, Computer Networks (Q2) yoki
-Information Systems (Q2) kategoriyasiga tushadi va **Q1 yo'qoladi**. Sarlavha,
-abstrakt va kalit so'zlar optimizatsiyani oldinga qo'yishi shart.
-
-**BEEI ning qat'iy format talablari** (ularga muvofiq bo'lmasa, tashqi
-taqrizsiz qaytariladi):
-
-| Talab | Qiymat |
+| Tekshiruv | Mezon |
 |---|---|
-| Uzunlik | maks. **12 bet**, ~5 000 so'z |
-| Shrift/format | Times New Roman 10pt, single space, rasmiy Word/LaTeX shablon |
-| Abstrakt | 100–200 so'z, **o'tgan zamonda** |
-| Kalit so'zlar | maks. 7 |
+| Nashr etilgan CEC'2017 jadvali bilan solishtirish | median xato, D=10 va D=30, log10 farqi < 0.5 |
+| Byudjet | `overrun == 0`, `fes/max_fes > 0.98` |
+| Takrorlanuvchanlik | bir urug'dan bit-identical |
+| Xarakterli xulq | L-SHADE-RSP rank-based tanlov **haqiqatan** ishlayotgani (RSP o'chirilsa natija yomonlashishi) |
 
-12 bet — tadqiqot hajmini belgilaydi: nima maqolada, nima repozitoriyda
-qolishini oldindan loyihalash kerak.
-
-### Shu paytgacha o'lchanganlar (rejaning asosi)
-
-| Topilma | Dalil |
-|---|---|
-| V11 CEC'2017 **hybrid sinfida 1-o'rin** (rank 2.05, jSO 2.35) | darvoza, 29 funksiya, D=10 |
-| V11 umumiy 1-o'rin (3.19), lekin jSO (3.28) dan farqi **ahamiyatsiz** | darvoza |
-| V11 kompozitsiya sinfida zaif (3.95 vs BIPOP 3.70) | darvoza |
-| V11 shovqinli sinflarda eng kuchli | legacy o'lchov, C6/C7 rank 1.00 |
-| Spiral operator har bir funksiyada zararli; ES dumi hissasiz | ablatsiya |
-| **Shovqinli kredit mexanizmi: nazariya to'g'ri, natijaga ta'siri yo'q** | ifloslanish 8–9× kamaydi, yakuniy xato o'zgarmadi |
-| DE oilasi yomon shartlanganlikdan 500–2500× yo'qotadi; CMA-ES yo'qotmaydi, lekin multimodal'da zaif | premise test (ogohlantirish: birinchi versiyasida plato artefakti bor edi, toza versiyasi o'tkazilmadi) |
-
-### Foydalanuvchi savoliga javob — dalil bilan
-
-**Neyron tarmoq vaznlarini metaevristika bilan o'qitish — rad etiladi.**
-Chuqur tarmoqda 10⁴–10⁶ o'zgaruvchi; adabiyot faqat *"low dimensional neural
-networks"* da raqobatbardoshlik qayd etadi va *"convergence performance is not
-as good as that of Adam"* deydi. Q1 sifatidagi natija bu yerda deyarli imkonsiz.
-
-**Giperparametr sozlash — qabul qilinadi, lekin faqat DE yutadigan rejimda.**
-Adabiyotning o'zi chegarani beradi: *"SMAC significantly outperforms DE with
-small budgets, but for larger budgets, DE consistently achieves more wins than
-SMAC"*; *"for ... relatively cheap objective functions, for which one can afford
-more than hundreds of evaluations, CMA-ES is recommended"*.
-
-Demak:
-- chuqur tarmoq HPO (≈10² baholash) → **BO hududi, kirmaymiz**
-- arzon modellar (SVM, XGBoost, RF) HPO (10³–10⁴ baholash) → **bizning hudud**
-
-Va uni **uzluksiz feature weighting** bilan birlashtirsak, D = 40–90 bo'ladi —
-darvozada o'lchangan kuchli zonamiz. Mavjud ishlar (MMAO-Cls, PSO-XGBoost)
-**binar maska** ishlatadi; uzluksiz vaznlash kam band.
+Validatsiyadan o'tmagan implementatsiya **jadvalga kiritilmaydi** — "taxminan
+to'g'ri" deb qo'yilmaydi.
 
 ---
 
-## 0A. Qaysi yo'nalish va kategoriyalarda bellashamiz
+## §2 — Qayerda, kimdan, qaysi parametrda yutqazdik
 
-Ikkita "kategoriya" tizimi bor va ularni aralashtirmaslik kerak.
+Manba: `reports/data_gate_E1_10D/`, 51 yurish, family-wide Holm tuzatishi.
 
-### (a) Scopus ASJC — jurnal darajasi, Q1 ni belgilaydi
+### 2A. Sinf bo'yicha o'rtacha rank (7 ta haqiqiy raqib, TEMOA'lar chiqarilgan)
+
+| Algorithm | unimodal (2) | simple multimodal (7) | **hybrid (10)** | composition (10) | ALL 29 |
+|---|---|---|---|---|---|
+| **L-SHADE-DGR** | 3.75 | **3.07** | **1.80** ← 1-o'rin | **3.10** | **2.69** |
+| jSO | 3.75 | 3.64 | 2.10 | 3.50 | 3.07 |
+| LSHADE | 3.75 | 4.29 | 2.95 | 3.65 | 3.57 |
+| BIPOP_CMAES | 3.75 | 3.50 | 4.20 | 3.40 | 3.72 |
+| **IPOP_CMAES** | 3.75 | **2.93** ← **bizdan yaxshi** | 4.50 | 3.95 | 3.88 |
+| CMAES | 3.75 | 5.21 | 5.65 | 4.95 | 5.17 |
+| sepCMAES | 5.50 | 5.36 | 6.80 | 5.45 | 5.90 |
+
+**O'qish:**
+- **hybrid (F11–F20): 1.80 — aniq 1-o'rin.** Bu bizning haqiqiy zonamiz.
+- **composition (F21–F30): 3.10 — 1-o'rin** (restart qo'shilgandan keyin
+  yaxshilandi; oldingi darvozada V11 4-o'rinda edi).
+- **simple multimodal (F4–F10): 3.07 — 2-o'rin.** IPOP-CMA-ES (2.93) bizdan
+  yaxshi. **Yagona sinf, unda yutqazamiz.**
+- unimodal: hamma 1e-8 poliga tushadi, sinf hech narsani ajratmaydi.
+
+### 2B. Raqib bo'yicha natija (29 funksiya, Holm family-wide)
+
+| Raqib | biz yutdik (+) | teng (=) | **biz yutqazdik (−)** |
+|---|---|---|---|
+| sepCMAES | 18 | 9 | 2 |
+| CMAES | 15 | 11 | 3 |
+| IPOP_CMAES | 13 | 12 | 4 |
+| BIPOP_CMAES | 12 | 14 | 3 |
+| LSHADE | 8 | 19 | 2 |
+| **jSO** | **4** | **21** | **4** |
+
+### 2C. Aniq yutqazgan funksiyalarimiz — eng og'ridan eng yengiliga
+
+| F | Funksiya (CEC'2017) | Bizniki | Eng yaxshi | Kim | Â₁₂ | p_holm | Og'irligi |
+|---|---|---|---|---|---|---|---|
+| **F4** | Shifted Rotated **Rosenbrock** | 3.99 | **0.00** | CMAES | **0.186** | 3.4e-06 | **halokatli** |
+| **F5** | Shifted Rotated **Rastrigin** | 1.99 | **0.00** | IPOP_CMAES | **0.181** | 7.2e-05 | **halokatli** |
+| F24 | Composition 4 | 200.0 | 100.0 | BIPOP/sepCMAES | 0.154 | 9.8e-07 | katta (2×) |
+| F21 | Composition 1 | 100.0 | 100.0 | jSO | 0.206 | 1.4e-05 | dispersiya |
+| F30 | Composition 10 | 1377.49 | 1377.24 | jSO | 0.121 | 3.5e-04 | dispersiya |
+| F25 | Composition 5 | 479.19 | 475.69 | BIPOP_CMAES | 0.169 | 2.5e-06 | kichik (1.01×) |
+| F7 | Lunacek Bi-Rastrigin | 11.53 | 11.37 | IPOP_CMAES | 0.337 | 6.3e-02 | kichik |
+| F18 | Hybrid 8 | 0.468 | 0.243 | LSHADE | 0.376 | 0.88 | ahamiyatsiz |
+| F27 | Composition 7 | 390.52 | 390.52 | LSHADE | 0.334 | 4.8e-02 | dispersiya |
+
+**Â₁₂ o'qilishi:** 0.5 = teng. 0.186 degani — tasodifiy tanlangan bizning
+yurishimiz tasodifiy tanlangan CMA-ES yurishidan faqat **18.6%** hollarda
+yaxshi. Bu **large** effekt, bizga qarshi.
+
+**Naqsh aniq:** F4 va F5 da CMA-ES **aniq nolga** tushadi, biz esa umuman
+tushmaymiz. Qolgan yutqazishlar 1–2× darajasida — ular muhim emas.
+**Butun muammo F4 va F5 da.**
+
+---
+
+## §3 — Qaysi qism ishlamayapti: diagnoz va yechim
+
+### 3A. Matematik diagnoz — to'rtta invariantlik tasdig'i
+
+**Belgilash.** `T(x) = Ax + b`, `A` teskarilanuvchi. Transformatsiyalangan
+masala `f_T(y) = f(T(y))`. Algoritm `T` ga **invariant** deyiladi, agar u `f`
+va `f_T` da (mos boshlang'ich holatda) bir xil traektoriya chizsa.
+
+**1-tasdiq — DE diagonal affin transformatsiyaga invariant.**
+`A = diag(a₁,…,a_D)`, `a_i ≠ 0`. DE/rand/1/bin uchun:
+```
+mutatsiya:  v = x_{r1} + F(x_{r2} − x_{r3})
+            T(v) = T(x_{r1}) + F(T(x_{r2}) − T(x_{r3}))    (A chiziqli)
+binomial:   koordinata bo'yicha tanlov; A diagonal ⇒ koordinatalar aralashmaydi
+```
+Ikkala operator `T` bilan kommutatsiyalanadi ⇒ **invariant**.
+*Oqibati:* o'zgaruvchilarni normallashtirish DE uchun **hech narsa bermaydi**.
+Guruh-normallashtirishni hissa deb da'vo qilib bo'lmaydi — u standart
+tayyorgarlik.
+
+**2-tasdiq — DE aylanishga invariant EMAS.**
+`A = R`, `RᵀR = I`, `R` diagonal emas:
+```
+binomial crossover:  u_i = v_i  agar  rand_i < CR,  aks holda  x_i
+```
+crossover **berilgan bazisda koordinata tanlaydi**; `R` koordinatalarni
+aralashtiradi ⇒ `crossover ∘ R ≠ R ∘ crossover` ⇒ **invariant emas**.
+
+**3-tasdiq — CMA-ES to'liq affin invariant.**
+Kovariatsiya `C` ni moslashtirib, CMA-ES har qanday to'la rangli `A` ga
+invariant bo'ladi (Hansen).
+
+**4-tasdiq — eigen-crossover aylanish invariantligini taqriban tiklaydi.**
+Populyatsiya kovariatsiyasi `Ĉ` ning xos vektorlari `B` bazisida crossover
+qilinsa, `B → R` yaqinlashganda crossover aylanishga invariant bo'ladi.
+**Bu ma'lum natija** (LSHADE-cnEpSin, EA4eig) va **bizning hissamiz emas**.
+
+### 3A-bis. Nazariya F4/F5 ni tushuntiradi
+
+F4 = Shifted **Rotated** Rosenbrock, F5 = Shifted **Rotated** Rastrigin —
+ikkalasi ham `f(R(x − o))` shaklida. Rosenbrock vodiysi aylantirilgan, egri
+va yomon shartlangan; uni kuzatish uchun to'la kovariatsiya kerak.
+2-tasdiqqa ko'ra DE uni kuzata olmaydi, 3-tasdiqqa ko'ra CMA-ES kuzatadi.
+
+**Demak F4/F5 dagi yutqazish tasodif emas — u nazariyadan kelib chiqadi**,
+va o'lchov buni tasdiqlaydi: CMA-ES aynan nolga tushadi, biz tushmaymiz.
+
+### 3B. Bizda yechim bor edi, lekin ishlamayapti
+
+4-tasdiq: **eigen-crossover** aylanish invariantligini taqriban tiklaydi —
+populyatsiya kovariatsiyasi `Ĉ` ning xos bazisi `B` da crossover qilinsa,
+`B → R` yaqinlashganda invariantlik tiklanadi.
+
+Bizda bu **bor**: `temoa/algorithms/lshade_dgr.py`, `P_EIG` ehtimoli bilan.
+Lekin F4/F5 da ishlamayapti. **Nega — shuni o'lchov aniqlaydi, taxmin emas.**
+
+### 3C. O'tkazilayotgan diagnostika (hozir ishlayapti)
+
+11 ta konfiguratsiya × 6 funksiya (F4, F5, F7, F16, F24, F11) × 15 yurish,
+D=10, 100 000 FES:
+
+| Konfiguratsiya | Nimani sinaydi |
+|---|---|
+| `DGR default` | mos yozuv |
+| `P_EIG=0.9 fixed`, `ADAPT_EIG=False` | **adaptatsiya eigen'ni o'chirib qo'yayaptimi?** |
+| `P_EIG=0.0` | eigen umuman hissa beryaptimi? |
+| `EIGEN_GATE=False` | `n_samples > D` sharti zarar qilyaptimi? |
+| `RESTART=False` | restart F4/F5 da yordam beryaptimi yoki zarar? |
+| `DIV_GUARD=False` | qo'riqchi Rosenbrock vodiysidan chiqarib yuboryaptimi? |
+| `OPS=(0,)` | portfelning o'zi zararmi? |
+| `POP_FACTOR=18` | populyatsiya kichikligi sababmi? |
+| jSO, BIPOP, IPOP | raqib mos yozuvlari |
+
+> **Bu bo'lim diagnostika natijasi kelgach to'ldiriladi.** Sabab
+> o'lchanmaguncha yechim taklif qilinmaydi — aks holda bu taxmin bo'lardi.
+
+**Hisob haqiqati:** 11 × 6 × 15 = 990 yurish × 100 000 FES ≈ **9.6 CPU-soat**.
+Cloud konteynerda 4 yadro bor va ularning bir qismini eski darvoza yurishi
+band qilgan — shuning uchun bu yerda ~5 soat ketadi. **Sizning mashinangizda
+(24 tred) ~25 daqiqa.** Diagnostika 2-bosqich sifatida sizda o'tkaziladi;
+konteynerdagisi fon rejimida ishlab turadi va ulgursa, natijasini qo'shamiz.
+
+### 3D. Taklif qilinadigan yechim — hozirgi asosiy nomzod
+
+O'lchov tasdiqlasa, yechim **komponent qo'shish emas, mavjudini to'g'ri
+ishlatish** bo'ladi. Uchta nomzod, kuch tartibida:
+
+| # | Yechim | Nima o'zgaradi | Nega ishlashi kerak | Narxi |
+|---|---|---|---|---|
+| **A** | **Eigen-crossover chastotasini masalaga moslash** — `P_EIG` ni muvaffaqiyat emas, **shartlanganlik soni** `cond(Ĉ)` bo'yicha boshqarish | `P_EIG = clip(1 − 1/log10(cond(Ĉ)), 0.1, 0.9)` | Yomon shartlangan aylantirilgan masalada eigen kerak; yaxshi shartlanganda keraksiz. Hozirgi adaptatsiya **darhol muvaffaqiyat** bo'yicha ishlaydi — bu Rosenbrock vodiysida noto'g'ri signal, chunki vodiy bo'ylab yurish sekin | `O(D³)` allaqachon bor, qo'shimcha narx yo'q |
+| **B** | **CMA-ES ni portfelga integratsiya qilish** (LSHADE-SPACMA uslubi) | byudjetning bir qismi CMA-ES ga, adaptiv taqsimlash bilan | F4/F5 da CMA-ES **aniq nolga** tushadi. Bu ochiq zaiflikni to'g'ridan-to'g'ri yopadi | **prior art**: LSHADE-SPACMA aynan shu. Yangilik emas, lekin halol iqtibos bilan ishlatish mumkin |
+| **C** | **Muvaffaqiyat o'rniga kechiktirilgan kredit** (AOS topilmasi) | operator krediti darhol ΔF emas, `k` avloddan keyingi hissa bo'yicha | §3.3 o'lchovi: zararli operator fitness foydasining 66% ini oladi. Darhol kredit populyatsiya qulashini ko'ra olmaydi | yangi, sinalmagan — **bu bizning haqiqiy hissamiz bo'lishi mumkin** |
+
+**Tavsiyam: A + C.** B ni tanlamaymiz, chunki u LSHADE-SPACMA ning takrori —
+yangilik bermaydi va "CMA-ES qo'shdik" degan gap Q1 hissasi emas.
+
+**Olib tashlanadiganlar (allaqachon o'lchangan):**
+
+| Olib tashlandi | Nega | O'rniga |
+|---|---|---|
+| WOA spiral operatori | har bir funksiyada zararli; fitness foydasining 66% ini olgan, lekin populyatsiyani qulatgan | diversity guard |
+| (1+1)-ES dumi | hissa nol; ikki funksiyada natija bit-identical | byudjet asosiy siklga qaytarildi |
+| Shovqinga chidamli kredit (N0–N3) | ifloslanish 8–9× kamaydi, **yakuniy xato o'zgarmadi** | negative result sifatida qoladi |
+
+---
+
+## §4 — Yagona `.py` fayl: `START.py` qayta yoziladi
+
+Bitta buyruq — hammasi. Hozirgi `START.py` faqat CEC darvozasini biladi;
+yangi versiya to'rtta bosqichni boshqaradi.
+
+```
+python START.py                 # to'liq quvur: check → test → E1 → diagnostika → tahlil
+python START.py --check         # faqat tekshiruv va testlar (~6 daq)
+python START.py --stage e1      # faqat CEC'2017 darvozasi
+python START.py --stage diag    # faqat komponent diagnostikasi
+python START.py --stage aos     # faqat AOS kredit tadqiqoti
+python START.py --dims 10 30    # o'lchamlar
+python START.py --jobs 20       # ishchilar soni
+```
+
+**Kafolatlar (har biri testga bog'langan):**
+
+| Kafolat | Qanday ta'minlanadi |
+|---|---|
+| Testlar yiqilsa **eksperiment boshlanmaydi** | `run_tests()` → `return 1` |
+| Uzilsa **yo'qolmaydi** | `--resume`, har funksiyadan keyin CSV yoziladi |
+| Qayta ishga tushirish **bit-identical** | urug' nomga bog'liq (`algorithm_seed`), test bilan qulflangan |
+| Byudjetdan **oshmaydi** | `Tracker.overrun == 0`, har algoritmda sinaladi |
+| To'liqsiz natija **tahlil qilinmaydi** | `merge_shards.py` funksiya va qator sonini tekshiradi |
+| Har bosqich **mustaqil** | biri yiqilsa qolganlari saqlanadi |
+
+**Yangi:** bosqichlar oralig'ida progress va ETA, disk joyini tekshirish,
+Windows/Linux farqini avtomatik hal qilish, tugagach `reports/` ga
+hisobot yozish.
+
+---
+
+## §5 — Matematik aniqlik va halollik qoidalari
+
+Bu bo'lim "yaxshi niyat" emas — har biri **kodga yoki testga bog'langan**.
+
+| Qoida | Ta'minlovchi mexanizm |
+|---|---|
+| Raqam o'lchanmasa, yozilmaydi | Har bir da'vo `reports/data_*/` dagi faylga havola qiladi |
+| p-qiymat quvvatsiz testdan chiqmaydi | 51 yurish; 2 funksiyali sinfda test **chop etilmaydi** (`class_ranks.py` shunday yozilgan) |
+| Effekt o'lchami majburiy | Â₁₂ har juftlikda; faqat p-qiymat yetarli emas |
+| Ko'p taqqoslash tuzatiladi | Holm — katak ichida **va** butun oila bo'yicha |
+| Raqib zaiflashtirilmaydi | `test_competitor_validation.py`: har biri byudjetning >98% ini sarflaydi, xarakterli xulqi tasdiqlanadi |
+| Implementatsiya nashr bilan solishtiriladi | Yangi raqiblar CEC'2017 jadvaliga qarab validatsiya qilinadi |
+| Yangilik tekshirilmasdan da'vo qilinmaydi | `reports/PRIOR_ART.md`, sana bilan |
+| Takrorlanuvchanlik o'lchanadi | `compare_runs.py` — ikki mashinada bit-identical talab qilinadi |
+| Salbiy natija yashirilmaydi | Shovqin mexanizmi maqolada "negative results" bo'limida |
+| Wall-clock platformaga bog'liq | GitHub runner'lari bir xil ish uchun **2.7× farq qildi** (21.9–59.1 daq). Vaqt **faqat bitta nazorat qilinadigan mashinada** o'lchanadi |
+
+---
+
+## §6 — Mening qo'shimcha taklifim
+
+**Maqolaning markazi algoritm emas, AOS topilmasi bo'lishi kerak.**
+
+Sabab raqamlarda: 51 yurishda ham jSO dan ustunligimiz **p = 0.596**.
+Bu da'vo hech qachon o'tmaydi. Lekin bizda o'lchangan boshqa narsa bor:
+
+| | op0 pbest-DE | op1 leader | **op2 spiral** | op3 Levy |
+|---|---|---|---|---|
+| muvaffaqiyat ulushi (AOS shuni mukofotlaydi) | 0.103 | 0.127 | 0.120 | 0.060 |
+| **umumiy fitness foydasi** | 11.1% | 14.2% | **66.1%** | 8.6% |
+| ajratilgan ehtimollik | 0.175 | 0.086 | **0.644** | 0.095 |
+
+Eng **zararli** operator (ablatsiya tasdiqlagan) krediting **66%** ini oladi.
+Chunki u qarz olib ishlaydi: populyatsiyani yig'ib tez pasayadi, to'lov esa
+kechikkan. **Darhol yaxshilanishga asoslangan hech qanday kredit sxemasi buni
+ko'ra olmaydi** — probability matching, adaptive pursuit, DMAB, extreme-value,
+DE-DDQN, hammasi.
+
+Agar bu umumiy bo'lsa — bu **usullar sinfi** haqidagi topilma, bizning
+algoritm haqida emas. Information Sciences / SWEVO darajasi.
+
+**Lekin dalil hozir: bitta funksiya, bitta yurish, bitta algoritm.**
+Shuning uchun taklifim — uni jiddiy o'lchash:
+
+- 4–5 AOS sxemasi (probability matching, adaptive pursuit, DMAB, extreme-value)
+- × 29 funksiya × 51 yurish
+- har operatorning **darhol krediti** va **yakuniy hissasi** alohida yoziladi
+- `corr(darhol kredit, yakuniy hissa)` — agar u manfiy yoki nolga yaqin
+  bo'lsa, patologiya tasdiqlanadi
+
+Bu tasdiqlanmasa — halol aytamiz va BEEI uchun yaxshi amaliy maqola qoladi.
+
+---
+
+## §7 — Jurnal: BEEI va Q1 kategoriyasiga moslik
+
+### 7A. Qaysi kategoriya Q1 beradi va uni qanday yo'qotamiz
+
+Bulletin of Electrical Engineering and Informatics, Scopus CiteScore bo'yicha:
 
 | ASJC kategoriya | BEEI kvartili | Bizga aloqasi |
 |---|---|---|
-| **Control and Optimization** | **Q1** (81-pt, 37/198) | **maqsad** — maqola shu yerga tushishi kerak |
+| **Control and Optimization** | **Q1** (81-persentil, 37/198) | **maqsad** — maqola shu yerga tushishi kerak |
 | Control and Systems Engineering | Q2 | — |
-| Computer Networks and Communications | Q2 | agar "IDS usuli" deb yozsak, bu yerga tushadi → Q1 yo'qoladi |
-| Information Systems | Q2 | — |
+| Computer Networks and Communications | Q2 | "IDS usuli" deb yozsak → **Q1 yo'qoladi** |
+| Information Systems | Q2 | "ML tizimi" deb yozsak → **Q1 yo'qoladi** |
 | Electrical and Electronic Engineering | Q2 | — |
 
-### (b) Masala kategoriyalari — algoritm haqiqatan bellashadigan joy
+> **Scimago SJR bo'yicha BEEI Q3.** Ikkalasi ham to'g'ri — har xil metrika.
+> Muassasangiz qaysi birini hisoblashini bilish kerak. Biz CiteScore
+> (Control and Optimization, Q1) bo'yicha maqsad qo'yamiz.
 
-| # | Yo'nalish | Kategoriya | n | Bizning o'lchangan holat |
-|---|---|---|---|---|
-| D1 | Uzluksiz BBO | CEC'2017 unimodal (F1, F3) | 2 | teng — hamma yechadi |
-| D2 | | CEC'2017 simple multimodal (F4–F10) | 7 | teng (3.43 = jSO 3.43) |
-| D3 | | **CEC'2017 hybrid (F11–F20)** | **10** | **1-o'rin (2.05 vs jSO 2.35)** ← yagona haqiqiy zonamiz |
-| D4 | | CEC'2017 composition (F21–F30) | 10 | **4-o'rin** (3.95 vs BIPOP 3.70) ← zaif |
-| D5 | ML qo'llanmasi | birgalikda uzluksiz vazn + giperparametr | 3 dataset × 2 klassifikator | **hali o'lchanmagan** |
+### 7B. Qat'iy loyihalash qoidasi
 
-**Halol xulosa:** 29 funksiyadan **faqat 10 tasida** (hybrid sinf) o'lchangan
-ustunligimiz bor, va u ham 5 yurishda — ahamiyatlilik tasdiqlanmagan.
-Qolgan 19 tasida tengmiz yoki ortdamiz. Maqolaning da'vosi shu chegaradan
-oshmasligi kerak.
+**Maqola birinchi navbatda OPTIMIZATSIYA maqolasi bo'lishi shart.** ML unda
+maqsad funksiya sifatida keladi, mavzu sifatida emas.
 
----
-
-## 0B. Raqiblarimiz haqiqatan kuchlimi
-
-Halol tasnif. Zaif raqib bilan bellashish foydasiz — bu to'g'ri.
-
-### YAKUNIY RO'YXAT — 8 ta raqib (buyruq bo'yicha)
-
-Optimizator taqqoslash (D1–D4, CEC'2017). Har birining maqomi hujjatlangan.
-
-| # | Raqib | Maqomi | Taqqoslash usuli |
-|---|---|---|---|
-| 1 | **L-SHADE** | CEC'2014 **g'olibi** | ishga tushiriladi |
-| 2 | **jSO** | CEC'2017 yetakchi ishtirokchisi; bizning yadromiz | ishga tushiriladi |
-| 3 | **BIPOP-CMA-ES** | uzluksiz BBO ning eng kuchli umumiy etaloni | ishga tushiriladi |
-| 4 | **IPOP-CMA-ES** | standart restart CMA-ES (Auger & Hansen) | ishga tushiriladi |
-| 5 | **CMA-ES** (restart) | uzluksiz BBO ning etaloni (Hansen) | ishga tushiriladi |
-| 6 | **sep-CMA-ES** | diagonal variant — **aylanishga moslashuvni izolyatsiya qiluvchi nazorat** | ishga tushiriladi |
-| 7 | **EA4eig** | CEC'**2022 g'olibi**; ansambl + eigen — strukturaviy eng yaqin raqib | nashr etilgan jadvaldan |
-| 8 | **L-SRTDE** | CEC'**2024 g'olibi**; success-rate moslashuv | nashr etilgan jadvaldan |
-
-7 va 8 ni qayta yozmaymiz: noto'g'ri implementatsiya **bizning foydamizga**
-xato qiladi — bu biz tanqid qilgan aybning aynan o'zi. Ular rasmiy musobaqa
-jadvalidan, **protokol aniq mos kelganda** (29 funksiya, D=10/30, 51 yurish,
-10 000·D FES) taqqoslanadi.
-
-### OLIB TASHLANADI — zaif raqiblar
-
-**PSO, GWO, WOA, SCA, HHO, DE/rand/1/bin, PSO_orig, HHO_orig** — butunlay
-chiqariladi. 2025 sharhlari aynan shu naqshni "zaif baseline muammosi" deb
-belgilaydi; ular hech qanday Q1 da'vosini ko'tara olmaydi.
-
-Kodda: `LEGACY_SWARM` va `WEAKENED` lug'atlari `registry.py` dan olib
-tashlanadi, `baselines.py` esa **tarixiy hujjat sifatida repozitoriyda
-qoladi** (asl tadqiqotni qayta ishlab chiqarish uchun), lekin hech bir
-eksperimentda ishlatilmaydi.
-
-### Qo'llanma (D5) uchun alohida majburiy baseline'lar
-
-Bular "raqib" emas — ular **boshqa sohaning amaliyoti** va ularsiz E2 hech
-narsa isbotlamaydi. 8 talik ro'yxatga kirmaydi, lekin majburiy:
-
-| Guruh | Nima |
-|---|---|
-| HPO amaliyoti | **TPE (Optuna)**, **random search** |
-| Hukmron formulyatsiya | **binar-maska** kodlash (bir xil optimizator bilan — formulyatsiya farqini izolyatsiya qiladi) |
-| Filtr usullari | ReliefF, mutual information, LASSO, RF-importance |
-| Nazorat | vaznsiz (barcha xususiyatlar teng) |
-
-### Eng muhim ogohlantirish — EA4eig
-
-EA4eig **to'rtta algoritmning ansambli**: CMA-ES + CoBiDE + jSO varianti +
-IDE, Eigen crossover bilan. Ya'ni u **ham portfel, ham eigen-crossover**
-ishlatadi — strukturaviy jihatdan bizning eng yaqin raqibimiz, va u
-CEC'2022 g'olibi.
-
-> **Xulosa:** "adaptiv operator portfeli + eigen-crossover" ni yangilik deb
-> da'vo qilish mumkin emas. EA4eig buni bizdan oldin qilgan va yutgan.
-
-### Bizdagi bo'shliq
-
-Hozirgi holatda **qo'llanma tomonida bitta ham jiddiy raqib yo'q**. TPE,
-random search va filtr usullari qo'shilmasa, E2 ning natijasi hech narsa
-isbotlamaydi — bu biz tanqid qilgan xatoning aynan o'zi bo'lardi.
-
----
-
-## 0C. Bu g'alaba BEEI uchun halol optimizatsiya yangiligi bo'la oladimi
-
-Savolni uchga bo'lib, har biriga alohida javob beraman.
-
-| Mumkin bo'lgan da'vo | Halolmi? | Sabab |
+| Element | Qoida | Misol shakl |
 |---|---|---|
-| "CEC'2017 da jSO/L-SHADE/CMA-ES dan umuman ustunmiz" | **YO'Q** | 3.19 vs 3.28 — 5 yurishda shovqin. 51 yurish ham bu farqni ahamiyatli qilishi shubhali |
-| "CEC g'oliblaridan (EA4eig, L-SRTDE) ustunmiz" | **YO'Q** | Sinamaganmiz, va EA4eig strukturaviy jihatdan bizdan kuchliroq ansambl |
-| "CEC hybrid sinfida eng yaxshimiz" | **EHTIMOL** | 2.05 vs 2.35 — yo'nalish bor, lekin 51 yurish tasdiqlashi kerak, va EA4eig bu sinfda sinalmagan |
-| "Operator portfeli + eigen-crossover yangilik" | **YO'Q** | EA4eig aynan shu |
-| **"Birgalikda uzluksiz vazn + giperparametr formulyatsiyasi, binar-maska hukmron yondashuvdan ustun"** | **HA** | Formulyatsiya yangi, taqqoslash halol qilinsa isbotlanadi |
-| **"O'lchovga asoslangan gibrid: zararli komponentlar olib tashlangan"** | **HA** | Bizda ablatsiya dalili bor (spiral, ES dumi), va "ko'proq operator = yaxshiroq" taxminining rad etilishi o'z-o'zidan natija |
-| **"Rejim chegarasi: qaysi byudjetdan boshlab metaevristika BO dan ustun"** | **HA** | O'lchanadi, qaror qoidasi sifatida beriladi |
+| Sarlavha | optimizatsiya va algoritm **oldinda**, qo'llanma keyin | *"A rotation-aware differential evolution for joint feature weighting and hyperparameter optimization"* |
+| Abstrakt | birinchi jumla — **optimizatsiya masalasi**, IDS/ML emas | "This study addressed a heterogeneous continuous optimization problem..." |
+| Kalit so'zlar (maks. 7) | birinchi 3 tasi optimizatsiya atamasi | differential evolution; black-box optimization; adaptive operator selection; rotation invariance; feature weighting; hyperparameter optimization; CEC benchmark |
+| Introduction | bo'shliq **optimizatsiya bo'shlig'i** sifatida qo'yiladi | "credit assignment in AOS is blind to..." |
 
-**Yakuniy halol javob:** algoritmik ustunlik da'vosi **BEEI uchun ham
-yetarli emas**, chunki u tasdiqlanmagan va CEC g'oliblari bilan sinalmagan.
-Lekin **qo'llanma tomonidagi formulyatsiya + o'lchovga asoslangan gibrid +
-rejim chegarasi** uchligi halol, tekshiriladigan va BEEI ning odatiy
-darajasidan **yuqori**.
+Agar maqola "IDS uchun yangi usul" yoki "neyron tarmoq uchun usul" deb
+yozilsa, u Computer Networks (Q2) yoki Information Systems (Q2) ga tushadi.
+**Q1 yo'qoladi.**
 
-Shuning uchun maqolaning markazi algoritmning o'zi emas, **masala
-formulyatsiyasi va unga mos optimizator** bo'lishi kerak. Bu Control and
-Optimization kategoriyasiga to'liq mos — u "optimizatsiya masalasi va uni
-yechish usuli" haqida.
+### 7C. BEEI format talablari — buzilsa tashqi taqrizsiz qaytariladi
 
----
-
-## 0D. Algoritm nomi
-
-**Eski nom (TEMOA_V1x) tashlanadi.** Sabablari: versiya raqami maqolaga
-yaramaydi, va "TEMOA" ning ochilishi hech qayerda yo'q.
-
-**Nom qoidasi:** metafora/hayvon nomi **ishlatilmaydi** — 2025 sharhlari
-aynan shunga qarshi. Bu sohada halol konventsiya — **nasabni e'lon qiluvchi
-nom** (jSO, iL-SHADE, LSHADE-cnEpSin, LSHADE-SPACMA, L-SHADE-RSP, L-SRTDE).
-U taqrizchiga darhol nimadan qurilganini aytadi.
-
-Uchta variant, tavsiya bilan:
-
-| Variant | To'liq | Nimani aytadi | Baho |
-|---|---|---|---|
-| **L-SHADE-DGR** | L-SHADE with Diversity Guard and Restart | nasab + o'lchangan ikkita mexanizm | **tavsiya** — eng halol, konventsiyaga to'liq mos |
-| DGR-DE | Diversity-Guarded Restart Differential Evolution | mustaqilroq, lekin nasabni yashiradi | o'rtacha |
-| HG-SHADE | Heterogeneous-Group SHADE | masala sinfini aytadi | qo'llanmaga bog'lab qo'yadi |
-
-**Tavsiyam: `L-SHADE-DGR`.** U hech narsani oshirib ko'rsatmaydi va
-taqrizchi "bu L-SHADE ning varianti" deb o'zi topib olishidan oldin biz
-o'zimiz aytgan bo'lamiz — bu ishonch qozonadi.
-
----
-
-## 1. Maqolaning o'zagi: masala sinfi
-
-Maqola bitta masala sinfini ta'riflaydi va unga mos optimizator beradi.
-
-**Ta'rif.** `x = (w, θ) ∈ ℝ^(d+k)`, minimallashtiriladi
-```
-J(x) = 1 − M_CV(w, θ)  +  λ · ‖w‖₁ / d
-```
-- `w ∈ [0,1]^d` — uzluksiz xususiyat vaznlari (binar maska emas)
-- `θ ∈ ℝ^k` — klassifikator giperparametrlari (log-masshtabda, uzluksizlashtirilgan)
-- `M_CV` — stratifikatsiyalangan k-fold CV metrikasi, **har baholashda boshqa
-  tasodifiy bo'linish** → maqsad funksiya tabiiy shovqinli
-- `λ‖w‖₁/d` — siyraklik jazosi
-
-**Sinfning to'rtta xossasi, va ularning har biri o'lchangan:**
-
-| Xossa | Nega shu sinfda | Bizda o'lchangan dalil |
+| Talab | Qiymat | Bizga ta'siri |
 |---|---|---|
-| Geterogen (guruhlar har xil masshtabda) | `w ∈ [0,1]`, `θ` log-masshtabda | CEC hybrid sinfida 1-o'rin |
-| Separabel emas | xususiyatlar guruh bo'lib ta'sir qiladi | eigen-crossover 62× beradi |
-| Shovqinli | CV bo'linishi har safar boshqa | shovqinli sinflarda rank 1.00 |
-| O'rta o'lchamli, arzon baholash | d = 40–78, baholash < 1 s | 10³–10⁴ byudjet → DE hududi |
+| Uzunlik | maks. **12 bet**, ~5 000 so'z | tadqiqot hajmini belgilaydi |
+| Shrift/format | Times New Roman 10pt, single space, rasmiy shablon | LaTeX/Word shabloni majburiy |
+| Abstrakt | 100–200 so'z, **o'tgan zamonda** | "we propose" emas, "this study proposed" |
+| Kalit so'zlar | maks. **7** | 7C jadvalidagidek |
+| Referenslar | 30–40 | prior art bo'limi shunga sig'ishi kerak |
 
-**Bu — Control and Optimization maqolasi.** ML unda maqsad funksiya sifatida
-keladi, mavzu sifatida emas.
-
-### 1A. Invariantlik tahlili — maqolaning matematik o'zagi
-
-Bu bo'lim "nega aynan bu algoritm bu masala sinfiga mos" degan savolga
-**isbot darajasida** javob beradi, "tajribada yaxshi chiqdi" darajasida emas.
-
-**Belgilash.** `T(x) = Ax + b`, `A` teskarilanuvchi. Transformatsiyalangan
-masala `f_T(y) = f(T(y))`, quti `T⁻¹(Ω)`. Algoritm `T` ga **invariant**
-deyiladi, agar u `f` va `f_T` da (mos boshlang'ich holatda) bir xil
-traektoriya chizsa.
-
-**1-tasdiq (DE diagonal affin transformatsiyaga invariant).**
-`A = diag(a₁,…,a_D)`, `a_i ≠ 0` bo'lsin. DE/rand/1/bin uchun:
-```
-mutatsiya:  v = x_{r1} + F(x_{r2} − x_{r3})
-            T(v) = T(x_{r1}) + F( T(x_{r2}) − T(x_{r3}) )     chunki A chiziqli
-binomial:   koordinata bo'yicha tanlov; A diagonal ⇒ koordinatalar aralashmaydi
-```
-Ikkala operator ham `T` bilan kommutatsiyalanadi ⇒ **invariant**.
-*Amaliy ma'nosi:* o'zgaruvchilarni normallashtirish DE uchun **hech narsa
-bermaydi**. Guruh-normallashtirishni hissa deb da'vo qilib bo'lmaydi.
-
-**2-tasdiq (DE aylanishga invariant EMAS).**
-`A = R`, `RᵀR = I`, `R` diagonal emas. Binomial crossover berilgan bazisda
-koordinata tanlaydi; `R` koordinatalarni aralashtiradi ⇒ `crossover∘R ≠
-R∘crossover` ⇒ **invariant emas**. Bu DE ning yomon shartlangan
-aylantirilgan masalalardagi zaifligining sababi.
-
-**3-tasdiq (CMA-ES to'liq affin invariant).** Kovariatsiya `C` ni moslashtirib,
-CMA-ES har qanday to'la rangli `A` ga invariant bo'ladi (Hansen). Shuning
-uchun u bizning premise testimizda shartlanganlikdan **2–3×** yo'qotdi,
-DE oilasi esa 500–2500×.
-
-**4-tasdiq (eigen-crossover aylanish invariantligini taqriban tiklaydi).**
-Populyatsiya kovariatsiyasi `Ĉ` ning xos vektorlari `B` bazisida crossover
-qilinsa, `B → R` yaqinlashganda crossover aylanishga invariant bo'ladi.
-Bu **ma'lum natija** (LSHADE-cnEpSin, EA4eig) va **bizning hissamiz emas**.
-
-### 1B. Nega aynan hybrid sinf — gipoteza va uni sinash
-
-CEC'2017 hybrid funksiyalari `D` o'zgaruvchini `m` guruhga bo'ladi
-(tasodifiy permutatsiya bilan), har guruhga boshqa bazaviy funksiya beradi
-va **har guruhni alohida aylantiradi**. Demak Gessian, permutatsiyadan
-keyin, **blok-diagonal** va bloklarning shartlanganligi har xil:
-```
-H  ≈  Pᵀ · blockdiag(H₁, …, H_m) · P ,     cond(H_j) har xil
-```
-Erkinlik darajalari soni `Σ_j d_j(d_j+1)/2 ≪ D(D+1)/2`.
-
-**Gipoteza (G1).** Blok tuzilishida populyatsiya kovariatsiyasidan olingan
-xos bazis to'liq `D×D` kovariatsiyani o'rganishdan **namuna bo'yicha
-samaraliroq**, chunki u dominant blokka tez moslashadi. Shuning uchun
-eigen-crossover li DE bu sinfda CMA-ES dan ustun keladi.
-
-**G1 ni sinash (yangi, o'lchanadigan):** CEC hybrid funksiyalarining guruh
-bo'linishi **ta'rifdan ma'lum**. Har avlodda o'lchaymiz:
-```
-align(t) = ‖ Π_block · B_top_k ‖_F  /  ‖ B_top_k ‖_F     ∈ [0,1]
-```
-`Π_block` — haqiqiy blok qism fazosiga proyeksiya, `B_top_k` — `Ĉ` ning eng
-katta `k` xos vektori. Agar `align(t)` vaqt bo'yicha 1 ga yaqinlashsa va u
-CMA-ES da sekinroq bo'lsa, G1 tasdiqlanadi.
-
-> Bu **o'lchov**, da'vo emas. Tasdiqlanmasa, hybrid sinfdagi ustunlik
-> tushuntirilmagan empirik kuzatuv bo'lib qoladi va maqolada shunday
-> aytiladi.
-
-### 1C. Qo'llanma masalasining aniq tuzilishi
-
-```
-x = (w, θ) ∈ Ω = [0,1]^d × Θ,      Θ = ∏_{j=1..k} [ℓ_j, u_j]   (log-masshtabda)
-J(x) = 1 − M_CV(w, θ) + λ‖w‖₁/d
-```
-Guruh tuzilishi **oldindan ma'lum**: `G₁ = {1..d}` (vaznlar),
-`G₂ = {d+1..d+k}` (giperparametrlar). 1-tasdiqqa ko'ra bu guruhlarni
-normallashtirish DE uchun bepul — shuning uchun u **standart tayyorgarlik**
-deb ataladi, hissa deb emas.
-
-`M_CV` stoxastik: har baholashda `k`-fold bo'linishi qayta tasodifiylanadi.
-Shovqin **geteroskedastik** — yomon konfiguratsiyalarda dispersiya katta.
-Bu qayd etiladi va `Tracker` ning tavsiya qoidasi bilan hisobga olinadi.
-
----
-
-## 2. Hissa — halol chegaralangan
-
-Uchta narsa sinaldi va **ikkitasi rad etildi**; buni maqolada ham aytamiz.
-
-**Rad etilganlar (maqolaning "negative results" bo'limi):**
-- ΔF-asosidagi kredit: zararli operatorni ko'proq mukofotlagan bo'lardi
-- Shovqinga chidamli kredit: ifloslanishni 8–9× kamaytiradi, **lekin yakuniy
-  natijani o'zgartirmaydi** → SHADE xotirasi cheklovchi omil emas, selection
-  xatosi cheklovchi
-
-**Da'vo qilinadigan hissa (uchta, birortasi ham nazariy teorema emas):**
-
-1. **Masala formulasi.** Uzluksiz vazn + giperparametr birgalikda, bitta
-   geterogen uzluksiz masala sifatida. Mavjud ishlar binar maska ishlatadi;
-   uzluksiz variantda vazn **ahamiyat darajasini** ham beradi, nafaqat
-   tanlash/tanlamaslikni.
-2. **O'lchovga asoslangan gibrid.** Har bir komponent ablatsiya bilan
-   oqlangan, zararlilari **olib tashlangan** (spiral, ES dumi). Bu "ko'proq
-   operator = yaxshiroq" taxminining o'lchov bilan rad etilishi.
-3. **Rejim chegarasi.** Qaysi byudjetdan boshlab bizning usul BO/TPE dan
-   ustun bo'lishi — o'lchangan va qaror qoidasi sifatida beriladi.
-
-**Prior-art tekshiruvi majburiy qadam**, natija `reports/PRIOR_ART.md` ga
-sana bilan yoziladi. Tekshirilmagan narsa "yangi" deyilmaydi.
-
----
-
-## 3. Algoritm: `L-SHADE-DGR` (§0D ga ko'ra)
-
-**Qoladi (o'lchov bilan oqlangan, iqtibos bilan):** current-to-pbest-w/1 +
-arxiv, success-history F/CR (L-SHADE, jSO); eigen-crossover `n_samples > D`
-sharti bilan (**EA4eig, L-SRTDE — bizniki emas, da'vo qilinmaydi**); LPSR;
-Levy operatori; diversity qo'riqchisi.
-
-**Olib tashlanadi:** WOA spirali (har bir funksiyada zararli), (1+1)-ES dumi
-(hissasiz), shovqinli kredit mexanizmi (natijaga ta'siri yo'q).
-
-**Qo'shiladi:**
-- **IPOP uslubidagi restart** (Auger & Hansen 2005 — ma'lum, iqtibos bilan).
-  Sabab: darvoza kompozitsiya sinfida zaiflikni o'lchadi.
-- **Guruh-xabardor boshlang'ich masshtablash.** Qo'llanmada guruhlar
-  (`w` va `θ`) **oldindan ma'lum**, shuning uchun har guruh o'z qutisiga
-  normallashtiriladi. Bu triviallik, lekin uni **aniq aytish** kerak, chunki
-  o'lchov uning narxini ko'rsatdi (DE oilasi uchun 2–3 tartib).
-
-**Murakkablik.** Avlodiga `O(N·D)` operator + `O(D³)` eigendekompozitsiya
-(faqat `N/2 > D` bo'lganda). Xotira `O(N·D + D²)`. D = 40–90 da `D³` funksiya
-baholashga nisbatan ahamiyatsiz; maqolada aniq aytiladi va D ≥ 500 da
-cheklov ekani qayd etiladi.
-
----
-
-## 4. Eksperimentlar
-
-### E1 — CEC'2017 validatsiya (algoritm sog'lomligi)
-D = 10 va 30, 29 funksiya, **51 yurish**, 10 000·D FES.
-Raqiblar — §0B dagi **8 talik**: ishga tushiriladi L-SHADE, jSO,
-BIPOP-CMA-ES, IPOP-CMA-ES, CMA-ES, sep-CMA-ES; nashr etilgan jadvaldan
-EA4eig (CEC'2022 g'olibi) va L-SRTDE (CEC'2024 g'olibi).
-Maqsad: umumiy ustunlik da'vosi emas, **sinf bo'yicha qayerda yutishini
-ko'rsatish** (§0C ga ko'ra).
-
-### E2 — Qo'llanma: birgalikda vazn + giperparametr
-Datasetlar: **NSL-KDD (41), UNSW-NB15 (42), CIC-IDS2017 (78)** — uchalasi
-ochiq; rasmiy train/test bo'linishi; **test to'plami optimizatsiyada
-ko'rilmaydi**.
-Klassifikatorlar: SVM (RBF) va XGBoost — arzon, ya'ni 10³–10⁴ byudjet real.
-Raqiblar **uch guruh** (§0B dagi bo'shliq shu yerda yopiladi):
-
-1. *Optimizatorlar, bir xil uzluksiz formulyatsiyada:* `L-SHADE-DGR`, jSO,
-   L-SHADE, BIPOP-CMA-ES (8 talikdan ishga tushiriladiganlari), plus
-   **TPE (Optuna)** va **random search**.
-2. **Binar-maska formulyatsiyasi** — hukmron yondashuv, biz undan ustunlikni
-   da'vo qilamiz, shuning uchun u **majburiy**: bir xil optimizator (jSO)
-   binar maska + giperparametr kodlashda (MMAO uslubidagi). Bu taqqoslash
-   **formulyatsiya farqini izolyatsiya qiladi**, algoritm farqini emas.
-3. *Metaevristik bo'lmagan amaliyot:* ReliefF, mutual information, LASSO,
-   RF importance, va **vaznsiz nazorat** (barcha xususiyatlar teng).
-
-3-guruhsiz natija hech narsa isbotlamaydi — bu biz tanqid qilgan xatoning
-aynan o'zi bo'lardi.
-
-O'lchamlar: F1, balanced accuracy, AUC, **TPR@FPR≤1%**, tanlangan xususiyat
-soni (`w_i > 0.05`), wall-clock.
-
-### E3 — Rejim chegarasi (hissa #3)
-Bir xil masalada byudjet `B ∈ {100, 300, 1000, 3000, 10000}`.
-O'lchanadi: qaysi `B` da bizning usul TPE va random search dan o'tadi.
-Natija — qaror qoidasi, "har doim yaxshi" degan da'vo emas.
-
-### E4 — Ablatsiya va sezgirlik
-Har bir komponent navbat bilan o'chiriladi (eigen, Levy, diversity qo'riqchisi,
-restart, guruh-normallashtirish). Sezgirlik: `λ`, `POP_FACTOR`, `τ`.
-Sozlash **faqat alohida validation bo'linishida**, keyin muzlatiladi.
-
-### Hisob byudjeti
-E1 (D=10) ≈ 3 soat, E1 (D=30) ≈ 12 soat, E2 ≈ datasetga bog'liq (SVM/XGBoost
-10³–10⁴ baholash × 30 yurish × 3 dataset × 2 klassifikator).
-**E1 D=10 → E2 → E3 → E1 D=30** tartibida; har biri mustaqil natija.
-
----
-
-## 5. Statistika (`temoa/stats.py` da tayyor)
-
-best/worst/mean/std/median/IQR; Friedman + Iman–Davenport **har o'lcham va
-har dataset uchun alohida**; Holm post-hoc; Nemenyi CD; juftlangan Wilcoxon
-signed-rank, Holm katak ichida **va** butun oila bo'yicha; Vargha–Delaney Â₁₂.
-
-Quvvat hisoblangan: 29 funksiya × 7 raqobatchi = 203 test, Holm chegarasi
-2.46e-04; 51 yurishda min p = 8.9e-16 → yetadi. 12 yurishda (4.9e-04)
-**yetmasdi**. Nemenyi CD 29 funksiyada 1.95 (12 funksiyada 3.03 edi).
-
----
-
-## 6. Maqola tuzilishi — BEEI ning 12 betiga moslangan
+### 7D. 12 betga moslashtirilgan tuzilish
 
 | Bo'lim | Bet | Mazmun |
 |---|---|---|
-| 1. Introduction | 1.5 | masala sinfi, bo'shliq, hissa ro'yxati |
-| 2. Related work | 1.0 | SHADE oilasi, CMA-ES, HPO/feature selection |
-| 3. Proposed method | 3.0 | formulyatsiya, algoritm, **psevdokod**, murakkablik |
-| 4. Research method | 1.0 | datasetlar, protokol, raqiblar, statistika |
-| 5. Results and discussion | 4.5 | E1 xulosa jadvali, E2 asosiy jadvallar, E3 grafigi, E4 ablatsiya, **negative results** |
-| 6. Conclusion | 0.5 | scoped da'vo + cheklovlar |
+| 1. Introduction | 1.5 | masala sinfi, **optimizatsiya bo'shlig'i**, hissa ro'yxati |
+| 2. Related work | 1.0 | SHADE oilasi, CMA-ES, AOS kredit sxemalari, HPO |
+| 3. Proposed method | 3.0 | formulyatsiya, invariantlik tasdiqlari, **psevdokod**, murakkablik |
+| 4. Research method | 1.0 | datasetlar, protokol, **9 ta raqib**, statistika |
+| 5. Results and discussion | 4.5 | E1 sinf jadvali, AOS tadqiqoti, E2/E3, ablatsiya, **negative results** |
+| 6. Conclusion | 0.5 | chegaralangan da'vo + cheklovlar |
 | References | 0.5 | 30–40 manba |
 
-**Maqolada:** sinf bo'yicha o'rtacha rank jadvali (29×4 to'liq emas), Friedman/
-Holm natijalari, CD diagramma, E2 asosiy jadvallari, ablatsiya jadvali.
-**Repozitoriyda:** to'liq 29 funksiya × o'lcham jadvallari, barcha
-konvergensiya grafiklari, sezgirlik sweep'lari, xom ma'lumot, `manifest.json`.
-
-**Sarlavha qoidasi:** algoritm va optimizatsiya oldinda, qo'llanma keyin.
-Masalan shaklda: *"A <hybrid> differential evolution for joint feature
-weighting and hyperparameter optimization"*. Kalit so'zlar (maks. 7)
-optimizatsiya atamalaridan boshlanadi.
+**Maqolada:** sinf bo'yicha rank jadvali (29×9 to'liq emas), Friedman/Holm,
+CD diagramma, AOS korrelyatsiya grafigi, ablatsiya jadvali.
+**Repozitoriyda:** to'liq 29 funksiya × o'lcham jadvallari, konvergensiya
+grafiklari, sezgirlik sweep'lari, xom ma'lumot, `manifest.json`.
 
 ---
 
-## 7. Xavflar va javoblar
+## §8 — Qolgan eksperimentlar (avvalgi rejadan saqlanadi)
+
+### E2 — Qo'llanma: birgalikda vazn + giperparametr
+
+Bu maqolani **Control and Optimization** kategoriyasida ushlab turadigan
+qism: aniq optimizatsiya masalasi, ML esa maqsad funksiya.
+
+```
+x = (w, θ) ∈ Ω = [0,1]^d × Θ,      Θ = ∏_j [ℓ_j, u_j]  (log-masshtabda)
+J(x) = 1 − M_CV(w, θ) + λ‖w‖₁/d
+```
+
+| Xossa | Nega shu sinfda | Bizda o'lchangan dalil |
+|---|---|---|
+| Geterogen (guruhlar har xil masshtabda) | `w ∈ [0,1]`, `θ` log-masshtabda | **hybrid sinfida rank 1.80, 1-o'rin** |
+| Separabel emas | xususiyatlar guruh bo'lib ta'sir qiladi | eigen-crossover hissasi |
+| Shovqinli | CV bo'linishi har baholashda qayta tasodifiylanadi | shovqin tadqiqoti (negative result) |
+| O'rta o'lchamli, arzon baholash | d = 40–78, baholash < 1 s | 10³–10⁴ byudjet → DE hududi |
+
+**Datasetlar:** NSL-KDD (41), UNSW-NB15 (42), CIC-IDS2017 (78) — uchalasi
+ochiq, rasmiy train/test bo'linishi, **test to'plami optimizatsiyada
+ko'rilmaydi** (kod darajasida tekshiriladi).
+**Klassifikatorlar:** SVM (RBF), XGBoost — arzon, 10³–10⁴ byudjet real.
+
+**Majburiy baseline'lar** (bularsiz E2 hech narsa isbotlamaydi):
+
+| Guruh | Nima |
+|---|---|
+| Optimizatorlar, bir xil formulyatsiyada | L-SHADE-DGR, jSO, L-SHADE, BIPOP-CMA-ES |
+| HPO amaliyoti | **TPE (Optuna)**, random search |
+| Hukmron formulyatsiya | **binar-maska** kodlash, **bir xil optimizator bilan** — formulyatsiya farqini izolyatsiya qiladi |
+| Filtr usullari | ReliefF, mutual information, LASSO, RF-importance |
+| Nazorat | vaznsiz (barcha xususiyatlar teng) |
+
+**O'lchamlar:** F1, balanced accuracy, AUC, **TPR@FPR≤1%**, tanlangan
+xususiyat soni (`w_i > 0.05`), wall-clock.
+
+### E3 — Byudjet rejimi chegarasi
+
+Bir xil masalada `B ∈ {100, 300, 1000, 3000, 10000}`. O'lchanadi: qaysi `B`
+da bizning usul TPE va random search dan o'tadi. Natija — **qaror qoidasi**,
+"har doim yaxshi" da'vosi emas. NFL teoremasi hurmat qilinadi.
+
+### E4 — Ablatsiya va sezgirlik
+
+Har bir komponent navbat bilan o'chiriladi (eigen, Levy, diversity guard,
+restart, guruh-normallashtirish, §3D yechimi). Sezgirlik: `λ`, `POP_FACTOR`,
+`P_EIG` boshqaruvi. Sozlash **faqat alohida validation bo'linishida**,
+keyin muzlatiladi.
+
+> **Eslatma:** `experiments/ablation.py` va `sensitivity.py` hozir **V11 ni**
+> ablatsiya qiladi, `L-SHADE-DGR` ni emas. E4 dan oldin yangilanishi shart.
+
+---
+
+## §9 — Statistika protokoli
+
+| Element | Qoida |
+|---|---|
+| Tavsifiy | best / worst / mean / std / median / IQR |
+| Omnibus | Friedman + Iman–Davenport, **har o'lcham va har dataset uchun alohida** |
+| Post-hoc | Holm step-down, control = L-SHADE-DGR |
+| Vizual | Nemenyi CD diagramma (k=9, N=29 → CD = 2.2309) |
+| Juftlik | paired Wilcoxon signed-rank, Holm **katak ichida va butun oila bo'yicha** |
+| Effekt o'lchami | Vargha–Delaney Â₁₂ + magnitude |
+
+**Quvvat hisobi (o'lchangan):** 29 funksiya × 8 raqobatchi = 232 test,
+Holm chegarasi ≈ 2.2e-04. 51 yurishda min p = 8.9e-16 → **yetadi**.
+12 yurishda (4.9e-04) **yetmasdi** — shuning uchun 51 yurish majburiy.
+
+---
+
+## §10 — Xavflar va javoblar
 
 | Xavf | Javob |
 |---|---|
-| TPE/BO kichik byudjetda yutadi | **Kutilgan va o'lchanadi** (E3). Da'vo byudjet bilan chegaralanadi, NFL hurmat qilinadi |
-| "Bu shunchaki normallashtirish" | Guruh-normallashtirish trivial ekani ochiq aytiladi; hissa unda emas |
+| jSO dan ustunlik ahamiyatli chiqmaydi | **Kutilgan.** Da'vo qilinmaydi; markaz AOS topilmasiga ko'chiriladi (§6) |
+| §3D yechimi F4/F5 ni tuzatmaydi | Halol qayd etiladi; "DE oilasining aylanishga invariant emasligi" cheklov sifatida beriladi |
+| TPE/BO kichik byudjetda yutadi | **Kutilgan va o'lchanadi** (E3). Da'vo byudjet bilan chegaralanadi |
 | Filter usullari (ReliefF, LASSO) yutadi | Halol qayd etiladi; "wrapper qachon filter'dan ustun" savoli o'z-o'zidan qiymatli |
-| Eigen-crossover yangilik emas | Hech qachon da'vo qilinmaydi, EA4eig/L-SRTDE ga iqtibos beriladi |
-| 12 betga sig'maydi | Tuzilma oldindan belgilangan; to'liq jadvallar repozitoriyda |
-| Q1 kategoriyasiga tushmaslik | Sarlavha/abstrakt/kalit so'zlar optimizatsiya-birinchi |
+| Eigen-crossover yangilik emas | **Hech qachon da'vo qilinmaydi**; LSHADE-cnEpSin, EA4eig, L-SRTDE ga iqtibos |
+| Yangi raqib noto'g'ri implementatsiya qilinadi | Nashr etilgan CEC'2017 jadvaliga validatsiya; o'tmasa jadvalga kiritilmaydi |
+| 12 betga sig'maydi | Tuzilma oldindan belgilangan (§7D); to'liq jadvallar repozitoriyda |
+| **Q1 kategoriyasiga tushmaslik** | **Sarlavha/abstrakt/kalit so'zlar optimizatsiya-birinchi** (§7B) |
+| AOS topilmasi umumiy emas, Schwefel'ga xos | Shuning uchun 29 funksiya × 51 yurish × 4–5 sxema o'lchanadi |
 
 ---
 
-## 8. O'zgartiriladigan fayllar
+## Bajarilish tartibi
 
-**Yangi:**
-- `temoa/applications/feature_weighting.py` — `J(w,θ)`, CV, dataset yuklash,
-  guruh-normallashtirish
-- `temoa/algorithms/temoa_v13.py` — V12 dan: shovqin mexanizmi olib tashlanadi,
-  restart qoladi, guruh-xabardor boshlash qo'shiladi
-- `experiments/app_study.py` (E2), `experiments/budget_study.py` (E3)
-- `tests/test_feature_weighting.py`
+| # | Ish | Fayl | Natija | Qayerda |
+|---|---|---|---|---|
+| 0 | Rejani `reports/REJA_UZ.md` ga ko'chirish, commit | `reports/` | siz ocha olasiz | cloud |
+| 1 | Konteyner yurishini to'xtatish | — | resurs bo'shaydi | cloud |
+| 2 | `RIVALS` dan TEMOA'larni chiqarish | `temoa/registry.py` | 9 ta raqib | cloud |
+| 3 | **Diagnostika** (11 konfig × 6 funksiya × 15 yurish) | `experiments/diagnose.py` | F4/F5 sababi | **sizda, ~25 daq** |
+| 4 | Sababni §3 ga yozish | reja + `reports/` | yechim tanlanadi | cloud |
+| 5 | 3 ta yangi raqib + validatsiya | `temoa/algorithms/modern.py`, `tests/` | line-up to'liq | cloud |
+| 6 | §3D yechimi (A + C) | `temoa/algorithms/lshade_dgr.py` | F4/F5 tuzatiladi | cloud |
+| 7 | `START.py` qayta yozish | `START.py` | yagona kirish | cloud |
+| 8 | **E1 qayta o'lchash** (9 raqib, 51 yurish, D=10) | — | yakuniy CEC jadvali | **sizda, ~2 soat** |
+| 9 | **AOS tadqiqoti** (4–5 sxema × 29 × 51) | `experiments/aos_study.py` | **asosiy hissa** | **sizda** |
+| 10 | E2 qo'llanma (3 dataset × 2 klassifikator) | `temoa/applications/`, `experiments/app_study.py` | Q1 kategoriya himoyasi | **sizda** |
+| 11 | E3 byudjet rejimi | `experiments/budget_study.py` | qaror qoidasi | **sizda** |
+| 12 | E4 ablatsiya va sezgirlik (yangilangan) | `experiments/ablation.py` | komponent oqlanishi | **sizda** |
+| 13 | D=30 darvozasi | — | o'lcham bo'yicha kengayish | **sizda, ~6 soat** |
+| 14 | Maqola matni (§7D tuzilishi) | `reports/PAPER.md` | BEEI ga topshirish | cloud |
 
-**O'zgartiriladi:**
-- `temoa/registry.py` — **`LEGACY_SWARM` va `WEAKENED` butunlay olib
-  tashlanadi**; yakuniy ro'yxat 8 ta raqib + `L-SHADE-DGR`; `PUBLISHED_ONLY`
-  ikkitaga qisqaradi (EA4eig, L-SRTDE); TPE/random search o'ramlari qo'shiladi
-- `temoa/algorithms/baselines.py` — **fayl qoladi** (asl tadqiqotni qayta
-  ishlab chiqarish uchun), lekin hech bir eksperimentda ishlatilmaydi;
-  buni fayl boshidagi izohda aniq yozamiz
-- `tests/test_all.py`, `tests/test_competitor_validation.py` — olib
-  tashlangan algoritmlarga havolalar yangilanadi
-- `reports/PRIOR_ART.md` — uch hissa bo'yicha tekshiruv natijasi
-- `START.py` — E2/E3 bosqichlari
+Har bosqich mustaqil natija beradi; keyingisiga o'tishdan oldin natija
+`reports/` ga yoziladi va siz ko'rasiz.
 
-**O'chiriladi:** `temoa/algorithms/temoa_v12.py` dagi N1–N3 (kod tarixda
-qoladi, natija `reports` da negative result sifatida saqlanadi).
+## Verification
 
-**O'zgarmaydi:** `temoa/stats.py`, `temoa/suites.py`, `temoa/tracker.py`.
-
----
-
-## 9. Verification
-
-1. `python START.py --check` — barcha testlar (hozir 60) o'tishi shart
-2. **`tests/test_feature_weighting.py`:**
-   - `J` determinizmi bir xil fold urug'ida; boshqa urug'da o'zgarishi (shovqin
-     haqiqatan bor)
-   - **test to'plami optimizatsiya davomida umuman o'qilmasligi** (kod darajasida)
-   - `w = 1` nazorati vaznsiz baseline bilan ±1e-9 mos kelishi
-   - guruh-normallashtirish: `θ` chegaralari to'g'ri qaytarilishi
-3. E1: `python START.py --dims 10` → `reports/GATE_UZ.md`
-4. E2: `python experiments/app_study.py` → qo'llanma jadvallari
-5. E3: `python experiments/budget_study.py` → rejim chegarasi grafigi
-6. E4: `experiments/ablation.py`, `experiments/sensitivity.py`
-7. Har bosqich natijasi hisobotga yoziladi va **keyingi bosqich shundan keyin**
+| # | Tekshiruv | Mezon |
+|---|---|---|
+| 1 | `python START.py --check` | barcha testlar o'tishi shart (hozir 72 ta) |
+| 2 | Yangi raqiblar | nashr etilgan CEC'2017 jadvaliga log10 farqi < 0.5 |
+| 3 | §3D yechimi | F4/F5 da median xato **kamayishi** VA hybrid sinfda rank **yomonlashmasligi** (regressiya nazorati) |
+| 4 | `python tools/compare_runs.py` | ikki mashinada bit-identical |
+| 5 | `python tools/class_ranks.py` | sinf bo'yicha ranklar, 2 funksiyali sinfda p-qiymat chop etilmasligi |
+| 6 | E2 `tests/test_feature_weighting.py` | `J` determinizmi; **test to'plami optimizatsiyada o'qilmasligi** (kod darajasida); `w=1` nazorati vaznsiz baseline bilan ±1e-9 mos kelishi |
+| 7 | Byudjet | har algoritmda `overrun == 0`, `fes/max_fes > 0.98` |
+| 8 | Prior art | har bir "yangi" da'vo `reports/PRIOR_ART.md` da sana bilan tekshirilgan |
+| 9 | **Jurnal moslik** | sarlavha/abstrakt/kalit so'zlar §7B jadvaliga mos; abstrakt 100–200 so'z, **o'tgan zamon**; maqola ≤ 12 bet |

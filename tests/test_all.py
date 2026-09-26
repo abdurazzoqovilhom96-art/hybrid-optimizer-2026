@@ -12,7 +12,7 @@ from scipy import stats as sps
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from temoa.problems import FUNC_NAMES, make_problem          # noqa: E402
-from temoa.registry import ALL_ALGORITHMS                    # noqa: E402
+from temoa.registry import EVERY_IMPLEMENTATION              # noqa: E402
 from temoa.stats import (cliffs_delta, friedman, holm,       # noqa: E402
                          nemenyi_cd, paired_wilcoxon,
                          vargha_delaney_a12)
@@ -137,8 +137,10 @@ def test_convergence_curve_is_monotone_for_deterministic_problems():
 
 # ---------------------------------------------------------------- algorithms
 def test_every_algorithm_respects_the_budget_and_solves_sphere():
+    # EVERY_IMPLEMENTATION, not the line-up: TEMOA_V10..V12 left the comparison
+    # table but are still callable, and code that can be called can be wrong.
     budget = 6000
-    for name, alg in ALL_ALGORITHMS.items():
+    for name, alg in EVERY_IMPLEMENTATION.items():
         pr = make_problem("NoisySphere", 5, suite="rotated",
                           noise_rng=np.random.default_rng(0))
         tr = Tracker(pr, budget, 10)
@@ -262,8 +264,8 @@ def test_sharding_by_function_changes_nothing(tmp_path=None):
 # ----------------------------------------------------------- reproducibility
 def test_same_seed_gives_bit_identical_results():
     """Every algorithm must be a pure function of its injected RNG."""
-    from temoa.registry import ALL_ALGORITHMS
-    for name, alg in ALL_ALGORITHMS.items():
+    from temoa.registry import EVERY_IMPLEMENTATION
+    for name, alg in EVERY_IMPLEMENTATION.items():
         scores = []
         for _ in range(2):
             pr = make_problem("Ackley", 8, suite="rotated",

@@ -23,9 +23,10 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-from temoa.registry import (ALGORITHMS, ALL_ALGORITHMS, OURS,      # noqa: E402
-                            PUBLISHED_ONLY, RIVALS, TARGET,
-                            algorithm_seed)
+from temoa.registry import (ALGORITHMS, ALL_ALGORITHMS,           # noqa: E402
+                            ANCESTORS, EVERY_IMPLEMENTATION, OURS,
+                            PLANNED_RIVALS, PUBLISHED_ONLY, RIVALS,
+                            TARGET, algorithm_seed)
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -41,17 +42,32 @@ def test_the_target_algorithm_is_registered():
     assert TARGET in OURS
 
 
-def test_there_are_exactly_eight_rivals():
-    """Six run here, two compared from their published competition tables."""
+def test_there_are_nine_rivals():
+    """Six implemented, three required and not yet written."""
     assert len(RIVALS) == 6, sorted(RIVALS)
-    assert len(PUBLISHED_ONLY) == 2, PUBLISHED_ONLY
-    assert len(RIVALS) + len(PUBLISHED_ONLY) == 8
+    assert len(PLANNED_RIVALS) == 3, PLANNED_RIVALS
+    assert len(RIVALS) + len(PLANNED_RIVALS) == 9
 
 
 def test_every_rival_has_a_documented_standing():
     expected = {"LSHADE", "jSO", "BIPOP_CMAES", "IPOP_CMAES", "CMAES", "sepCMAES"}
     assert set(RIVALS) == expected, set(RIVALS) ^ expected
-    assert set(PUBLISHED_ONLY) == {"EA4eig", "L-SRTDE"}
+    assert set(PLANNED_RIVALS) == {"LSHADE-cnEpSin", "L-SHADE-RSP", "NL-SHADE-RSP"}
+
+
+def test_our_own_earlier_versions_are_not_rivals():
+    """TEMOA_V10..V12 are this work's own history. In the comparison table they
+    inflate every other algorithm's rank for free -- V10 ranked 7.17 of 10 in the
+    D=10 gate -- and they make the study look as though it competes with itself.
+    They stay callable for the ablation; they are not in the line-up."""
+    assert set(ANCESTORS) == {"TEMOA_V10", "TEMOA_V11", "TEMOA_V12"}
+    leaked = [n for n in ANCESTORS if n in ALGORITHMS]
+    assert not leaked, f"our own earlier versions are back in the line-up: {leaked}"
+    assert set(EVERY_IMPLEMENTATION) == set(ALGORITHMS) | set(ANCESTORS)
+
+
+def test_the_line_up_is_the_target_plus_the_rivals_only():
+    assert set(ALGORITHMS) == {TARGET} | set(RIVALS), sorted(ALGORITHMS)
 
 
 def test_no_weak_baseline_is_registered():
@@ -59,12 +75,15 @@ def test_no_weak_baseline_is_registered():
     assert not present, f"weak baselines are back in the line-up: {present}"
 
 
-def test_published_only_rivals_are_never_run():
-    """EA4eig and L-SRTDE are compared from their official tables. A
-    reimplementation of either would err in our favour -- the precise fault this
-    project exists to correct -- so they must not be executable here."""
-    for name in PUBLISHED_ONLY:
-        assert name not in ALL_ALGORITHMS, f"{name} must not be runnable"
+def test_nothing_is_compared_from_a_published_table():
+    """EA4eig won CEC'2022 and L-SRTDE won CEC'2024, so their published tables
+    are for those suites. No CEC'2017 table at this protocol -- 29 functions,
+    D=10, 51 runs -- was found for either, and a comparison without a common
+    basis is not a comparison. They are cited prior art, not rivals."""
+    assert PUBLISHED_ONLY == (), PUBLISHED_ONLY
+    for name in ("EA4eig", "L-SRTDE"):
+        assert name not in EVERY_IMPLEMENTATION, \
+            f"{name} must not be runnable: a reimplementation would err in our favour"
 
 
 def test_ours_and_rivals_do_not_overlap():
@@ -111,7 +130,7 @@ def test_algorithm_seed_depends_only_on_the_name():
 
 
 def test_algorithm_seeds_do_not_collide():
-    seeds = {n: algorithm_seed(n) for n in ALL_ALGORITHMS}
+    seeds = {n: algorithm_seed(n) for n in EVERY_IMPLEMENTATION}
     assert len(set(seeds.values())) == len(seeds), seeds
 
 

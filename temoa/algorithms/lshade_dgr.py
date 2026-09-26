@@ -224,9 +224,18 @@ def LSHADE_DGR(obj_func, dim, bounds, max_fes, rng,
                 k_mem = (k_mem + 1) % (H_SIZE - 1)
 
             if logger is not None:
+                # P_EIG and op_quality are what the F4/F5 diagnosis turns on: the
+                # question is whether success-driven adaptation switches the
+                # eigen crossover off on exactly the rotated, ill-conditioned
+                # problems where it is the one thing that could help.
                 logger.append({"fes": fes, "t": t, "diversity": diversity,
                                "guard": guard_active, "op_prob": op_prob.copy(),
                                "eig_ok": eig_ok, "pop_size": pop_size,
+                               "P_EIG": float(P_EIG),
+                               "op_quality": op_quality.copy(),
+                               "eig_quality": eig_quality.copy(),
+                               "n_eig_used": int(use_eig.sum()),
+                               "improved": int(improved.sum()),
                                "best": float(min(fitness.min(), fit_U.min()))})
 
             # credit for the operator portfolio; frozen while the guard overrides

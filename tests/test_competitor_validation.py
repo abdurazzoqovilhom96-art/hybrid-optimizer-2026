@@ -20,7 +20,8 @@ import numpy as np
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-from temoa.registry import ALL_ALGORITHMS                # noqa: E402
+from temoa.registry import (ALL_ALGORITHMS,             # noqa: E402
+                            EVERY_IMPLEMENTATION)
 from temoa.suites import make_suite_problem             # noqa: E402
 from temoa.tracker import Tracker                       # noqa: E402
 
@@ -38,14 +39,14 @@ def _run(alg, fid, budget=BUDGET, seed=3, dim=DIM):
 def test_no_algorithm_exceeds_its_evaluation_budget():
     """cma.fmin2 checks maxfevals between generations and overruns by ~11 calls;
     the budget guard in modern.py must absorb that."""
-    for name, alg in ALL_ALGORITHMS.items():
+    for name, alg in EVERY_IMPLEMENTATION.items():
         tr = _run(alg, 1)
         assert tr.overrun == 0, f"{name} overran the budget by {tr.overrun} evaluations"
         assert tr.fes <= BUDGET, f"{name} used {tr.fes} of {BUDGET}"
 
 
 def test_every_algorithm_returns_a_finite_score():
-    for name, alg in ALL_ALGORITHMS.items():
+    for name, alg in EVERY_IMPLEMENTATION.items():
         score = _run(alg, 1).finalize()[1]
         assert np.isfinite(score), f"{name} returned {score}"
 
@@ -79,7 +80,7 @@ def test_adaptive_de_reaches_high_precision_on_a_unimodal_function():
 
 
 def test_every_competitor_is_reproducible_from_its_seed():
-    for name, alg in ALL_ALGORITHMS.items():
+    for name, alg in EVERY_IMPLEMENTATION.items():
         a = _run(alg, 4, budget=6000, seed=11).finalize()[1]
         b = _run(alg, 4, budget=6000, seed=11).finalize()[1]
         assert a == b, f"{name} is not reproducible: {a} vs {b}"
@@ -109,7 +110,7 @@ def test_every_algorithm_spends_its_whole_budget():
     that cannot spend its budget is handicapped, and the resulting table would
     favour us for the wrong reason."""
     budget = 40_000
-    for name, alg in ALL_ALGORITHMS.items():
+    for name, alg in EVERY_IMPLEMENTATION.items():
         tr = _run(alg, 25, budget=budget, seed=2)
         used = tr.fes / budget
         assert used > 0.98, f"{name} used only {100*used:.1f}% of its evaluation budget"

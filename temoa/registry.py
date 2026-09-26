@@ -1,36 +1,51 @@
-"""The competitor line-up: eight rivals, each with a documented standing.
+"""The competitor line-up, and what separates a rival from our own history.
 
-**Why only eight.** The original study compared against DE/rand/1/bin and five
-swarm metaheuristics. Recent surveys flag that exact pattern as the weak-baseline
-problem, and one 2025 analysis found 26 published metaheuristics to be
-structurally identical to earlier ones. Beating GWO, WOA, SCA, HHO and PSO
-establishes nothing about a modern algorithm, so they were removed outright
-rather than demoted to a secondary table.
+**Rivals are other people's algorithms.** The earlier versions of this work --
+TEMOA_V10, V11, V12 -- are not rivals, and keeping them in the comparison table
+did two things wrong. It let a weak entry (V10 ranked 7.17 of 10) lift everyone
+else's average rank for free, and it made the study look as though it were
+competing with itself. They are kept in ``ANCESTORS``, where the ablation and
+the repair history can still reach them, and they are out of ``ALGORITHMS``.
 
-Every remaining rival has a place in the categories this work competes in:
+The line-up is also sharper for it. Nemenyi's critical difference depends on how
+many algorithms are compared (measured at N = 29 functions):
 
-    L-SHADE        CEC'2014 winner
-    jSO            leading CEC'2017 entrant; the core this algorithm is built on
-    BIPOP-CMA-ES   the strongest general-purpose continuous baseline
-    IPOP-CMA-ES    the standard restart CMA-ES (Auger & Hansen, 2005)
-    CMA-ES         the reference for continuous black-box optimisation (Hansen)
-    sep-CMA-ES     diagonal variant; the control that isolates rotation handling
-    EA4eig         CEC'2022 winner -- compared via its published tables
-    L-SRTDE        CEC'2024 winner -- compared via its published tables
+    k = 10   CD = 2.5157
+    k =  9   CD = 2.2309
+    k =  7   CD = 1.6730
 
-**Why the last two are not reimplemented.** EA4eig is an ensemble of four
-algorithms (CMA-ES, CoBiDE, a jSO variant, and IDE with eigen crossover), and
-L-SRTDE replaces success-history adaptation with a success-rate rule. A faulty
-reimplementation of either would err in our own favour -- the precise fault this
-project exists to correct. They are compared against their official competition
-tables, and only where the protocol matches exactly: 29 functions, D in {10, 30},
-51 runs, 10000*D evaluations.
+Fewer algorithms, a more sensitive test. This does not rescue our case and is
+not meant to: at k = 7 the gap from L-SHADE-DGR to jSO is 0.38 against a CD of
+1.67. Removing our own versions is methodological hygiene, not a way to
+manufacture significance.
 
-**On the eigen crossover.** It is not ours and is never claimed: EA4eig, the
-CEC'2022 winner, and L-SRTDE are built on it, as are LSHADE-cnEpSin and
-LSHADE-SPACMA. EA4eig is in fact the structurally closest rival to this work --
-it is also an operator portfolio with an eigenbasis crossover -- which is exactly
-why "portfolio plus eigen crossover" cannot be presented as a contribution.
+**The nine rivals.** Six are implemented here; three are listed in
+``PLANNED_RIVALS`` and not yet written.
+
+    CMA-ES         2001  the reference for continuous black-box optimisation
+    IPOP-CMA-ES    2005  the standard restart CMA-ES (Auger & Hansen)
+    sep-CMA-ES     2008  diagonal variant; the control that isolates rotation
+    BIPOP-CMA-ES   2009  the strongest general-purpose continuous baseline
+    L-SHADE        2014  CEC'2014 winner
+    jSO            2017  leading CEC'2017 entrant; the core this is built on
+    LSHADE-cnEpSin 2017  CEC'2017 third place; where the eigen crossover is from
+    L-SHADE-RSP    2018  CEC'2018 winner; jSO's direct successor
+    NL-SHADE-RSP   2021  CEC'2021 winner; the modern frontier
+
+The newest rival we currently run is jSO, from 2017. In a 2026 paper that is
+the weak-baseline problem this project exists to correct, which is why the last
+three are required rather than optional.
+
+**Why EA4eig and L-SRTDE are not rivals.** They won CEC'2022 and CEC'2024, and
+their published tables are for those suites. No CEC'2017 table at this protocol
+-- 29 functions, D = 10, 51 runs -- was found for either, and a comparison
+without a common basis is not a comparison. They remain prior art that must be
+cited for the eigen crossover, which is theirs and is never claimed here.
+
+**Why the three new rivals are not simply reimplemented and trusted.** A faulty
+reimplementation of a competitor errs in our own favour -- the precise fault this
+project exists to correct. Each one has to reproduce its published CEC'2017
+numbers before it may enter a table; see ``tests/test_competitor_validation.py``.
 
 ``temoa/algorithms/baselines.py`` is kept so the original study can still be
 reproduced, but nothing in it is used by any experiment.
@@ -53,16 +68,21 @@ from .algorithms.temoa_v12 import TEMOA_V12
 #: learn it is an L-SHADE variant from us, not by discovering it.
 TARGET = "L-SHADE-DGR"
 
-#: Ours: the algorithm under study plus the earlier versions, kept so the
-#: repair history stays measurable.
+#: Ours. One algorithm: the one the paper proposes.
 OURS = {
-    "L-SHADE-DGR": LSHADE_DGR,       # the algorithm the paper proposes
-    "TEMOA_V10": TEMOA_V10_HYBRID,   # the original, unchanged
-    "TEMOA_V11": TEMOA_V11,          # the measured repair
-    "TEMOA_V12": TEMOA_V12,          # the noise study, kept as a negative result
+    "L-SHADE-DGR": LSHADE_DGR,
 }
 
-#: The six rivals run here. See the module docstring for each one's standing.
+#: Our own earlier versions. Not rivals, and never in a comparison table -- they
+#: are here so the ablation can measure what each repair actually bought, and so
+#: TEMOA_V12 stays available as the recorded negative result on noisy credit.
+ANCESTORS = {
+    "TEMOA_V10": TEMOA_V10_HYBRID,   # the original, unchanged
+    "TEMOA_V11": TEMOA_V11,          # the measured repair
+    "TEMOA_V12": TEMOA_V12,          # + noise mechanism (measured ineffective)
+}
+
+#: The rivals implemented here. See the module docstring for each one's standing.
 RIVALS = {
     "LSHADE":      LSHADE,
     "jSO":         jSO,
@@ -72,12 +92,22 @@ RIVALS = {
     "sepCMAES":    sepCMAES,
 }
 
-#: The two rivals compared via published competition tables, not run here.
-PUBLISHED_ONLY = ("EA4eig", "L-SRTDE")
+#: Required rivals not yet implemented. The line-up is incomplete until these
+#: exist and pass validation against their published CEC'2017 tables.
+PLANNED_RIVALS = ("LSHADE-cnEpSin", "L-SHADE-RSP", "NL-SHADE-RSP")
 
-#: Everything executable. This is the whole line-up: no weak baselines remain.
+#: Compared from published tables: nothing. EA4eig and L-SRTDE won on other
+#: suites, so no protocol-matched comparison exists. They are cited prior art.
+PUBLISHED_ONLY = ()
+
+#: The study line-up: what runs, and what appears in every table.
 ALGORITHMS = {**OURS, **RIVALS}
 ALL_ALGORITHMS = ALGORITHMS
+
+#: Every implementation in the repository, including our own earlier versions.
+#: Used by the correctness tests, which must cover code that is still callable
+#: even when it is not part of the comparison.
+EVERY_IMPLEMENTATION = {**ALGORITHMS, **ANCESTORS}
 
 
 def algorithm_seed(name: str) -> int:
@@ -92,7 +122,9 @@ def algorithm_seed(name: str) -> int:
 
     Deriving the component from the name alone removes that coupling. Adding or
     dropping a competitor now leaves every other competitor's streams untouched,
-    which is also what makes a partial re-run comparable with an earlier one.
+    which is also what makes a partial re-run comparable with an earlier one --
+    and it is why dropping TEMOA_V10..V12 from the line-up does not invalidate
+    the rows already recorded for the seven that remain.
     """
     digest = hashlib.blake2b(name.encode("utf-8"), digest_size=8).digest()
     return int.from_bytes(digest, "big") % (2**31 - 1)
