@@ -190,6 +190,25 @@ def main(argv=None):
     print(piv.to_string(float_format=lambda x: f"{x:.4e}"))
     piv.to_csv(out / "tables" / "median_by_config.csv")
 
+    # -- success rate, which is the honest statistic on these functions --------
+    # F4 and F5 are bimodal at D=10: a run either finds the global basin and
+    # reaches the 1e-8 floor, or settles at ~3.99 / ~1.99. A median over such a
+    # sample reports one of the two modes and moves discontinuously as soon as
+    # the success rate crosses 50%, so two configurations differing by a single
+    # run can print medians that differ by orders of magnitude. The rate is
+    # what actually changed.
+    df["solved"] = df["Error"] <= 1e-8
+    rate = 100 * df.pivot_table(index="Config", columns="Function",
+                                values="solved", aggfunc="mean")[order]
+    rate = rate.reindex([c for c in CONFIGS if c in rate.index])
+    if rate.to_numpy().max() > 0:
+        print("\n" + "=" * 100)
+        print(f"SUCCESS RATE  P(error <= 1e-8) in %   ({runs} runs)")
+        print("  On a bimodal function this is the statistic; the median is not.")
+        print("=" * 100)
+        print(rate.round(1).to_string())
+        rate.round(2).to_csv(out / "tables" / "success_rate_by_config.csv")
+
     # -- each configuration against the baseline, on both groups ------------------
     print("\n" + "=" * 100)
     print(f"EFFECT OF EACH FLAG vs '{BASELINE}'  (paired Wilcoxon, Vargha-Delaney A12)")
