@@ -549,6 +549,7 @@ def union_rank_index(rng, n_pop: int, n_arc: int, k: int):
 
 def LSHADE_DGR(obj_func, dim, bounds, max_fes, rng,
                POP_FACTOR=12, POP_MAX=500, POP_UNCAP=False, POP_RULE="linear",
+               G_TARGET=1111,
                RESTART_POP_MULT=4.0, P_MIN=0.02, P_EIG=0.4,
                ADAPT_EIG=True, ARC_RATE=1.0, CR_FLOOR=True,
                OPS=(0, 1, 3), OPS_DROP_ABOVE=None,
@@ -605,8 +606,48 @@ def LSHADE_DGR(obj_func, dim, bounds, max_fes, rng,
     # the smallest population of any DE rival, and narrowest at exactly the
     # dimension where this family loses the hybrid class. POP_UNCAP lifts it;
     # POP_RULE offers L-SHADE-RSP's sizing as an alternative to be measured.
-    N_base = (int(round(POP_FACTOR * dim)) if POP_RULE == "linear"
-              else int(round(75 * dim ** (2.0 / 3.0))))
+    # GENERATION-BALANCED SIZING. The two rules below size the population and
+    # let the generation count fall out of the budget. That gets the dependency
+    # backwards, and the gate measured the cost of it on both sides.
+    #
+    # Under LPSR the size runs from N_init down to N_min, so the mean over an
+    # epoch is about N_init / 2 and the number of generations an epoch can
+    # afford is
+    #
+    #     G ~= F_max / (N_init / 2) = 2 * F_max / N_init ,   F_max = 1e4 * D .
+    #
+    # `linear` with POP_MAX = 500 gives G = 1667, 1667, 2000 at D = 10, 30, 50:
+    # the cap binds from D = 42, so the population stops tracking the dimension
+    # exactly where the suite gets hard, and at D = 50 this carries 500
+    # individuals against jSO's 692 and L-SHADE's 900. `rsp` (75 * D^(2/3))
+    # lifts D = 50 to 1018 and fixes that, but it also lifts D = 10 to 348 --
+    # roughly twice every rival there -- and G falls to 575, 829, 982. The D=10
+    # regression the binding criterion rejected is that lost factor of 2.9 in
+    # generations, not the operator portfolio: at D = 10 the portfolio switch is
+    # inert, because `dim > OPS_DROP_ABOVE` is false at the only threshold used.
+    #
+    # G is the quantity that should not depend on D -- a differential-evolution
+    # population needs a number of generations to adapt its memories and walk
+    # its difference vectors in, and that need does not grow with dimension the
+    # way the budget does. So declare G and let the population follow:
+    #
+    #     N_init = ceil(2 * F_max / G_TARGET) .
+    #
+    # G_TARGET = 1111 reproduces 18 * D, which is L-SHADE's own rule, at every
+    # dimension of this suite; the constant is therefore calibrated to the
+    # family standard rather than fitted to our own gate. It needs no cap, no
+    # exponent and no dimension threshold, so it removes three parameters
+    # instead of adding one, and it has no D = 10 / D = 50 trade-off to make
+    # because the quantity it holds fixed is dimension-free by construction.
+    if POP_RULE == "genbal":
+        # round, not ceil: at G_TARGET = 1111 and F_max = 1e4 * D this lands on
+        # 180, 540, 900 for D = 10, 30, 50, i.e. exactly 18 * D. ceil would add
+        # one individual at every dimension and lose that identity for nothing.
+        N_base = int(round(2.0 * max_fes / float(G_TARGET)))
+    elif POP_RULE == "linear":
+        N_base = int(round(POP_FACTOR * dim))
+    else:
+        N_base = int(round(75 * dim ** (2.0 / 3.0)))
     N_init = max(40, N_base) if POP_UNCAP else int(np.clip(N_base, 40, POP_MAX))
     pop_ceiling = int(RESTART_POP_MULT * N_init) if POP_UNCAP else POP_MAX
     # P_EIG is a parameter that the success rule reassigns. The working value is
@@ -1562,13 +1603,173 @@ def sepCMAES(obj_func, dim, bounds, max_fes, rng, sigma_frac=0.3):
 # 7. THE LINE-UP
 # ==========================================================================
 
+#: L-SHADE-GB's configuration, in one place because two stages read it.
+#:
+#: WHY THIS IS A CONSTANT AND NOT A LITERAL IN THE FUNCTION. The tune stage
+#: selects this algorithm's free scalars by running LSHADE_DGR with these
+#: keywords plus one scalar from a grid, and the gate then measures LSHADE_GB.
+#: If the two lists were written out twice, a correction applied to one of them
+#: would silently tune one algorithm and publish another, and no test could see
+#: it. Written once, the stage that chooses the scalar and the algorithm that is
+#: published are the same algorithm by construction, and a test asserts it.
+#:
+#: The four scalars are NOT here: they are the function's parameters, because
+#: they are what the tune stage varies.
+GB_CONFIG: dict = dict(
+    POP_RULE="genbal", POP_UNCAP=True,
+    OPS=(0, 1, 3), OPS_DROP_ABOVE=None,
+    CREDIT_RULE="diversity",
+    DIV_GUARD=False,
+    EIGEN_GATE=True, EIGEN_GATE_EXTRA=2.0, EIG_MEMORY=0.8,
+    P_EIG_RULE="align",
+)
+
+#: The scalars this algorithm exposes. Each default is the value its derivation
+#: predicts, so the file is runnable and honest before any tuning has happened;
+#: the tune stage either confirms the prediction or overrides it on a held-out
+#: class, and `state.json` records which.
+GB_TUNABLES: tuple = ("DIV_PRICE", "ALIGN_TAU", "G_TARGET", "RESTART_GROWTH")
+
+
 #: The algorithm under study.
+def LSHADE_GB(obj_func, dim, bounds, max_fes, rng, DIV_PRICE=0.5,
+              ALIGN_TAU=0.4, G_TARGET=1111, RESTART_GROWTH=1.0, logger=None):
+    """L-SHADE-GB: the recorded algorithm with four derived corrections.
+
+    Every setting below departs from ``LSHADE_DGR``'s default for a reason this
+    study measured, and each one removes a degree of freedom rather than adding
+    one. Nothing here is a threshold read off the gate it is judged on.
+
+    1. SIZING -- ``POP_RULE="genbal"``, ``POP_UNCAP=True``.
+       The recorded rule is 12 * D capped at 500. The cap binds from D = 42, so
+       at D = 50 it carries 500 individuals against jSO's 692 and L-SHADE's 900
+       -- the narrowest population of any rival at exactly the dimension where
+       this family loses the hybrid class. The `rsp` arm fixed that (1018 at
+       D = 50) and broke D = 10 instead, taking the population to 348 against
+       every rival's ~180 and cutting the affordable generation count from 1667
+       to 575. That lost factor of 2.9 is the D = 10 regression the binding
+       criterion rejected. `genbal` holds the generation count fixed instead and
+       lets the population follow the budget; at G_TARGET = 1111 it is exactly
+       18 * D at every dimension, which is L-SHADE's own rule, so the constant
+       is calibrated to the family rather than to our gate. The generation
+       counts quoted above are single-epoch estimates, 2 * F_max / N_init;
+       with restarts the realised count is higher, measured at 1498 for
+       D = 10 and 1615 for D = 30 under this rule -- a 7.8% spread, against
+       20% for the recorded rule and 71% for `rsp`. The estimates are used
+       only to compare the rules, which they do correctly. POP_UNCAP is
+       required, not cosmetic: POP_MAX would re-impose the cap from D = 42 and
+       undo the correction.
+
+    2. CREDIT -- ``CREDIT_RULE="diversity"``, ``DIV_PRICE`` tuned.
+       The leader step holds 52% of the budget on F15 and F16 at D = 50, the two
+       worst losses in the gate, and removing it outright improves the F12
+       median 72-fold. The `rate` rule cannot see this: the operator genuinely
+       produces the most frequent and the largest immediate gains while pulling
+       the population onto the weighted top-3 centroid. Pricing the contraction
+       it causes is the only signal in the algorithm that can. This replaces the
+       `OPS_DROP_ABOVE` threshold, which answered the same measurement by
+       switching the portfolio off above a dimension read from our own D = 10
+       gate -- a post-hoc choice the previous report had to declare as one.
+
+    3. GUARD -- ``DIV_GUARD=False``.
+       Screening measured the guard as a small cost, not a benefit: mean A12
+       against the recorded algorithm is 0.7846 without it and 0.7812 with it.
+       It also freezes the eigen channel for 44.5% of the budget on F15 and
+       17.9% on F16 -- the rotated functions that channel exists to answer.
+       With the guard off that interference cannot arise, so CHANNEL_DECOUPLE
+       stays at its default and no new flag is needed.
+
+    4. BASIS -- ``EIGEN_GATE_EXTRA=2.0``, ``EIG_MEMORY=0.8``, align rule.
+       The recorded gate admits the eigenbasis at n_samples > dim. A sample
+       covariance of p variables from n points is ill conditioned even when the
+       truth is a sphere, and at p/n -> 1 the Marchenko-Pastur null condition
+       number diverges: at D = 50 the recorded gate admits a basis at n = 51,
+       where isotropic data alone look anisotropic by ~3.9e4. Requiring
+       n > 3 * D puts p/n at 1/3, where the null is 13.9 -- a basis that can
+       carry signal. EIG_MEMORY = 0.8 raises the effective sample size about
+       9-fold on top of that. Measured on F1 at the real budget, the stricter
+       gate is open over 44.5% of the logged generations at D = 10 and 45.7%
+       at D = 30 -- nearly the same share at both, which is the property
+       wanted: the basis is used over a dimension-independent part of the run
+       instead of a part that drifts with the cap. A single-epoch calculation
+       predicts 67%; restarts return the population to N_init and re-run LPSR
+       over the remaining budget, which lowers it. The share being equal
+       across dimensions is the claim, not the 67%.
+
+       ``P_EIG_RULE="align"`` is kept because the quantity is the right one and
+       the switch is hard. Crossover in the eigenbasis is exactly
+       rotation-equivariant and coordinate crossover is not, so a p-mixture is
+       equivariant only at p = 1; the condition rules clip p to [0.1, 0.9] and
+       can never reach it. ``align`` is 0 exactly when C is diagonal, which is
+       exactly when the eigenbasis is a signed permutation of the axes and
+       binomial crossover is already equivariant, so there is nothing to gain.
+
+    5. RESTART GROWTH -- ``RESTART_GROWTH=1.0``, and why it has to be.
+       The recorded restart doubles ``N_init`` and keeps the doubling, so with
+       the cap lifted a single restart takes D = 10 from 180 to 360 and the
+       generation count from 1111 to 556. Measured on F1: the default 2.0 does
+       restart, and the population ends at 2 * 18 * D at both D = 10 and D = 30.
+       That silently undoes correction 1, which is why it is set here and not
+       left at its default.
+
+       The consistent value follows from the same derivation. If an epoch
+       restarts with R = F_max - fes evaluations left, its share of the target
+       is G* * R / F_max generations, so the size that delivers that share is
+       2R / (G* R / F_max) = 2 F_max / G* -- the same size it already had.
+       Generation balancing therefore implies a constant population across
+       restarts, and IPOP-style growth is incompatible with it.
+
+       This is a real trade, not a free win: growth exists to escape local
+       optima, which is the Simple multimodal class where this family is
+       already behind IPOP-CMAES (4.071 against 2.500 at D = 50). The choice
+       between 1.0 and the recorded 2.0 is therefore left to the tune stage on
+       the held-out composition class, not asserted here.
+
+    NOT CLAIMED AS NEW. Covariance-based crossover appears in EA4eig, L-SRTDE
+    and LSHADE-cnEpSin, and rotation invariance through a learned basis is
+    CMA-ES. What this function claims is the five corrections above and their
+    derivations, not the eigen channel itself.
+    """
+    return LSHADE_DGR(
+        obj_func, dim, bounds, max_fes, rng,
+        DIV_PRICE=DIV_PRICE, ALIGN_TAU=ALIGN_TAU, G_TARGET=G_TARGET,
+        RESTART_GROWTH=RESTART_GROWTH,
+        logger=logger, **GB_CONFIG)
+
+
+#: The derived value of each scalar, read from the signature so that the tune
+#: stage, the gate and the docstring above cannot disagree about what the
+#: untuned algorithm is.
+GB_DEFAULTS: dict = {k: v.default
+                     for k, v in inspect.signature(LSHADE_GB).parameters.items()
+                     if k in GB_TUNABLES}
+
+#: Scalars deliberately NOT tuned, and the reason, because an untuned parameter
+#: with no reason recorded is indistinguishable from one that was forgotten. A
+#: test requires every scalar to be either in the relay below or in here.
+GB_UNTUNED: dict = {
+    "G_TARGET": "the generation target is calibrated to L-SHADE's own 18*D "
+                "sizing rule, not to this study's data: at G_TARGET = 1111 and "
+                "F_max = 1e4*D the rule N = 2*F_max/G_TARGET reproduces 18*D at "
+                "every dimension of the suite. Tuning it would turn a constant "
+                "borrowed from the family into one fitted on our own functions, "
+                "which is the exact property the correction was made to remove. "
+                "It is reported as a fixed constant, not as a tuned value.",
+}
+
+
 TARGET = "L-SHADE-DGR"
+
+#: Algorithms of ours. The line-up test counts these separately from the
+#: rivals, so adding one of ours can never be mistaken for a rival slipping
+#: into a published table, and adding a rival still has to be declared.
+OURS = ("L-SHADE-DGR", "L-SHADE-GB")
 
 #: What runs, and what appears in every table. One line-up only: the weak swarm
 #: baselines were removed outright, so there is no tier to choose.
 ALGORITHMS: dict[str, Callable] = {
     "L-SHADE-DGR": LSHADE_DGR,
+    "L-SHADE-GB":  LSHADE_GB,
     "LSHADE":      LSHADE,
     "jSO":         jSO,
     "BIPOP_CMAES": BIPOP_CMAES,
@@ -1624,6 +1825,32 @@ def target_defaults() -> dict:
     return {k: repr(v.default)
             for k, v in inspect.signature(LSHADE_DGR).parameters.items()
             if v.default is not inspect.Parameter.empty and k != "logger"}
+
+
+def ours_defaults() -> dict:
+    """The effective configuration of every algorithm of ours, for the manifest.
+
+    WHY NOT JUST EXTEND ``target_defaults``. That dict is compared verbatim
+    against manifests written before this file had a second algorithm of ours,
+    and the guard that reads it refuses a resume on any recorded key that
+    changed. Adding keys to it would therefore refuse to resume our own
+    35,496 recorded rows, which is hours of compute and no gain. This is a
+    separate key, absent from older manifests, and the guard treats an absent
+    record as nothing to compare rather than as drift.
+
+    "Effective" means what the algorithm is actually run with: its fixed
+    configuration, the derived value of each scalar, and any keyword the
+    pipeline bound over them. A name in the CSV resolves to this, which is the
+    only reason the name is worth anything years later.
+    """
+    out = {TARGET: target_defaults()}
+    fn = ALGORITHMS.get(CANDIDATE)
+    if fn is not None:
+        eff = dict(GB_DEFAULTS)
+        eff.update(getattr(fn, "keywords", None) or {})
+        eff.update(GB_CONFIG)
+        out[CANDIDATE] = {k: repr(v) for k, v in sorted(eff.items())}
+    return out
 
 
 # ==========================================================================
@@ -1808,6 +2035,36 @@ def cmd_run(args) -> int:
             recorded = pd.read_csv(raw_csv, float_precision="round_trip")
             done = set(map(tuple, recorded[["Algorithm", "Function", "Dimension",
                                             "Run"]].to_numpy()))
+
+            # THE SAME GUARD AS ABOVE, FOR THE REST OF OUR LINE-UP. The target
+            # is pinned by `target_defaults`; an algorithm whose scalars a tune
+            # stage chooses needs the same protection, and needs it more, since
+            # re-running the tuning on different data is the ordinary way for
+            # its configuration to move. Appending rows measured under new
+            # scalars to rows measured under old ones would put two algorithms
+            # in the file under one name, and every table would pool them.
+            #
+            # Checked only for algorithms that already have rows here, and only
+            # on keys the manifest actually recorded: the same unit of
+            # comparison the target's guard settled on, for the same reason.
+            prev_ours = prev_manifest.get("ours_defaults") or {}
+            now_ours = ours_defaults()
+            have_rows = set(recorded["Algorithm"].unique())
+            for alg in sorted(have_rows & set(prev_ours) & set(now_ours)):
+                was, now = prev_ours[alg], now_ours[alg]
+                drift = {k: (v, now.get(k, "<removed>"))
+                         for k, v in was.items()
+                         if now.get(k, "<removed>") != v}
+                if drift:
+                    print(f"[X] {alg} has rows in {raw_csv} that were measured "
+                          f"with a different configuration than this code "
+                          f"produces. Resuming would pool two algorithms under "
+                          f"one name.")
+                    for key, (b, a) in sorted(drift.items()):
+                        print(f"      {key}: recorded {b} -> now {a}")
+                    print(f"    Use a fresh --out directory, or restore the "
+                          f"configuration those rows were measured with.")
+                    return 2
             print(f"[resume] {len(done)} runs already recorded in {raw_csv}")
     elif raw_csv.exists():
         # An earlier driver deleted this file silently, which is how 72 minutes of
@@ -1865,6 +2122,7 @@ def cmd_run(args) -> int:
         # rewritten; this is how a later reader sees what the code looked like
         # when each batch of rows was added.
         "target_defaults_now": target_defaults(),
+        "ours_defaults_now": ours_defaults(),
         "opfunu": _dep_version("opfunu"),
         "numpy": np.__version__,
         "python": sys.version.split()[0],
@@ -1920,6 +2178,15 @@ def cmd_run(args) -> int:
         # live signature goes into `history` instead, per invocation.
         "target": TARGET,
         "target_defaults": prev_manifest.get("target_defaults") or target_defaults(),
+        # Frozen on first write, exactly like target_defaults and for the same
+        # reason: it records what the earliest rows were measured with, and
+        # refreshing it would relabel them as having been produced by whatever
+        # the code says today. The live value goes into `history` per
+        # invocation. Merged rather than replaced, so a second algorithm of
+        # ours appearing later does not rewrite the first one's record.
+        "ours": list(OURS),
+        "ours_defaults": {**ours_defaults(),
+                          **(prev_manifest.get("ours_defaults") or {})},
         **({"target_defaults_provenance": prev_manifest["target_defaults_provenance"]}
            if "target_defaults_provenance" in prev_manifest else {}),
         # What each registered algorithm was actually called with, so a name in
@@ -3738,8 +4005,12 @@ def test_the_target_keeps_the_defaults_its_results_were_measured_with():
     # value-based allowlist would silently accept any new flag defaulting to
     # zero, which is exactly the kind of accidental pass this test exists to
     # prevent.
+    # "4.0" is RESTART_POP_MULT and "1111" is G_TARGET: neither is read unless
+    # another flag leaves its default -- POP_UNCAP for the first, POP_RULE for
+    # the second -- so their values cannot move a recorded row. That is the
+    # only ground on which a non-neutral-looking literal belongs here.
     neutral = {"False", "'success'", "'uniform'", "'linear'", "'rate'",
-               "None", "4.0", "0.0"}
+               "None", "4.0", "0.0", "1111"}
     for key in added:
         assert repr(params[key].default) in neutral, \
             (f"new flag {key}={params[key].default!r} does not default to the "
@@ -4651,8 +4922,12 @@ def test_changing_the_line_up_does_not_reseed_the_other_algorithms():
 def test_planned_rivals_are_declared_and_not_silently_counted():
     for name in PLANNED_RIVALS:
         assert name not in ALGORITHMS, f"{name} is declared planned but registered"
-    assert len(ALGORITHMS) == 1 + 6, \
-        f"the line-up is ours + 6 implemented rivals, got {list(ALGORITHMS)}"
+    for name in OURS:
+        assert name in ALGORITHMS, f"{name} is declared ours but not registered"
+        assert name not in PLANNED_RIVALS, f"{name} is both ours and a rival"
+    assert len(ALGORITHMS) == len(OURS) + 6, \
+        (f"the line-up is {len(OURS)} of ours + 6 implemented rivals, "
+         f"got {list(ALGORITHMS)}")
     # An unvalidated rival must be declared as implemented-but-unvalidated, not
     # as missing. Claiming L-SHADE-RSP is "not implemented" while 130 lines of it
     # sit in section 6 is the kind of stale warning that stops being read.
@@ -4663,6 +4938,330 @@ def test_planned_rivals_are_declared_and_not_silently_counted():
         fn = name.replace("-", "_")
         assert fn in globals() and callable(globals()[fn]), \
             f"{name} is declared implemented but {fn} is not defined"
+
+
+
+# ------------------------------------------- the candidate and its tuning
+@_test()
+def test_the_candidate_is_published_in_the_configuration_it_is_tuned_in():
+    """The one way a tuned parameter can be meaningless, closed in code.
+
+    The tune stage runs ``LSHADE_DGR`` with keywords and the gate runs
+    ``LSHADE_GB``. If those two keyword lists were written out separately, a
+    scalar chosen inside one algorithm could be published inside another and
+    nothing would notice -- which is what the previous version of the stage
+    did: it tuned ALIGN_TAU with ``OPS=(0, 3)`` and the recorded sizing rule,
+    neither of which the gate ever measured. This calls the algorithm with a
+    spy in place of its body and compares what it forwards against what an arm
+    is built from, so the two cannot drift apart again.
+    """
+    seen = {}
+
+    def spy(obj_func, dim, bounds, max_fes, rng, **kw):
+        seen.update(kw)
+        return None
+
+    real = globals()["LSHADE_DGR"]
+    globals()["LSHADE_DGR"] = spy
+    try:
+        LSHADE_GB(lambda x: 0.0, 3, (np.zeros(3), np.ones(3)), 10,
+                  np.random.default_rng(0))
+    finally:
+        globals()["LSHADE_DGR"] = real
+
+    assert seen.pop("logger", "missing") is None, \
+        "the logger must reach the algorithm, or the diagnostics measure nothing"
+    want = {**GB_CONFIG, **GB_DEFAULTS}
+    assert seen == want, f"forwarded {seen}, arms are built from {want}"
+
+    _, arm_kw = _gb_arm(dict(GB_DEFAULTS))
+    assert arm_kw == want, \
+        f"an untuned arm is {arm_kw}, the published algorithm is {want}"
+    params = inspect.signature(LSHADE_DGR).parameters
+    for key in want:
+        assert key in params, f"{key} is not a parameter of the algorithm"
+
+
+@_test()
+def test_every_scalar_is_either_tuned_or_declared_untuned():
+    """An untuned parameter with no reason recorded looks like a forgotten one.
+
+    Reviewers ask which parameters were tuned, on what, and why the rest were
+    not. This makes the answer a property of the file: every scalar the
+    algorithm exposes is either in the relay or in ``GB_UNTUNED`` with its
+    reason, and the two sets cannot overlap.
+    """
+    relayed = [s for s, _ in GB_TUNE_RELAY]
+    assert len(relayed) == len(set(relayed)), f"a scalar is tuned twice: {relayed}"
+    assert not set(relayed) & set(GB_UNTUNED), \
+        f"both tuned and declared untuned: {sorted(set(relayed) & set(GB_UNTUNED))}"
+    assert set(relayed) | set(GB_UNTUNED) == set(GB_TUNABLES), \
+        (f"every scalar must be tuned or declared untuned; missing "
+         f"{sorted(set(GB_TUNABLES) - set(relayed) - set(GB_UNTUNED))}")
+    for scalar, grid in GB_TUNE_RELAY:
+        assert len(grid) == len(set(grid)), f"{scalar} grid repeats a value: {grid}"
+        assert GB_DEFAULTS[scalar] in grid, \
+            (f"{scalar}'s derived value {GB_DEFAULTS[scalar]} is not in its "
+             f"grid {grid}, so the stage could not confirm the derivation")
+    for scalar, reason in GB_UNTUNED.items():
+        assert len(reason) > 80, f"{scalar} is untuned with no reason recorded"
+    # The fixed part and the scalars must not overlap, or the update order in
+    # `ours_defaults` would decide which of two values the manifest records.
+    assert not set(GB_CONFIG) & set(GB_TUNABLES), \
+        f"a key is both fixed and tunable: {sorted(set(GB_CONFIG) & set(GB_TUNABLES))}"
+    # The null is in every grid that has one, because a tuning stage that can
+    # only confirm a mechanism is not a measurement.
+    for (scalar, value) in GB_NULL_NOTES:
+        grid = dict(GB_TUNE_RELAY).get(scalar)
+        assert grid is not None and value in grid, \
+            f"{scalar}'s null {value} is declared but not in its grid"
+
+
+@_test()
+def test_the_relay_pays_for_each_arm_once():
+    """The named-by-tuple arms are what make a relay cheaper than a grid.
+
+    Each step holds the earlier winners fixed, so one arm of every step after
+    the first is a configuration already measured. Named by the whole scalar
+    tuple, the resume logic skips it; named by the scalar under test it would be
+    measured again under a second name, and the stage would cost three full
+    grids instead of one plus two.
+    """
+    chosen, names = dict(GB_DEFAULTS), []
+    for scalar, grid in GB_TUNE_RELAY:
+        for v in grid:
+            names.append(_gb_arm({**chosen, scalar: v})[0])
+        # The worst case for this test is also the likely one: every step
+        # confirms the derived value, so every step repeats one arm.
+        chosen[scalar] = GB_DEFAULTS[scalar]
+    paid_twice = len(names) - len(set(names))
+    assert paid_twice == len(GB_TUNE_RELAY) - 1, \
+        (f"{paid_twice} arms are shared between steps, expected "
+         f"{len(GB_TUNE_RELAY) - 1}; the arm names no longer carry every scalar")
+    for n in names:
+        assert "," not in n, f"an arm name must survive a CSV round trip: {n!r}"
+        assert n.startswith("gb "), f"an arm name must say what it is: {n!r}"
+
+
+@_test()
+def test_the_two_analyses_are_named_after_their_own_k():
+    """A hard-coded k in one place and a computed one in another pools families.
+
+    Every statistic the report reads is a function of how many algorithms were
+    compared. Both directory names come from that count, so a change to the
+    line-up cannot leave the report reading a table computed over a different
+    family than the one it names.
+    """
+    before = dict(ALGORITHMS)
+    try:
+        reference, name, ref_dir, cand_dir = _analysis_lineup({"stages": {}})
+        assert name == CANDIDATE
+        assert name not in reference, "the candidate is inside its own reference"
+        assert len(reference) == len(ALGORITHMS) - 1
+        assert ref_dir == f"tables_k{len(reference)}"
+        assert cand_dir == f"tables_k{len(reference) + 1}"
+        assert TARGET in reference, \
+            "the recorded algorithm must stay in the reference line-up"
+    finally:
+        ALGORITHMS.clear()
+        ALGORITHMS.update(before)
+
+
+@_test()
+def test_the_candidate_is_bound_with_the_scalars_the_tuning_chose():
+    """A chosen value that never reaches the gate is a wasted stage."""
+    before = dict(ALGORITHMS)
+    try:
+        state = {"stages": {"tune": {"chosen": {"DIV_PRICE": 1.0,
+                                                "ALIGN_TAU": 0.2,
+                                                "RESTART_GROWTH": 2.0,
+                                                "NOT_A_SCALAR": 1}}}}
+        assert _bind_candidate(state) == CANDIDATE
+        kw = ALGORITHMS[CANDIDATE].keywords
+        assert kw["DIV_PRICE"] == 1.0 and kw["ALIGN_TAU"] == 0.2
+        assert kw["RESTART_GROWTH"] == 2.0
+        assert kw["G_TARGET"] == GB_DEFAULTS["G_TARGET"], \
+            "a scalar the relay does not tune must keep its derived value"
+        assert "NOT_A_SCALAR" not in kw, \
+            "a stale state.json must not be able to inject a keyword"
+        cfg = _candidate_config(state)
+        assert cfg["DIV_PRICE"] == 1.0 and cfg["POP_RULE"] == "genbal"
+        # With no tuning recorded, the derived configuration -- not an empty one.
+        assert _candidate_config({"stages": {}}) == {**GB_CONFIG, **GB_DEFAULTS}
+        # And the manifest records the same thing the gate will run.
+        _bind_candidate(state)
+        rec = ours_defaults()[CANDIDATE]
+        assert rec["DIV_PRICE"] == repr(1.0) and rec["POP_RULE"] == repr("genbal")
+    finally:
+        ALGORITHMS.clear()
+        ALGORITHMS.update(before)
+
+
+def _first_generation_pop_size(dim, after, **kw):
+    """The initial population of one run, read off the first logged generation.
+
+    The size is not returned by the algorithm and is not a function of anything
+    a test can see from outside, so it is read where the algorithm reports it.
+    The objective stops the run as soon as the first generation is logged, which
+    is what makes this affordable at D=100.
+    """
+    class _Stop(Exception):
+        pass
+
+    log, calls = [], [0]
+
+    def obj(x):
+        calls[0] += 1
+        if calls[0] > after:
+            raise _Stop
+        return float(np.dot(x, x))
+
+    try:
+        # Scalar bounds, as the suite's problems carry them: the algorithm
+        # reads the span as a float.
+        LSHADE_DGR(obj, dim, (-100.0, 100.0),
+                   SUITES["cec2017"].max_fes(dim), np.random.default_rng(1),
+                   logger=log, **kw)
+    except _Stop:
+        pass
+    assert log, f"no generation was logged at D={dim} within {after} evaluations"
+    return int(log[0]["pop_size"])
+
+
+@_test()
+def test_generation_balanced_sizing_is_the_family_rule_at_every_dimension():
+    """The claim the sizing correction rests on, measured rather than asserted.
+
+    ``G_TARGET = 1111`` is defended in print as reproducing L-SHADE's own 18*D
+    rule at every dimension of this suite, which is what makes it a constant
+    borrowed from the family rather than one fitted on our own functions. That
+    is a statement about a code path, so it is checked by running the path, not
+    by restating its arithmetic in the test.
+    """
+    gb = {**GB_CONFIG, **GB_DEFAULTS}
+    for dim in (10, 30, 50, 100):
+        want = 18 * dim
+        got = _first_generation_pop_size(dim, 3 * want, **gb)
+        assert got == want, \
+            (f"D={dim}: generation-balanced sizing gave {got}, L-SHADE's rule "
+             f"is 18*D = {want}")
+
+    # The recorded rule is unchanged, so the comparison the docstring draws is
+    # between two live code paths and not between one and a memory. At D=50 it
+    # is the cap that binds, which is the whole reason the rule was changed.
+    cap = inspect.signature(LSHADE_DGR).parameters["POP_MAX"].default
+    got = _first_generation_pop_size(50, 4 * cap)
+    assert got == cap, \
+        (f"the recorded rule at D=50 should be capped at {cap}, got {got}; "
+         f"the sizing comparison in LSHADE_GB's docstring no longer holds")
+
+
+@_test()
+def test_the_driver_refuses_to_resume_across_a_change_in_the_candidate():
+    """The target's guard, extended to the algorithm whose scalars are tuned.
+
+    Re-running the tuning on different data is the ordinary way for this
+    algorithm's configuration to move, so appending to a results file that was
+    measured under the previous scalars is a mistake that will be made. The
+    manifest is the only place the difference can be seen, because the raw CSV
+    records a name and not a configuration.
+    """
+    import tempfile
+    d = Path(tempfile.mkdtemp()) / "out"
+    (d / "raw").mkdir(parents=True)
+    stale = ours_defaults()
+    stale[CANDIDATE] = dict(stale[CANDIDATE])
+    stale[CANDIDATE]["DIV_PRICE"] = repr(0.25)       # a different tuning round
+    man = {"seed_scheme_version": SEED_SCHEME_VERSION, "runs": 1,
+           "target_defaults": target_defaults(), "ours_defaults": stale}
+    (d / "manifest.json").write_text(json.dumps(man), encoding="utf-8")
+    row = {"Algorithm": CANDIDATE, "Function": "F1", "Dimension": 10, "Run": 0,
+           "Error": 0.0, "Seconds": 0.0, "FES": 1, "Overrun": 0}
+    pd.DataFrame([row])[RAW_COLUMNS].to_csv(d / "raw" / "results.csv", index=False)
+    argv = ["run", "--dims", "10", "--runs", "1", "--functions", "1",
+            "--jobs", "1", "--fes-per-dim", "200", "--algos", CANDIDATE,
+            "--resume", "--out", str(d)]
+    assert cmd_run(build_parser().parse_args(argv)) == 2, \
+        "rows measured under other scalars must not be pooled under one name"
+
+    # ...and the same file with the configuration it was measured with is
+    # accepted, so the guard refuses the mismatch and not every resume.
+    man["ours_defaults"] = ours_defaults()
+    (d / "manifest.json").write_text(json.dumps(man), encoding="utf-8")
+    assert cmd_run(build_parser().parse_args(argv)) == 0, \
+        "a matching manifest must still resume"
+
+    # An older manifest, written before this algorithm existed, has nothing to
+    # compare and must resume rather than refuse: that file holds 35,496 rows.
+    man.pop("ours_defaults")
+    (d / "manifest.json").write_text(json.dumps(man), encoding="utf-8")
+    assert cmd_run(build_parser().parse_args(argv)) == 0, \
+        "a manifest that predates the key records no drift to refuse"
+
+
+@_test(slow=True)
+def test_the_tune_stage_runs_and_chooses_every_scalar():
+    """The stage end to end, at a budget small enough for a test.
+
+    Everything above checks the stage's pieces in isolation. This runs it: the
+    three relay steps, the ranking, the tie-break, the state it writes and the
+    arms it actually paid for. A stage that is wired wrong fails here in
+    seconds instead of four hours into a measurement.
+
+    Two functions and a short budget, so the numbers mean nothing and are not
+    read: what is checked is that every scalar comes back with a value from its
+    own grid, and that the relay paid for ten arms and not twelve.
+    """
+    import tempfile
+    pdir = Path(tempfile.mkdtemp()) / "pipe"
+    state = {"stages": {}}
+    real_funcs = globals()["TUNE_FUNCTIONS"]
+    globals()["TUNE_FUNCTIONS"] = (21, 22)
+    try:
+        rc = stage_tune(state, jobs=2, runs=2, fes=50, pdir=pdir)
+    finally:
+        globals()["TUNE_FUNCTIONS"] = real_funcs
+    assert rc == 0, f"the tune stage failed with {rc}"
+
+    tune = state["stages"]["tune"]
+    assert set(tune["chosen"]) == set(GB_TUNABLES)
+    for scalar, grid in GB_TUNE_RELAY:
+        assert tune["chosen"][scalar] in grid, \
+            f"{scalar} came back as {tune['chosen'][scalar]}, not in {grid}"
+    for scalar in GB_UNTUNED:
+        assert tune["chosen"][scalar] == GB_DEFAULTS[scalar], \
+            f"{scalar} is declared untuned but the stage moved it"
+    assert tune["align_tau"] == tune["chosen"]["ALIGN_TAU"], \
+        "the screening reads align_tau; it must be the value that was chosen"
+    assert len(tune["steps"]) == len(GB_TUNE_RELAY)
+    for step in tune["steps"]:
+        assert len(step["mean_ranks"]) == len(step["grid"]), \
+            f"{step['scalar']} ranked {len(step['mean_ranks'])} of " \
+            f"{len(step['grid'])} arms"
+
+    # What the stage paid for. Two arms are shared between consecutive steps by
+    # construction -- each step's derived-value arm is the previous step's
+    # winner -- so twelve arm slots cost ten runs' worth of arms. If the arm
+    # naming ever stops carrying every scalar, this is what catches it.
+    d = pd.read_csv(pdir / "tune" / "gb.csv", float_precision="round_trip")
+    slots = sum(len(g) for _, g in GB_TUNE_RELAY)
+    assert d["Config"].nunique() == slots - (len(GB_TUNE_RELAY) - 1), \
+        f"{d['Config'].nunique()} arms measured, expected {slots - 2}"
+    assert len(d) == d["Config"].nunique() * 2 * 2, \
+        "a cell was measured more than once"
+    assert (d["Dimension"] == TUNE_DIM).all()
+    assert (d["Overrun"] == 0).all(), "the shortened budget was exceeded"
+
+    # The tuned algorithm is the one that reaches the gate.
+    before = dict(ALGORITHMS)
+    try:
+        _bind_candidate(state)
+        kw = ALGORITHMS[CANDIDATE].keywords
+        for scalar, _ in GB_TUNE_RELAY:
+            assert kw[scalar] == tune["chosen"][scalar]
+    finally:
+        ALGORITHMS.clear()
+        ALGORITHMS.update(before)
 
 
 # ------------------------------------------------------- analysis and IO
@@ -4948,21 +5547,32 @@ def cmd_selfcheck(args) -> int:
 #   test       the full correctness suite, including the three that pin the
 #              target's recorded behaviour bit-for-bit. If the algorithm has
 #              drifted, every comparison below is meaningless.
-#   tune       DIV_PRICE, on the COMPOSITION functions F21-F30 -- disjoint from
-#              the functions every later stage measures on. Tuning a parameter
-#              on the test set is the one methodological error that would
-#              invalidate the whole study, so the split is structural, not a
-#              matter of remembering.
-#   screen     the candidate arms at D=50 only, where the collapse is. D=30 is
-#              skipped deliberately: POP_UNCAP is a measured no-op below D=42,
-#              and the screening's job is to choose, not to publish.
-#   select     one winner, by a rule fixed before the numbers exist.
-#   gate       the winner on the full 29-function protocol, resumed into the
+#   tune       the candidate's free scalars -- DIV_PRICE, ALIGN_TAU and
+#              RESTART_GROWTH -- on the COMPOSITION functions F21-F30, disjoint
+#              from the functions every later stage measures on. Tuning a
+#              parameter on the test set is the one methodological error that
+#              would invalidate the whole study, so the split is structural,
+#              not a matter of remembering. The arms are built from GB_CONFIG,
+#              so the configuration the scalar is chosen in is the one the gate
+#              publishes; an earlier version tuned in a configuration the gate
+#              never measured, which is a coincidence rather than a parameter.
+#   screen     the single-parameter arms at D=50 only, where the collapse is.
+#              D=30 is skipped deliberately: POP_UNCAP is a measured no-op
+#              below D=42, and the screening's job is to explain, not to
+#              publish.
+#   select     the arm search's own answer, by a rule fixed before the numbers
+#              existed. It no longer gates what follows: this round's candidate
+#              is derived from measurements already taken rather than chosen by
+#              searching, so a negative result here is recorded in its own file
+#              and the pipeline goes on. Nothing is promoted that the rule
+#              refused -- the two are simply not the same candidate.
+#   gate       the candidate on the full 29-function protocol, resumed into the
 #              existing results, so it is compared against the six rivals under
 #              exactly the seeds and budgets they were measured with.
-#   analyze    twice: the published k=7 line-up untouched, and k=8 with the
-#              candidate. A rank, a Holm family and a critical difference are
-#              all functions of k, so the two must not be mixed.
+#   analyze    twice: the reference line-up untouched, and the same line-up plus
+#              the candidate. A rank, a Holm family and a critical difference
+#              are all functions of k, so the two must not be mixed, and each
+#              lands in a directory named after its own k.
 #   report     the binding criterion, applied and written down whichever way it
 #              falls.
 
@@ -5086,12 +5696,64 @@ AOS_RUNS = 5
 #: Disjoint from SCREEN_FUNCTIONS and from both classes the selection reads.
 TUNE_FUNCTIONS = tuple(range(21, 31))
 TUNE_DIM = 50
+
+#: Runs per cell in the tune stage, deliberately below the protocol's 51.
+#:
+#: The quantity the stage estimates is a mean rank over ten functions, not a
+#: publishable error, and it is never reported as a result. 51 runs over three
+#: relay steps would cost more than the gate it is choosing a parameter for. 15
+#: is enough for a median per function and keeps the whole stage below the cost
+#: of the single-parameter stage it replaces: ten arms at 15 runs is 1,500 runs,
+#: against the 2,550 that five arms at 51 runs would be. A smaller --runs on the
+#: command line still wins, so a smoke test is not forced to pay for 15.
+TUNE_RUNS = 15
+
 #: ALIGN_TAU, the misalignment threshold the "align" rule switches on. The
 #: statistic lies in [0, 1), and 0.0 switches the eigen channel on
 #: unconditionally -- which is the same algorithm as `eig-p1`. That is exactly
 #: why it is the low end of the grid: if no positive threshold beats it, the
 #: gate is not carrying its weight and the honest report says so.
-TUNE_GRID = (0.0, 0.2, 0.4, 0.6, 0.8)
+ALIGN_TAU_GRID = (0.0, 0.2, 0.4, 0.6, 0.8)
+
+#: DIV_PRICE, the price the credit rule charges an operator for the population
+#: contraction it causes. 0.0 is the null and is in the grid for that reason:
+#: at zero the rule reduces to crediting improvement alone, which is the `rate`
+#: rule's behaviour, so if no positive price wins then the diversity term is not
+#: carrying its weight and the report has to say so. The upper end is 2.0,
+#: where the price dominates the improvement term; the grid is geometric rather
+#: than uniform because the quantity is a ratio.
+DIV_PRICE_GRID = (0.0, 0.25, 0.5, 1.0, 2.0)
+
+#: RESTART_GROWTH. Two points only, and not a search: 1.0 is what generation
+#: balancing implies -- an epoch restarting with R evaluations left owes
+#: G*R/F_max generations, so the size that delivers them is 2R/(G*R/F_max) =
+#: 2*F_max/G*, the size it already had -- and 2.0 is what the recorded algorithm
+#: does. The grid exists to measure the cost of the derivation, not to choose a
+#: value by search, because growth buys escape from local optima and the
+#: derivation gives it up.
+RESTART_GROWTH_GRID = (1.0, 2.0)
+
+#: The relay, in the order the scalars are selected, with the reason for the
+#: order. One coordinate at a time, each on the held-out class.
+#:
+#: WHY A RELAY AND NOT A GRID. The full cross product is 5 x 5 x 2 = 50 arms;
+#: at this dimension that is roughly 1,000 core-hours, more than the gate the
+#: parameters are being chosen for. A relay costs 10 arms. The price is real and
+#: is stated rather than hidden: a greedy coordinate search cannot resolve an
+#: interaction between two scalars, so what the stage delivers is the best value
+#: of each scalar given the others at their derived values, not a joint optimum.
+#:
+#: WHY THIS ORDER. DIV_PRICE first, because it is the only scalar with no
+#: derivation behind any value -- it is the one that genuinely has to be
+#: measured. ALIGN_TAU second: it is a threshold on a bounded statistic, so the
+#: grid covers its whole range and the default is in it. RESTART_GROWTH last,
+#: because its value follows from the sizing rule and the step only confirms the
+#: derivation or prices it.
+GB_TUNE_RELAY: tuple = (
+    ("DIV_PRICE", DIV_PRICE_GRID),
+    ("ALIGN_TAU", ALIGN_TAU_GRID),
+    ("RESTART_GROWTH", RESTART_GROWTH_GRID),
+)
 
 
 def _pipeline_state(path: Path) -> dict:
@@ -5213,47 +5875,184 @@ def _run_arms(arms, functions, dim, runs, out_csv, jobs, label, fes_per_dim=None
     return 0
 
 
-def stage_tune(state, jobs, runs, fes=None, pdir=None) -> int:
-    """Choose ALIGN_TAU on functions no later stage measures on.
+def _gb_arm(scalars: dict) -> tuple[str, dict]:
+    """A tune arm's name and keywords, from the scalars it carries.
 
-    The screening and both selection classes live on F4-F20. This tunes on the
-    composition class instead, so the value is not chosen by looking at the
-    numbers it will later be judged by. That is the whole point and it is
-    enforced by the constants, not by discipline.
+    The keywords are ``GB_CONFIG`` plus the scalars, which is exactly what
+    ``LSHADE_GB`` passes to ``LSHADE_DGR``, so the stage that chooses a scalar
+    and the algorithm the gate publishes are the same algorithm. A test asserts
+    that rather than leaving it to inspection.
+
+    The name carries every scalar, not only the one under test, and that saves
+    compute: the relay's later steps hold the earlier winners fixed, so one arm
+    of each step is a configuration that is already measured. Named by the full
+    tuple, ``_run_arms`` finds it recorded and skips it; named by the scalar
+    under test it would be paid for twice under two names.
     """
-    csv = (pdir or PIPELINE_DIR) / "tune" / "results.csv"
-    arms = {f"tau={v}": dict(POP_UNCAP=True, OPS=(0, 3), DIV_GUARD=False,
-                             P_EIG_RULE="align", ALIGN_TAU=v)
-            for v in TUNE_GRID}
-    rc = _run_arms(arms, TUNE_FUNCTIONS, TUNE_DIM, runs, csv, jobs, "tune", fes)
-    if rc:
-        return rc
+    name = "gb " + " ".join(f"{k}={scalars[k]}" for k in sorted(scalars))
+    kw = dict(GB_CONFIG)
+    kw.update(scalars)
+    return name, kw
+
+
+def _tune_ranks(csv: Path, arms: dict):
+    """Mean rank per arm over the tuning functions, and any budget overrun.
+
+    Restricted to the arms of the step being read. The relay writes three steps
+    into one file and an earlier scheme may have left rows of its own there, so
+    reading the file whole would rank configurations against configurations
+    that were never part of this comparison.
+    """
     d = pd.read_csv(csv, float_precision="round_trip")
+    d = d[d["Config"].isin(list(arms))]
+    n_over = int((d["Overrun"] != 0).sum())
     piv = d.pivot_table(index="Config", columns="Function", values="Error",
                         aggfunc="median")
     ranks = pd.DataFrame(
         np.apply_along_axis(sps.rankdata, 0, piv.to_numpy(dtype=float)),
         index=piv.index, columns=piv.columns).mean(axis=1).sort_values()
-    print("\n  mean rank over the composition class (1 = best):")
-    print("   " + ranks.to_string().replace("\n", "\n   "))
-    best = float(str(ranks.index[0]).split("=")[1])
-    print(f"\n  [ok] ALIGN_TAU = {best}, chosen on F21-F30 and now frozen.")
-    if best == 0.0:
-        print(f"      tau = 0.0 switches the eigen channel on unconditionally, "
-              f"which is the same algorithm as the `eig-p1` arm. If that is "
-              f"what wins here, the threshold is not carrying its weight and "
-              f"the report says so rather than dressing it up.")
-    state["stages"]["tune"] = {"align_tau": best,
-                               "grid": list(TUNE_GRID),
-                               "functions": list(TUNE_FUNCTIONS),
-                               "mean_ranks": {str(k): float(v)
-                                              for k, v in ranks.items()}}
+    return ranks, n_over
+
+
+#: Printed when a scalar's chosen value is the one that switches its mechanism
+#: off. A tuning stage that can only confirm a mechanism is not a measurement,
+#: so the null is in every grid and what it means is written down in advance.
+GB_NULL_NOTES = {
+    ("DIV_PRICE", 0.0):
+        "a price of zero credits improvement alone, which is the `rate` rule's "
+        "behaviour. If that wins here, the diversity term is not carrying its "
+        "weight, and correction 2 is reported as not having delivered rather "
+        "than kept for the story.",
+    ("ALIGN_TAU", 0.0):
+        "tau = 0.0 switches the eigen channel on unconditionally, which is the "
+        "same algorithm as the `eig-p1` arm. If that is what wins here, the "
+        "threshold is not carrying its weight and the report says so rather "
+        "than dressing it up.",
+}
+
+
+def stage_tune(state, jobs, runs, fes=None, pdir=None) -> int:
+    """Choose L-SHADE-GB's free scalars on functions no later stage measures on.
+
+    The screening and both selection classes live on F4-F20, and the binding
+    criterion is read on the hybrid class, F11-F20. This tunes on the
+    composition class instead, so no value is chosen by looking at the numbers
+    it will later be judged by. That is the whole point and it is enforced by
+    the constants and by a test, not by discipline.
+
+    WHAT CHANGED AND WHY. An earlier version of this stage tuned ALIGN_TAU in a
+    configuration that was not the one the gate then measured: its arms set
+    ``OPS=(0, 3)``, dropping the leader step entirely, and left the sizing rule
+    and the credit rule at the recorded algorithm's defaults. A threshold chosen
+    inside one algorithm and then published inside another is not a tuned
+    parameter, it is a coincidence, and nothing in the pipeline could see it
+    because the two keyword lists were written out twice. The arms here are
+    built from ``GB_CONFIG``, the same constant the algorithm is built from.
+
+    The three scalars are selected by relay, one coordinate at a time, in the
+    order ``GB_TUNE_RELAY`` records with its reasons. The limitation of a relay
+    is stated where the value is reported, not buried here.
+    """
+    csv = (pdir or PIPELINE_DIR) / "tune" / "gb.csv"
+    # A smaller --runs still wins: a smoke test must not be forced to pay for
+    # the full tuning precision, and TUNE_RUNS is a ceiling, not a protocol.
+    runs = min(int(runs), TUNE_RUNS)
+    chosen, steps = dict(GB_DEFAULTS), []
+    for scalar, grid in GB_TUNE_RELAY:
+        arms, value_of = {}, {}
+        for v in grid:
+            name, kw = _gb_arm({**chosen, scalar: v})
+            arms[name], value_of[name] = kw, v
+        rc = _run_arms(arms, TUNE_FUNCTIONS, TUNE_DIM, runs, csv, jobs,
+                       f"tune {scalar}", fes)
+        if rc:
+            return rc
+        ranks, n_over = _tune_ranks(csv, arms)
+        if n_over:
+            print(f"  [X] {n_over} tuning runs exceeded the evaluation budget; "
+                  f"a parameter chosen on them would be chosen on rows the "
+                  f"protocol does not allow.")
+            return 1
+        if len(ranks) != len(arms):
+            print(f"  [X] the tuning file holds {len(ranks)} of {len(arms)} "
+                  f"arms for {scalar}; the comparison is incomplete.")
+            return 1
+        print(f"\n  {scalar}: mean rank over the composition class (1 = best)")
+        for name in ranks.index:
+            mark = ("   <- derived value"
+                    if value_of[name] == GB_DEFAULTS[scalar] else "")
+            print(f"    {scalar}={value_of[name]:<8} {float(ranks[name]):.4f}{mark}")
+        best = float(ranks.iloc[0])
+        tied = [n for n in ranks.index if float(ranks[n]) <= best + 1e-9]
+        # TIES BREAK TOWARD THE DERIVED VALUE. A measurement that cannot
+        # separate the prediction from an alternative is not evidence against
+        # the prediction, and the derived configuration is the one that can be
+        # defended in print. Remaining ties break toward the smaller value.
+        pick = min(tied, key=lambda n: (value_of[n] != GB_DEFAULTS[scalar],
+                                        value_of[n]))
+        chosen[scalar] = value_of[pick]
+        if len(tied) > 1:
+            print(f"    tied: {[value_of[n] for n in tied]}; broken toward the "
+                  f"derived value {GB_DEFAULTS[scalar]}")
+        note = GB_NULL_NOTES.get((scalar, float(chosen[scalar])))
+        if note:
+            print(f"    [!] {note}")
+        steps.append({
+            "scalar": scalar,
+            "grid": list(grid),
+            "held_fixed": {k: v for k, v in chosen.items() if k != scalar},
+            "chosen": chosen[scalar],
+            "derived": GB_DEFAULTS[scalar],
+            "confirms_derivation": chosen[scalar] == GB_DEFAULTS[scalar],
+            "tied": [value_of[n] for n in tied],
+            "mean_ranks": {str(value_of[n]): float(ranks[n])
+                           for n in ranks.index}})
+
+    print("\n  [ok] chosen on F21-F30 and now frozen:")
+    for k in GB_TUNABLES:
+        if k in GB_UNTUNED:
+            how = "fixed, not tuned"
+        elif chosen[k] == GB_DEFAULTS[k]:
+            how = "derived value, confirmed by measurement"
+        else:
+            how = f"tuned; the derivation predicted {GB_DEFAULTS[k]}"
+        print(f"    {k:15s} {chosen[k]:<8}  ({how})")
+    print("\n  A relay is a greedy coordinate search. Each value is the best of "
+          "its grid given\n  the others at their derived values, not a joint "
+          "optimum: the full 5 x 5 x 2 grid\n  costs five times this stage and "
+          "more than the gate it feeds. The limitation is\n  reported with the "
+          "parameters, not left for a reader to find.")
+    state["stages"]["tune"] = {
+        "scheme": "gb-relay-v1",
+        "algorithm": "L-SHADE-GB",
+        "chosen": {k: chosen[k] for k in GB_TUNABLES},
+        "derived": {k: GB_DEFAULTS[k] for k in GB_TUNABLES},
+        "untuned": dict(GB_UNTUNED),
+        # Kept under its old name because the screening and the winner
+        # registration read it, and it is still the same quantity.
+        "align_tau": float(chosen["ALIGN_TAU"]),
+        "functions": list(TUNE_FUNCTIONS),
+        "dimension": TUNE_DIM,
+        "runs": runs,
+        "search": "relay (greedy coordinate), not a joint grid",
+        "steps": steps}
     return 0
 
 
 def stage_screen(state, jobs, runs, fes=None, pdir=None) -> int:
-    """Every candidate arm at D=50, against the recorded algorithm."""
-    tau = state["stages"].get("tune", {}).get("align_tau", 0.0)
+    """Every single-parameter arm at D=50, against the recorded algorithm.
+
+    THE ARM'S THRESHOLD IS THE DERIVED ONE, NOT THE TUNED ONE. An earlier
+    version injected the value the tune stage had chosen. That value is chosen
+    inside the candidate's configuration -- generation-balanced sizing, the
+    three-operator portfolio, the stricter eigen gate -- and this arm has none
+    of those, so injecting it would import a parameter from one algorithm into
+    a different one, which is the error the tune stage was rewritten to remove.
+    The arm uses the threshold's derived value, so it is a fixed configuration
+    that measures the align rule itself and does not depend on whether the tune
+    stage has run.
+    """
+    tau = GB_DEFAULTS["ALIGN_TAU"]
     arms = {k: dict(v) for k, v in SCREEN_ARMS.items()}
     arms["align"]["ALIGN_TAU"] = tau
     arms["baseline"] = {}
@@ -5424,17 +6223,68 @@ def stage_select(state, pdir=None) -> int:
     return 0
 
 
-def _register_winner(state) -> str:
-    """Put the winner in ALGORITHMS under a name that records what it is."""
-    sel = state["stages"]["select"]
-    name = f"L-SHADE-DGR2 ({sel['winner']})"
-    if name not in ALGORITHMS:
-        cfg = dict(sel["config"])
-        tau = state["stages"].get("tune", {}).get("align_tau")
-        if cfg.get("P_EIG_RULE") == "align" and tau is not None:
-            cfg["ALIGN_TAU"] = tau
-        ALGORITHMS[name] = functools.partial(LSHADE_DGR, **cfg)
-    return name
+#: The candidate of this round: the derived algorithm, not an arm of a search.
+#:
+#: WHY THE ARM WINNER IS NO LONGER PROMOTED. The screening stage searches
+#: single-parameter arms of the recorded algorithm and the earlier pipeline
+#: promoted its winner to the gate. That round finished and its answer is
+#: recorded: the criterion refused the winner. The corrections in L-SHADE-GB
+#: were then derived from measurements already taken -- the gate, the screening
+#: and the operator-selection correlation -- and not by searching the functions
+#: the criterion is read on, which makes this round confirmatory rather than
+#: exploratory, and that is the stronger design of the two.
+#:
+#: Promoting both would also change every number the criterion reads. A
+#: Friedman rank, a Holm family and a Nemenyi critical difference are all
+#: functions of how many algorithms were compared, so a second candidate in the
+#: same gate is not a free addition: it moves the ranks of the first. One
+#: candidate per gate, and the screening keeps reporting its own answer in its
+#: own file.
+CANDIDATE = "L-SHADE-GB"
+
+
+def _candidate_config(state) -> dict:
+    """What the candidate is measured with: its fixed part plus its scalars.
+
+    The scalars come from the tune stage when it has run and from the
+    signature's derived values when it has not, so this is a complete
+    description of the algorithm in either case rather than a half one.
+    """
+    chosen = dict(GB_DEFAULTS)
+    tuned = (state.get("stages", {}).get("tune", {}) or {}).get("chosen") or {}
+    chosen.update({k: v for k, v in tuned.items() if k in GB_TUNABLES})
+    return {**GB_CONFIG, **chosen}
+
+
+def _bind_candidate(state) -> str:
+    """Bind the tuned scalars into the candidate before it is measured.
+
+    ``algorithm_seed`` is derived from the name, so binding keywords cannot
+    move any other algorithm's random stream, and re-binding the same name with
+    the same values is a no-op. Binding it with *different* values would be a
+    silent change of what a recorded name means; that is what the manifest's
+    ``algorithm_overrides`` guard refuses on resume.
+    """
+    chosen = dict(GB_DEFAULTS)
+    tuned = (state.get("stages", {}).get("tune", {}) or {}).get("chosen") or {}
+    chosen.update({k: v for k, v in tuned.items() if k in GB_TUNABLES})
+    ALGORITHMS[CANDIDATE] = functools.partial(LSHADE_GB, **chosen)
+    return CANDIDATE
+
+
+def _analysis_lineup(state) -> tuple[list[str], str, str, str]:
+    """The reference line-up, the candidate, and the two table directories.
+
+    The reference is the line-up the published tables were computed on: it is
+    the whole registry minus this round's candidate. Both directory names are
+    derived from the number of algorithms in them, because `cmd_analyze` names
+    them that way and a hard-coded "k8" in one place and a computed "k9" in
+    another is how a reader ends up comparing two different Friedman families.
+    """
+    name = _bind_candidate(state)
+    reference = [a for a in ALGORITHMS if a != name]
+    return (reference, name,
+            f"tables_k{len(reference)}", f"tables_k{len(reference) + 1}")
 
 
 def stage_gate(state, jobs, out=None, dims=None, fes=None) -> int:
@@ -5463,8 +6313,8 @@ def stage_gate(state, jobs, out=None, dims=None, fes=None) -> int:
     compares against reports it, it cost 125 core-hours for one algorithm when
     it was measured once, and the project records it as a stated limitation.
     """
-    name = _register_winner(state)
-    print(f"  registered {name!r} -> {ALGORITHMS[name].keywords}")
+    name = _bind_candidate(state)
+    print(f"  candidate {name!r} -> {ALGORITHMS[name].keywords}")
     out = Path(out) if out is not None else Path(RESULTS_DIR)
     todo = [int(d) for d in (dims or STUDY_DIMS)]
     manifest = out / "manifest.json"
@@ -5514,24 +6364,33 @@ def stage_gate(state, jobs, out=None, dims=None, fes=None) -> int:
 
 
 def stage_analyze(state, out=None) -> int:
-    """Twice: the published line-up untouched, and k=8 with the candidate."""
-    name = state["stages"]["gate"]["algorithm"]
-    _register_winner(state)
+    """Twice: the reference line-up untouched, and the same plus the candidate.
+
+    TWO ANALYSES AND NEVER A MIXED TABLE. Every statistic here is a function of
+    how many algorithms were compared -- a Friedman rank, the Holm family size,
+    the Nemenyi critical difference -- so the candidate's numbers may only be
+    read against ranks recomputed with it present. The reference analysis exists
+    so the published table keeps the numbers it was published with, and the two
+    live in directories named after their own k.
+    """
+    reference, name, ref_dir, cand_dir = _analysis_lineup(state)
     out = str(out if out is not None else RESULTS_DIR)
-    published = [a for a in ALGORITHMS if a != name]
-    print("  k=7: the published line-up, written to tables/ unchanged")
+    print(f"  k={len(reference)}: the reference line-up, written to "
+          f"{ref_dir}/ unchanged")
     rc = cmd_analyze(build_parser().parse_args(
-        ["analyze", "--out", out, "--algos", *published, "--no-figures"]))
+        ["analyze", "--out", out, "--algos", *reference, "--no-figures"]))
     if rc:
         return rc
-    print(f"\n  k=8: the same six rivals plus {name!r}")
+    print(f"\n  k={len(reference) + 1}: the same line-up plus {name!r}")
     rc = cmd_analyze(build_parser().parse_args(
-        ["analyze", "--out", out, "--algos", *published, name,
+        ["analyze", "--out", out, "--algos", *reference, name,
          "--control", name]))
     if rc:
         return rc
-    state["stages"]["analyze"] = {"k7": f"{out}/tables_k7",
-                                  "k8": f"{out}/tables_k8"}
+    state["stages"]["analyze"] = {"reference": f"{out}/{ref_dir}",
+                                  "candidate": f"{out}/{cand_dir}",
+                                  "k_reference": len(reference),
+                                  "k_candidate": len(reference) + 1}
     return 0
 
 
@@ -5544,11 +6403,13 @@ def stage_aos(state, jobs, out=None, fes=None) -> int:
     finished algorithms; this explains why one of them was changed.
     """
     out = Path(out) if out is not None else Path(RESULTS_DIR)
-    tdir = out / "tables_k8"
+    _, _, _, cand_dir = _analysis_lineup(state)
+    tdir = out / cand_dir
     tdir.mkdir(parents=True, exist_ok=True)
     # Tables with the tables, the figure with the figures.
     t = aos_correlation(tdir, SCREEN_FUNCTIONS, SCREEN_DIM,
-                        AOS_RUNS, jobs, fes, fdir=out / "figures_k8")
+                        AOS_RUNS, jobs, fes, fdir=out / cand_dir.replace(
+                            "tables", "figures"))
     state["stages"]["aos"] = {"functions": list(SCREEN_FUNCTIONS),
                               "dimension": SCREEN_DIM, "runs": AOS_RUNS,
                               "paired": int(len(t))}
@@ -5557,12 +6418,20 @@ def stage_aos(state, jobs, out=None, fes=None) -> int:
 
 def stage_report(state, pdir=None, out=None) -> int:
     """The binding criterion, applied and written down whichever way it falls."""
-    name = state["stages"]["gate"]["algorithm"]
+    reference, name, _, cand_dir = _analysis_lineup(state)
+    k_cand = len(reference) + 1
     out = Path(out) if out is not None else Path(RESULTS_DIR)
-    k8 = out / "tables_k8"
+    k8 = out / cand_dir
+    tune = state.get("stages", {}).get("tune", {}) or {}
+    cfg = _candidate_config(state)
     lines = ["# Result", "",
              f"Candidate: `{name}`",
-             f"Configuration: `{state['stages']['select']['config']}`", ""]
+             f"Configuration: `{cfg}`",
+             f"Scalars: "
+             + (f"chosen on F{min(TUNE_FUNCTIONS)}-F{max(TUNE_FUNCTIONS)} at "
+                f"D={tune.get('dimension')}, {tune.get('runs')} runs, by "
+                f"{tune.get('search')}" if tune.get("chosen")
+                else "derived values; the tune stage has not run"), ""]
     verdict = {}
     for dim in (10, 30, 50):
         f = k8 / f"class_ranks_{dim}D.csv"
@@ -5571,7 +6440,7 @@ def stage_report(state, pdir=None, out=None) -> int:
         t = pd.read_csv(f, index_col=0)
         if name not in t.columns or TARGET not in t.columns:
             continue
-        lines += [f"## D={dim} (k=8, recomputed)", "",
+        lines += [f"## D={dim} (k={k_cand}, recomputed)", "",
                   "| Class | recorded L-SHADE-DGR | candidate | change |",
                   "|---|---|---|---|"]
         for cls in t.index:
@@ -5622,7 +6491,7 @@ def stage_report(state, pdir=None, out=None) -> int:
     # indistinguishable from fitting the criterion to the result, so nothing is
     # replaced: the reader gets the original, the corrected one, and the reason
     # they differ.
-    pw = out / "tables_k8" / "pairwise_tests.csv"
+    pw = out / cand_dir / "pairwise_tests.csv"
     ok_d10_sig, sig_detail = None, []
     if pw.exists():
         p = pd.read_csv(pw)
@@ -5679,16 +6548,19 @@ def stage_report(state, pdir=None, out=None) -> int:
               "predicted; the verdict above records whether the candidate is "
               "adopted. They are allowed to disagree, and if they do, both are "
               "reported as they fell.", "",
-              "Class ranks are compared inside one k=8 analysis, never against "
-              "the published k=7 numbers: a Friedman rank, a Holm family and a "
-              "Nemenyi critical difference are all functions of how many "
-              "algorithms were compared."]
+              f"Class ranks are compared inside one k={k_cand} analysis, never "
+              f"against the reference k={len(reference)} numbers: a Friedman "
+              f"rank, a Holm family and a Nemenyi critical difference are all "
+              f"functions of how many algorithms were compared."]
     path = (pdir or PIPELINE_DIR) / "RESULT.md"
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text("\n".join(lines), encoding="utf-8")
     print("\n".join(lines[-14:]))
     print(f"\n  [ok] written to {path}")
-    state["stages"]["report"] = {"adopt": bool(ok_hybrid and ok_d10),
+    state["stages"]["report"] = {"candidate": name,
+                                 "configuration": {k: repr(v)
+                                                   for k, v in cfg.items()},
+                                 "adopt": bool(ok_hybrid and ok_d10),
                                  "adopt_on_evidence": (None if ok_d10_sig is None
                                                        else bool(ok_hybrid and ok_d10_sig)),
                                  "target_class": SELECT_TARGET_CLASS,
@@ -5697,10 +6569,16 @@ def stage_report(state, pdir=None, out=None) -> int:
 
 
 def _write_no_candidate_report(state, pdir) -> None:
-    """A negative result is written down in the same place a positive one is."""
+    """The screening's negative result, written down where a positive one is.
+
+    Its own file, not RESULT.md: the gate's candidate is derived rather than
+    screened, so the pipeline continues past this and the report stage writes
+    RESULT.md afterwards. Sharing one filename would mean whichever stage ran
+    last decided what the study's result appeared to be.
+    """
     sel = state["stages"]["select"]
     lines = [
-        "# Result: no candidate was promoted", "",
+        "# Screening: no arm was promoted", "",
         f"The screening measured every candidate arm against the recorded "
         f"algorithm at D=50 under common random numbers, ranked on the "
         f"**{sel['target_class']}** class and filtered on the "
@@ -5716,13 +6594,14 @@ def _write_no_candidate_report(state, pdir) -> None:
         f"{', '.join('`' + c + '`' for c in sel['refused_on_guard'])}", "",
     ] if sel.get("refused_on_guard") else []) + [
         "The best of a set of candidates is not an improvement if every one of "
-        "them is worse. Promoting it would have spent hours of gate compute to "
-        "measure a regression, so the pipeline stopped here.", "",
+        "them is worse, so no arm is promoted. The gate's candidate is "
+        f"`{CANDIDATE}`, whose configuration is derived rather than screened, "
+        "so this is a result about the arm search and not about the study.", "",
         "This is a measured negative result and is reported as one. The "
         "screening data is in `screen/results.csv`, the per-arm comparison in "
         "`screen/effects.csv`.",
     ]
-    path = Path(pdir) / "RESULT.md"
+    path = Path(pdir) / "SCREEN_RESULT.md"
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text("\n".join(lines), encoding="utf-8")
 
@@ -5744,13 +6623,14 @@ def cmd_experiment(args) -> int:
         ("preflight", lambda: stage_preflight(state, rdir), "environment and baseline"),
         ("test", lambda: stage_test(args), "the full correctness suite"),
         ("tune", lambda: stage_tune(state, jobs, runs, args.fes_per_dim, pdir),
-         "ALIGN_TAU on F21-F30"),
+         f"{CANDIDATE}'s scalars on F{min(TUNE_FUNCTIONS)}-F{max(TUNE_FUNCTIONS)}"),
         ("screen", lambda: stage_screen(state, jobs, runs, args.fes_per_dim, pdir),
          f"{len(SCREEN_ARMS)+1} arms at D={SCREEN_DIM}"),
         ("select", lambda: stage_select(state, pdir), "one winner"),
         ("gate", lambda: stage_gate(state, jobs, rdir, None, args.fes_per_dim),
          "the line-up on 29 functions"),
-        ("analyze", lambda: stage_analyze(state, rdir), "k=7 and k=8"),
+        ("analyze", lambda: stage_analyze(state, rdir),
+         "the reference line-up and the same plus the candidate"),
         ("aos", lambda: stage_aos(state, jobs, rdir, args.fes_per_dim),
          "the operator-selection correlation"),
         ("report", lambda: stage_report(state, pdir, rdir), "the binding criterion"),
@@ -5766,15 +6646,18 @@ def cmd_experiment(args) -> int:
         _stage_banner(i, len(stages), name, note)
         rc = fn()
         if rc == 3 and name == "select":
-            # A measured "nothing improved", not a failure. Stopping here is the
-            # correct outcome: promoting the least-bad arm would spend hours of
-            # gate compute to measure a regression.
-            state["stages"].setdefault(name, {})["done"] = True
-            _save_state(state_path, state)
+            # A measured "nothing improved" among the arms, not a failure, and
+            # no longer a reason to stop: the gate's candidate is derived, not
+            # screened, so the arm search's answer is recorded in its own file
+            # and the pipeline goes on to measure the candidate it does have.
+            # The least-bad arm is still not promoted -- that was the right call
+            # and it has not been weakened, only separated from this candidate.
             _write_no_candidate_report(state, pdir)
-            print(f"\n[ok] the pipeline stopped after {name!r} with a negative "
-                  f"result, which is recorded in {pdir / 'RESULT.md'}.")
-            return 0
+            print(f"\n[ok] no arm was promoted; that negative result is "
+                  f"recorded in {pdir / 'SCREEN_RESULT.md'}. The gate's "
+                  f"candidate is {CANDIDATE!r}, which the arm search does not "
+                  f"gate, so the pipeline continues.")
+            rc = 0
         if rc:
             print(f"\n[X] stage {name!r} failed with {rc}. Nothing downstream "
                   f"ran. Fix it and re-run; finished stages are skipped.")
