@@ -19,3 +19,7 @@
 *.npz  binary
 *.png  binary
 *.pdf  binary
+
+# The study driver is committed exactly as it ran on the measurement VM:
+# its line endings are part of the artifact that produced the recorded rows.
+study_2026.py -text
