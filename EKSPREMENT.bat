@@ -2,7 +2,11 @@
 REM ============================================================================
 REM  EKSPREMENT.bat - to'liq tadqiqotni boshdan oxirigacha o'tkazadi.
 REM
-REM  OLDIN TEKSHIR.bat ni bosing.
+REM  Kodni o'zi yangilaydi: fetch, checkout, pull --ff-only. Hech narsani
+REM  majburan o'chirmaydi - reset ham, clean ham yo'q. O'lchangan natijalar
+REM  .gitignore da (results*/), ya'ni git ularga tegmaydi. Agar papkada
+REM  saqlanmagan o'zgarish bo'lsa, yangilashni tashlab o'tadi va shuni aytadi.
+REM  Internetsiz yoki yangilashni xohlamasangiz:  EKSPREMENT.bat offline
 REM
 REM  To'qqiz bosqich, har biri keyingisining darvozasi:
 REM    1 preflight  muhit (Python 3.14, opfunu 1.0.4) - mos kelmasa to'xtaydi
@@ -34,6 +38,52 @@ cd /d "%~dp0"
 
 if not exist "study_2026.py" goto :nofile
 
+set BRANCH=claude/adoring-archimedes-942q36-7mth24
+
+REM -- argumentlar: istalgan tartibda, "offline" yadro soni deb o'qilmasin --
+set OFFLINE=
+set ARGJOBS=
+if /i "%~1"=="offline" set OFFLINE=1
+if /i "%~2"=="offline" set OFFLINE=1
+if "%~1"=="" goto :argsdone
+if /i "%~1"=="offline" goto :argsdone
+set ARGJOBS=%~1
+:argsdone
+
+REM -- kodni yangilash -------------------------------------------------------
+if defined OFFLINE goto :skipgit
+where git >nul 2>nul
+if errorlevel 1 goto :skipgit
+git rev-parse --is-inside-work-tree >nul 2>nul
+if errorlevel 1 goto :skipgit
+echo [*] Kodni yangilash: %BRANCH%
+git diff --quiet
+if errorlevel 1 goto :dirty
+git diff --cached --quiet
+if errorlevel 1 goto :dirty
+git fetch origin %BRANCH%
+if errorlevel 1 echo     [!] fetch ishlamadi - mavjud kod bilan davom etamiz
+git checkout %BRANCH%
+if errorlevel 1 goto :gitstop
+git pull --ff-only origin %BRANCH%
+if errorlevel 1 echo     [!] pull ishlamadi - mavjud kod bilan davom etamiz
+git log --oneline -1
+echo.
+goto :skipgit
+
+:dirty
+echo     [!] Papkada saqlanmagan o'zgarish bor, shuning uchun yangilanmadi.
+echo         Mavjud kod bilan davom etamiz. Ko'rish uchun:  git status
+echo.
+goto :skipgit
+
+:gitstop
+echo.
+echo [X] checkout ishlamadi: kod eski branchda qolishi mumkin.
+echo     Ekrandagi xatoni Claude'ga tashlang. Eksperiment boshlanmadi.
+goto :end
+
+:skipgit
 set PY=
 py -3.14 -c "import sys" >nul 2>nul
 if not errorlevel 1 set PY=py -3.14
@@ -50,7 +100,7 @@ goto :end
 :havepy
 set /a JOBS=%NUMBER_OF_PROCESSORS%-2
 if %JOBS% LSS 1 set JOBS=1
-if not "%~1"=="" set JOBS=%~1
+if defined ARGJOBS set JOBS=%ARGJOBS%
 if not exist "logs" mkdir "logs"
 set LOG=logs\eksprement.log
 
